@@ -106,8 +106,16 @@ class DataGoKrClient:
         # 공공데이터포털의 인증/게이트웨이 오류가 HTTP 200 XML/JSON으로 오는 경우를 명시화한다.
         error = self.error_message(payload)
         if error:
-            raise RuntimeError(error)
+            # data.go.kr의 NODATA_ERROR는 인증/서버 실패가 아니라 '조회 결과 0건'이다.
+            # 수집 파이프라인이 빈 rows를 정상적으로 처리하도록 예외를 발생시키지 않는다.
+            if not self.is_no_data_error(error):
+                raise RuntimeError(error)
         return payload
+
+    @staticmethod
+    def is_no_data_error(error: str | Exception) -> bool:
+        text = str(error or '').upper()
+        return 'NODATA_ERROR' in text or 'NO DATA' in text or 'NO_DATA' in text
 
     @staticmethod
     def error_message(payload: dict) -> str | None:

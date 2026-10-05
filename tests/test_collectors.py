@@ -177,3 +177,20 @@ def test_kapt_v4_json_body_items_parser():
     rows=DataGoKrClient.items(payload)
     assert len(rows)==1 and rows[0]['kaptCode']=='A001'
     assert DataGoKrClient.total_count(payload)==1
+
+
+def test_data_go_kr_nodata_error_is_normal_empty_result(monkeypatch):
+    class FakeResponse:
+        status_code = 200
+        headers = {'content-type': 'application/json'}
+        text = ''
+        def json(self):
+            return {'Response': {'head': {'resultCode': '3', 'resultMsg': 'NODATA_ERROR'}, 'items': []}}
+        def raise_for_status(self):
+            return None
+
+    monkeypatch.setattr('scripts.collect.data_go_kr.requests.get', lambda *a, **k: FakeResponse())
+    client = DataGoKrClient(service_key='test-key', max_retries=0)
+    payload = client.get('https://example.test/api', {}, add_paging=False)
+    assert DataGoKrClient.items(payload) == []
+    assert DataGoKrClient.is_no_data_error('공공데이터포털 API 오류 3: NODATA_ERROR') is True

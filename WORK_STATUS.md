@@ -168,3 +168,10 @@ Checkpoint 1.4는 **비밀키/사용자 계정이 없어도 작성 가능한 코
 - retryable 오류와 non-retryable 오류 분리, 무한 비용 루프 방지
 - Historical → Snapshot → Composite Index(경남) → Data Quality 단계 자동화
 - Snapshot source의 `source_as_of`를 실제 조회일로 기록하도록 보완
+
+## Checkpoint 3.1
+- v3.0 창원 Cloud Rollout에서 2022-10 population의 `NODATA_ERROR`로 blocked된 현상 수정.
+- `NODATA_ERROR`/빈 응답/매핑 없음은 no_data freshness로 기록 후 다음 지역 계속 진행.
+- 기존 Firestore source freshness를 이용한 부분 Batch resume 추가.
+- blocked 발생 시 GitHub Actions를 빨간 X로 표시하도록 workflow 개선.
+- Firestore rollout state ID를 v31로 분리.

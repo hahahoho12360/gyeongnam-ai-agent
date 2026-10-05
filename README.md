@@ -400,3 +400,13 @@ python scripts/auto_rollout.py --scope gyeongnam
 `FIREBASE_PROJECT_ID`, `DATA_GO_KR_SERVICE_KEY`, `FIREBASE_SERVICE_ACCOUNT_JSON`
 
 보안상 서비스계정 JSON이나 `.env`를 저장소에 커밋하지 마세요.
+
+## Checkpoint 3.1 - Cloud Rollout 결측 처리 강화
+
+- data.go.kr `NODATA_ERROR`를 치명적 오류가 아닌 정상 결측으로 처리한다.
+- 결측 지역은 `freshness.sources.<source>.status=no_data`로 기록하여 동일 요청을 반복하지 않는다.
+- Batch 일부가 이미 완료된 경우 미완료 지역만 다시 호출한다.
+- v3.1 진행상태는 `rollout_jobs/cloud_<scope>_v31`에 저장한다.
+- `blocked` 상태는 GitHub Actions도 실패(빨간 X)로 표시한다.
+
+자세한 실행 절차: `docs/GITHUB_ACTIONS_V31.md`

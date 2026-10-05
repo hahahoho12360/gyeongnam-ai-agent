@@ -1,0 +1,22 @@
+Checkpoint 3.1 - 다음 실행 순서
+
+1) 이 ZIP을 C:\gyeongnam-ai-agent 에 덮어쓴다. (.env는 보존)
+2) Git 작성자 설정을 확인한다.
+   git config --local user.name "hahahoho12360"
+   git config --local user.email "GitHub Settings > Emails의 noreply 주소"
+3) v3.1 변경사항을 GitHub에 올린다.
+   git add .
+   git status
+   git commit -m "Fix no-data handling in cloud rollout v3.1"
+   git push
+4) GitHub > Actions > Gyeongnam AI Cloud Rollout v3.1 > Run workflow
+   scope=changwon, reset=false, batch_size=10
+5) Firestore 진행상태는 rollout_jobs/cloud_changwon_v31 에서 확인한다.
+6) status=complete, stage=done 이면 창원 완료.
+7) 그 뒤 scope=gyeongnam, reset=false, batch_size=10 으로 실행한다.
+
+중요:
+- 기존 monthly_data, rollout_jobs/cloud_changwon_v30, Resume 데이터는 삭제하지 않는다.
+- reset=true를 사용하지 않는다.
+- NODATA_ERROR는 결측/0건으로 기록하고 다음 지역을 계속 처리한다.
+- blocked가 발생하면 GitHub Actions가 빨간 X로 표시되도록 변경했다.

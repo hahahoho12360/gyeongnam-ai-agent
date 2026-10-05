@@ -1,4 +1,4 @@
-name: Gyeongnam AI Cloud Rollout v3.0
+name: Gyeongnam AI Cloud Rollout v3.1
 
 on:
   workflow_dispatch:
@@ -161,5 +161,12 @@ jobs:
           if [ "${{ steps.status.outputs.status }}" = "complete" ]; then
             echo "All requested rollout work is complete."
           elif [ "${{ steps.status.outputs.status }}" = "blocked" ]; then
-            echo "Rollout is blocked. Check this run log and Firestore rollout_jobs/cloud_${{ inputs.scope }}_v30."
+            echo "Rollout is blocked. Check this run log and Firestore rollout_jobs/cloud_${{ inputs.scope }}_v31."
           fi
+
+      - name: Mark blocked rollout as failed
+        if: steps.status.outputs.status == 'blocked'
+        shell: bash
+        run: |
+          echo "Cloud rollout is blocked. This run is intentionally marked failed so the red X is visible."
+          exit 1

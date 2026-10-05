@@ -1,4 +1,4 @@
-"""Checkpoint 3.0 - GitHub Actions용 무인 Cloud Rollout.
+"""Checkpoint 3.1 - GitHub Actions용 무인 Cloud Rollout.
 
 목적
 ----
@@ -45,7 +45,7 @@ from backend.db import get_store, utcnow_iso
 from scripts.backfill import CORE_HISTORICAL_SOURCES, SNAPSHOT_SOURCES, resolve_regions
 from scripts.pipeline import month_range, month_shift, recompute_indexes, run_source
 
-VERSION = 3
+VERSION = 31
 JOB_COLLECTION = 'rollout_jobs'
 REPORT_COLLECTION = 'rollout_reports'
 STATUS_PATH = ROOT / 'artifacts' / 'cloud_rollout_status.json'
@@ -132,7 +132,7 @@ def build_tasks(
 
 
 def job_id(scope: str) -> str:
-    return f'cloud_{scope}_v30'
+    return f'cloud_{scope}_v31'
 
 
 def initial_state(
@@ -184,17 +184,24 @@ def load_or_init_state(
     return {k: v for k, v in existing.items() if k != 'id'}
 
 
-def task_is_complete(task: CloudTask) -> bool:
-    """해당 batch 모든 지역 문서에 source freshness가 있으면 API 재호출을 건너뛴다."""
+def incomplete_region_ids(task: CloudTask) -> list[str]:
+    """이미 성공 또는 no_data로 기록된 지역은 제외하고 실제 미완료 지역만 반환한다.
+
+    v2.9 로컬 실행이나 이전 Cloud run이 Batch 중 일부만 끝낸 경우에도 완료 지역을
+    재호출하지 않아 API/Firestore 비용과 시간을 줄인다.
+    """
     store = get_store()
+    pending: list[str] = []
     for rid in task.region_ids:
         row = store.get('monthly_data', f'{rid}_{task.month}')
-        if not row:
-            return False
-        sources = ((row.get('freshness') or {}).get('sources') or {})
+        sources = ((row or {}).get('freshness') or {}).get('sources') or {}
         if task.source not in sources:
-            return False
-    return True
+            pending.append(rid)
+    return pending
+
+
+def task_is_complete(task: CloudTask) -> bool:
+    return not incomplete_region_ids(task)
 
 
 def is_retryable(error: str) -> bool:
@@ -295,7 +302,7 @@ def execute_task(task: CloudTask, *, attempts: int, retry_wait_seconds: int) -> 
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description='Checkpoint 3.0 GitHub Actions Cloud Rollout')
+    p = argparse.ArgumentParser(description='Checkpoint 3.1 GitHub Actions Cloud Rollout')
     p.add_argument('--scope', choices=['changwon', 'gyeongnam'], required=True)
     p.add_argument('--historical-start', default='2022-10')
     p.add_argument('--historical-end', default=None)
@@ -349,7 +356,7 @@ def main() -> int:
     deadline = started + max(1, a.max_runtime_minutes) * 60
 
     print('=' * 76)
-    print('Gyeongnam AI Agent - Checkpoint 3.0 CLOUD ROLLOUT')
+    print('Gyeongnam AI Agent - Checkpoint 3.1 CLOUD ROLLOUT')
     print(f'project    : {settings.firebase_project_id}')
     print(f'scope      : {a.scope}')
     print(f'regions    : {len(regions)}')
@@ -380,8 +387,10 @@ def main() -> int:
             state['stage_progress_pct'] = round(cursor * 100 / len(tasks), 2) if tasks else 100.0
             save_state(state)
 
-            # Cloud runner가 중간에 죽은 뒤 상태 cursor가 저장되기 전에도 중복 API 호출을 줄인다.
-            if task_is_complete(task):
+            # Cloud runner가 중간에 죽었거나 v2.9가 일부 지역만 끝낸 경우, 완료 지역은 빼고
+            # 실제 미완료 지역만 API에 전달한다. no_data freshness도 '처리 완료'로 인정한다.
+            pending_ids = incomplete_region_ids(task)
+            if not pending_ids:
                 print(f'[CLOUD] already complete → skip: {task.key}')
                 state['cursor'] = cursor + 1
                 state['total_skipped_tasks'] = int(state.get('total_skipped_tasks') or 0) + 1
@@ -390,7 +399,10 @@ def main() -> int:
                 save_state(state)
                 continue
 
-            ok, result = execute_task(task, attempts=a.task_attempts, retry_wait_seconds=a.retry_wait_seconds)
+            if len(pending_ids) != len(task.region_ids):
+                print(f'[CLOUD] partial resume: {len(task.region_ids)-len(pending_ids)}개 완료, {len(pending_ids)}개만 처리')
+            effective_task = CloudTask(task.stage, task.batch_index, task.source, task.month, tuple(pending_ids))
+            ok, result = execute_task(effective_task, attempts=a.task_attempts, retry_wait_seconds=a.retry_wait_seconds)
             if ok:
                 state['cursor'] = cursor + 1
                 state['total_success_tasks'] = int(state.get('total_success_tasks') or 0) + 1

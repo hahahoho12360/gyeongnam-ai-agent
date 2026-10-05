@@ -28,6 +28,28 @@ from scripts.collect.adapters import (
 )
 from scripts.collect.data_go_kr import DataGoKrClient
 
+NO_DATA_STATUS_KEY = '__source_status__'
+NO_DATA_REASON_KEY = '__source_reason__'
+
+
+def is_no_data_error(error: str | Exception) -> bool:
+    text = str(error or '').upper()
+    return 'NODATA_ERROR' in text or 'NO DATA' in text or 'NO_DATA' in text
+
+
+def no_data_patch(reason: str = 'NODATA_ERROR') -> dict[str, Any]:
+    return {NO_DATA_STATUS_KEY: 'no_data', NO_DATA_REASON_KEY: str(reason)}
+
+
+def is_pure_no_data_patch(patch: dict[str, Any]) -> bool:
+    if patch.get(NO_DATA_STATUS_KEY) != 'no_data':
+        return False
+    return not any(
+        not str(k).startswith('__') and v is not None
+        for k, v in patch.items()
+    )
+
+
 DEFAULT_ENDPOINTS = {
     # 국토부 상세자료 공식 요청 URL. 환경변수로 언제든 교체 가능하다.
     'apt_sale': 'https://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/getRTMSDataSvcAptTradeDev',
@@ -186,14 +208,76 @@ def upsert_metric_patch(
     return saved
 
 
+def mark_source_no_data(
+    region_id: str, month: str, *, source: str, reason: str, source_as_of: str
+) -> dict[str, Any]:
+    """자료 없음도 '처리 완료'로 기록한다.
+
+    이 기록 덕분에 Cloud Rollout이 같은 region/source/month를 무한 재호출하지 않는다.
+    기존 metric은 건드리지 않고 freshness.sources[source]에 status=no_data만 남긴다.
+    """
+    store = get_store()
+    doc_id = f'{region_id}_{month}'
+    existing = store.get('monthly_data', doc_id) or {}
+    metrics = dict(existing.get('metrics', {}))
+    prev = store.get('monthly_data', f'{region_id}_{month_shift(month,-1)}') or {}
+    yearago = store.get('monthly_data', f'{region_id}_{month_shift(month,-12)}') or {}
+    derived = compute_derived(metrics, prev.get('metrics', {}), yearago.get('metrics', {}))
+
+    freshness = dict(existing.get('freshness', {}))
+    sources = dict(freshness.get('sources', {}))
+    sources[source] = {
+        'status': 'no_data',
+        'reason': reason,
+        'source_as_of': source_as_of,
+        'fetched_at': utcnow_iso(),
+        'is_provisional': False,
+        'sample_size': 0,
+        'data_confidence': 'no_data',
+    }
+    source_dates = [str(x.get('source_as_of') or '') for x in sources.values() if isinstance(x, dict)]
+    freshness.update({
+        'source_as_of': max(source_dates) if source_dates else source_as_of,
+        'fetched_at': utcnow_iso(),
+        'is_provisional': any(bool(x.get('is_provisional')) for x in sources.values() if isinstance(x, dict)),
+        'sources': sources,
+        'is_demo': False,
+    })
+    row = {
+        'region_id': region_id,
+        'month': month,
+        'metrics': metrics,
+        'derived': derived,
+        'indexes': existing.get('indexes', {}),
+        'freshness': freshness,
+    }
+    saved = store.set('monthly_data', doc_id, row, merge=False)
+    # 기존 metric이 있는 문서만 latest에 반영한다. no_data만 있는 빈 문서가 최신 대표값이 되는 것을 막는다.
+    if metrics:
+        latest = store.get('region_latest', region_id)
+        if not latest or str(latest.get('month', '')) <= month:
+            store.set('region_latest', region_id, row, merge=False)
+    return saved
+
+
 def apply_patches(month: str, source: str, patches: dict[str, dict[str, Any]], *, provisional=False, sample_key: str | None = None, source_as_of: str | None = None) -> int:
     count = 0
     # 잠정/실시간 계열은 '오늘 API에서 확인한 상태'가 기준시점이고, 월말 확정 통계는 해당 월말이 기준시점이다.
     source_as_of = source_as_of or (date.today().isoformat() if provisional else month_end(month))
     for rid, patch in patches.items():
-        sample = patch.get(sample_key) if sample_key else None
+        if is_pure_no_data_patch(patch):
+            mark_source_no_data(
+                rid, month, source=source,
+                reason=str(patch.get(NO_DATA_REASON_KEY) or 'no_data'),
+                source_as_of=source_as_of,
+            )
+            count += 1
+            continue
+        # 내부 상태 메타키는 실제 metrics에 저장하지 않는다.
+        clean_patch = {k: v for k, v in patch.items() if not str(k).startswith('__')}
+        sample = clean_patch.get(sample_key) if sample_key else None
         upsert_metric_patch(
-            rid, month, patch, source=source, source_as_of=source_as_of, provisional=provisional,
+            rid, month, clean_patch, source=source, source_as_of=source_as_of, provisional=provisional,
             sample_size=int(sample) if isinstance(sample, (int, float)) else None,
         )
         count += 1
@@ -414,8 +498,18 @@ def collect_configured_per_region(
             return out
         representative = regions[0]
         params = {k: _render_template(v, region=representative, month=month) for k, v in template.items()}
-        rows = client.get_all(url, params)
-        return adapter(rows, regions, None)
+        try:
+            rows = client.get_all(url, params)
+        except RuntimeError as exc:
+            if is_no_data_error(exc):
+                return {r['id']: no_data_patch(str(exc)) for r in regions}
+            raise
+        if not rows:
+            return {r['id']: no_data_patch('empty_response') for r in regions}
+        normalized = adapter(rows, regions, None)
+        for r in regions:
+            normalized.setdefault(r['id'], no_data_patch('no_matching_row'))
+        return normalized
 
     if mode == 'sigungu':
         grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -425,18 +519,37 @@ def collect_configured_per_region(
         for sig, scoped in grouped.items():
             representative = scoped[0]
             params = {k: _render_template(v, region=representative, month=month) for k, v in template.items()}
-            rows = client.get_all(url, params)
+            try:
+                rows = client.get_all(url, params)
+            except RuntimeError as exc:
+                if is_no_data_error(exc):
+                    out.update({r['id']: no_data_patch(str(exc)) for r in scoped})
+                    continue
+                raise
+            if not rows:
+                out.update({r['id']: no_data_patch('empty_response') for r in scoped})
+                continue
             normalized = adapter(rows, scoped, sig)
+            for r in scoped:
+                normalized.setdefault(r['id'], no_data_patch('no_matching_row'))
             out.update(normalized)
         return out
 
     for region in regions:
         params = {k: _render_template(v, region=region, month=month) for k, v in template.items()}
-        rows = client.get_all(url, params)
+        try:
+            rows = client.get_all(url, params)
+        except RuntimeError as exc:
+            if is_no_data_error(exc):
+                out[region['id']] = no_data_patch(str(exc))
+                continue
+            raise
         code = str(region.get('bjd_code') or region.get('id'))
+        if not rows:
+            out[region['id']] = no_data_patch('empty_response')
+            continue
         normalized = adapter(rows, [region], code[:5])
-        if region['id'] in normalized:
-            out[region['id']] = normalized[region['id']]
+        out[region['id']] = normalized.get(region['id'], no_data_patch('no_matching_row'))
     return out
 
 def collect_household_birth_death(month: str) -> dict[str, dict[str, Any]]:
@@ -509,8 +622,13 @@ def run_source(source: str, month: str) -> dict[str, Any]:
         provisional=bool(provisional_capable and month >= recent_floor)
         snapshot_sources={'apartment_basic','building_register','commerce'}
         explicit_as_of=date.today().isoformat() if source in snapshot_sources else None
+        no_data_count = sum(1 for patch in patches.values() if is_pure_no_data_patch(patch))
         count = apply_patches(month, source, patches, provisional=provisional, sample_key=sample_key, source_as_of=explicit_as_of)
-        result = {'source': source, 'month': month, 'status': 'ok', 'regions_updated': count, 'started_at': started, 'finished_at': utcnow_iso()}
+        result = {
+            'source': source, 'month': month, 'status': 'ok',
+            'regions_updated': count, 'regions_no_data': no_data_count,
+            'started_at': started, 'finished_at': utcnow_iso(),
+        }
     except Exception as exc:
         result = {'source': source, 'month': month, 'status': 'error', 'error': f'{type(exc).__name__}: {exc}', 'started_at': started, 'finished_at': utcnow_iso()}
     get_store().set('source_status', f'{source}_{month}', result, merge=False)

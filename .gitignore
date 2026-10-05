@@ -29,6 +29,7 @@ frontend/config.js
 
 # Runtime artifacts
 artifacts/rollout_*_summary.json
+artifacts/cloud_rollout*.json
 
 # OS / editor cache
 Thumbs.db
