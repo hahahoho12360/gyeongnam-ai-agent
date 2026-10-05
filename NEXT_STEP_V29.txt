@@ -1,0 +1,13 @@
+Checkpoint 2.9 quick start
+
+1) Apply this checkpoint over C:\gyeongnam-ai-agent (keep your existing .env).
+2) Recommended first unattended run: Changwon
+   .venv\Scripts\python.exe scripts\auto_rollout.py --scope changwon
+   or double-click scripts\run_changwon_v29.bat
+3) When Changwon finishes and artifacts/rollout_changwon_summary.json looks normal, run Gyeongnam:
+   .venv\Scripts\python.exe scripts\auto_rollout.py --scope gyeongnam
+   or double-click scripts\run_gyeongnam_v29.bat
+
+Resume files are automatic. Re-run the same command after interruption.
+Logs: logs/rollout-*.log
+Summary: artifacts/rollout_*_summary.json

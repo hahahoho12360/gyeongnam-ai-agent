@@ -1,0 +1,30 @@
+name: Daily data refresh
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 18 * * *' # KST 03:20
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python scripts/update_data.py --scope daily
+        env:
+          USE_MEMORY_DB: 'false'
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+          RECENT_REAL_ESTATE_RECALC_MONTHS: '3'
+          APT_SALE_API_URL: ${{ vars.APT_SALE_API_URL }}
+          APT_RENT_API_URL: ${{ vars.APT_RENT_API_URL }}
+          ROWHOUSE_SALE_API_URL: ${{ vars.ROWHOUSE_SALE_API_URL }}
+          SINGLE_HOUSE_SALE_API_URL: ${{ vars.SINGLE_HOUSE_SALE_API_URL }}
+          COMMERCIAL_SALE_API_URL: ${{ vars.COMMERCIAL_SALE_API_URL }}
+          ONBID_RESULT_API_URL: ${{ vars.ONBID_RESULT_API_URL }}
+          ONBID_RESULT_QUERY_JSON: ${{ secrets.ONBID_RESULT_QUERY_JSON }}
+          ONBID_PROPERTY_API_URL: ${{ vars.ONBID_PROPERTY_API_URL }}
+          ONBID_PROPERTY_QUERY_JSON: ${{ secrets.ONBID_PROPERTY_QUERY_JSON }}

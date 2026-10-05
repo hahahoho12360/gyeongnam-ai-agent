@@ -1,0 +1,49 @@
+name: Monthly data refresh
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '40 21 2 * *' # 매월 3일 KST 06:40
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python scripts/update_data.py --scope monthly
+        env:
+          USE_MEMORY_DB: 'false'
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+          POPULATION_API_URL: ${{ vars.POPULATION_API_URL }}
+          POPULATION_QUERY_JSON: ${{ secrets.POPULATION_QUERY_JSON }}
+          POPULATION_QUERY_SCOPE: ${{ vars.POPULATION_QUERY_SCOPE }}
+          AGE_POPULATION_API_URL: ${{ vars.AGE_POPULATION_API_URL }}
+          AGE_POPULATION_QUERY_JSON: ${{ secrets.AGE_POPULATION_QUERY_JSON }}
+          AGE_POPULATION_QUERY_SCOPE: ${{ vars.AGE_POPULATION_QUERY_SCOPE }}
+          SINGLE_HOUSEHOLD_API_URL: ${{ vars.SINGLE_HOUSEHOLD_API_URL }}
+          SINGLE_HOUSEHOLD_QUERY_JSON: ${{ secrets.SINGLE_HOUSEHOLD_QUERY_JSON }}
+          SINGLE_HOUSEHOLD_QUERY_SCOPE: ${{ vars.SINGLE_HOUSEHOLD_QUERY_SCOPE }}
+          APT_LIST_API_URL: ${{ vars.APT_LIST_API_URL }}
+          APARTMENT_BASIC_API_URL: ${{ vars.APARTMENT_BASIC_API_URL }}
+          BUILDING_REGISTER_API_URL: ${{ vars.BUILDING_REGISTER_API_URL }}
+          COMMERCE_API_URL: ${{ vars.COMMERCE_API_URL }}
+          HOUSEHOLD_SIZE_API_URL: ${{ vars.HOUSEHOLD_SIZE_API_URL }}
+          HOUSEHOLD_SIZE_QUERY_JSON: ${{ secrets.HOUSEHOLD_SIZE_QUERY_JSON }}
+          HOUSEHOLD_SIZE_QUERY_SCOPE: ${{ vars.HOUSEHOLD_SIZE_QUERY_SCOPE }}
+          BIRTH_DEATH_API_URL: ${{ vars.BIRTH_DEATH_API_URL }}
+          BIRTH_DEATH_QUERY_JSON: ${{ secrets.BIRTH_DEATH_QUERY_JSON }}
+          BIRTH_DEATH_QUERY_SCOPE: ${{ vars.BIRTH_DEATH_QUERY_SCOPE }}
+          BIRTH_API_URL: ${{ vars.BIRTH_API_URL }}
+          BIRTH_QUERY_JSON: ${{ secrets.BIRTH_QUERY_JSON }}
+          BIRTH_QUERY_SCOPE: ${{ vars.BIRTH_QUERY_SCOPE }}
+          DEATH_API_URL: ${{ vars.DEATH_API_URL }}
+          DEATH_QUERY_JSON: ${{ secrets.DEATH_QUERY_JSON }}
+          DEATH_QUERY_SCOPE: ${{ vars.DEATH_QUERY_SCOPE }}
+          ONBID_PROPERTY_API_URL: ${{ vars.ONBID_PROPERTY_API_URL }}
+          ONBID_PROPERTY_QUERY_JSON: ${{ secrets.ONBID_PROPERTY_QUERY_JSON }}
+          ONBID_RESULT_API_URL: ${{ vars.ONBID_RESULT_API_URL }}
+          ONBID_RESULT_QUERY_JSON: ${{ secrets.ONBID_RESULT_QUERY_JSON }}

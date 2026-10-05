@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "gyeongnam-area-ai": {
+      "type": "stdio",
+      "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe",
+      "args": ["${workspaceFolder}\\mcp_server\\server.py"],
+      "envFile": "${workspaceFolder}\\.env"
+    }
+  }
+}

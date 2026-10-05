@@ -1,0 +1,36 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+.pytest_cache/
+.coverage
+htmlcov/
+.DS_Store
+raw_cache/
+*.log
+firebase-service-account*.json
+serviceAccount*.json
+frontend/config.js
+
+.backfill-state.json
+
+*.zip
+
+# Backfill / rollout runtime state
+.backfill-*.json
+.rollout-*.json
+*.resume.json
+
+# Firebase / Google credential variants
+*firebase-adminsdk*.json
+*service-account*.json
+
+# Runtime artifacts
+artifacts/rollout_*_summary.json
+
+# OS / editor cache
+Thumbs.db
+.mypy_cache/
+.ruff_cache/

@@ -1,0 +1,17 @@
+Checkpoint 3.0 다음 단계
+=========================
+
+목표: PC를 꺼도 GitHub Actions가 창원/경남 Backfill을 자동으로 이어서 수행합니다.
+
+1) v3.0을 GitHub 저장소에 push
+2) GitHub → Settings → Secrets and variables → Actions 에 3개 secret 등록
+   - FIREBASE_PROJECT_ID
+   - DATA_GO_KR_SERVICE_KEY
+   - FIREBASE_SERVICE_ACCOUNT_JSON  (JSON 전체 내용, 저장소 파일 업로드 금지)
+3) GitHub → Actions → Gyeongnam AI Cloud Rollout v3.0
+4) 먼저 scope=changwon, batch_size=10, reset=false 로 Run workflow
+5) 완료 후 scope=gyeongnam, batch_size=10, reset=false 로 Run workflow
+6) 시작한 뒤 PC를 꺼도 됨. 진행상태는 Firestore rollout_jobs에 저장됨.
+7) blocked가 뜬 경우에만 Actions 로그와 rollout_jobs.last_error를 확인.
+
+상세: docs/GITHUB_ACTIONS_V30.md

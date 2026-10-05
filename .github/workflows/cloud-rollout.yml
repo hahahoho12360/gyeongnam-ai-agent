@@ -1,0 +1,165 @@
+name: Gyeongnam AI Cloud Rollout v3.0
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: "수집 범위"
+        required: true
+        default: "gyeongnam"
+        type: choice
+        options:
+          - changwon
+          - gyeongnam
+      reset:
+        description: "기존 Cloud 진행상태를 초기화하고 처음부터 시작"
+        required: true
+        default: false
+        type: boolean
+      batch_size:
+        description: "한 task에서 처리할 지역 수 (권장 10)"
+        required: true
+        default: "10"
+        type: choice
+        options:
+          - "5"
+          - "10"
+          - "15"
+          - "20"
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: gyeongnam-ai-cloud-rollout-${{ inputs.scope }}
+  cancel-in-progress: false
+
+jobs:
+  rollout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      # GitHub Repository Secrets 3개만 사용자가 한 번 등록하면 된다.
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+
+      USE_MEMORY_DB: "false"
+      DEMO_SEED_ON_START: "false"
+      RECENT_REAL_ESTATE_RECALC_MONTHS: "3"
+
+      # 현재 과제에서 검증 완료한 공식 API 설정. 비밀값이 아니므로 Workflow에 고정한다.
+      POPULATION_API_URL: "https://apis.data.go.kr/1741000/stdgPpltnHhStus/selectStdgPpltnHhStus"
+      AGE_POPULATION_API_URL: "https://apis.data.go.kr/1741000/stdgSexdAgePpltn/selectStdgSexdAgePpltn"
+      SINGLE_HOUSEHOLD_API_URL: "https://apis.data.go.kr/1741000/stdgSexdAgeOneHh/selectStdgSexdAgeOneHh"
+      POPULATION_QUERY_JSON: '{"stdgCd":"{bjd_code}","srchFrYm":"{yyyymm}","srchToYm":"{yyyymm}","lv":"7","regSeCd":"1","type":"JSON"}'
+      AGE_POPULATION_QUERY_JSON: '{"stdgCd":"{bjd_code}","srchFrYm":"{yyyymm}","srchToYm":"{yyyymm}","lv":"7","regSeCd":"1","type":"JSON"}'
+      SINGLE_HOUSEHOLD_QUERY_JSON: '{"stdgCd":"{bjd_code}","srchFrYm":"{yyyymm}","srchToYm":"{yyyymm}","lv":"7","regSeCd":"1","type":"JSON"}'
+      POPULATION_QUERY_SCOPE: "region"
+      AGE_POPULATION_QUERY_SCOPE: "region"
+      SINGLE_HOUSEHOLD_QUERY_SCOPE: "region"
+
+      APT_LIST_API_URL: "https://apis.data.go.kr/1613000/AptListService4/getLegaldongAptList4"
+      APARTMENT_BASIC_API_URL: "https://apis.data.go.kr/1613000/AptBasisInfoServiceV5/getAphusBassInfoV5"
+      BUILDING_REGISTER_API_URL: "https://apis.data.go.kr/1613000/BldRgstHubService/getBrTitleInfo"
+      APT_SALE_API_URL: "https://apis.data.go.kr/1613000/RTMSDataSvcAptTradeDev/getRTMSDataSvcAptTradeDev"
+      APT_RENT_API_URL: "https://apis.data.go.kr/1613000/RTMSDataSvcAptRent/getRTMSDataSvcAptRent"
+      COMMERCE_API_URL: "https://apis.data.go.kr/B553077/api/open/sdsc2/storeListInDong"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate cloud secrets
+        run: |
+          python - <<'PY'
+          import os, sys
+          required=['FIREBASE_SERVICE_ACCOUNT_JSON','FIREBASE_PROJECT_ID','DATA_GO_KR_SERVICE_KEY']
+          missing=[x for x in required if not os.getenv(x,'').strip()]
+          if missing:
+              print('Missing GitHub Repository Secrets:', ', '.join(missing))
+              sys.exit(2)
+          print('Cloud secrets: OK (values are not printed)')
+          PY
+
+      - name: Run resumable cloud rollout
+        id: rollout
+        shell: bash
+        run: |
+          RESET=""
+          if [ "${{ inputs.reset }}" = "true" ]; then RESET="--reset"; fi
+          python scripts/cloud_rollout.py \
+            --scope "${{ inputs.scope }}" \
+            --batch-size "${{ inputs.batch_size }}" \
+            --max-runtime-minutes 270 \
+            $RESET
+
+      - name: Read rollout status
+        id: status
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, pathlib
+          p=pathlib.Path('artifacts/cloud_rollout_status.json')
+          if not p.exists():
+              print('status=blocked')
+              print('retry_after=0')
+          else:
+              d=json.loads(p.read_text(encoding='utf-8'))
+              print('status=' + str(d.get('status','blocked')))
+              print('retry_after=' + str(int(d.get('retry_after_seconds') or 0)))
+              print('stage=' + str(d.get('stage','unknown')))
+          PY
+
+      - name: Upload logs and status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rollout-${{ inputs.scope }}-${{ github.run_id }}
+          path: |
+            artifacts/*.json
+            logs/*.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Queue the next cloud run automatically
+        if: steps.status.outputs.status == 'needs_continue'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SCOPE: ${{ inputs.scope }}
+          BATCH_SIZE: ${{ inputs.batch_size }}
+          RETRY_AFTER: ${{ steps.status.outputs.retry_after }}
+        run: |
+          echo "More work remains. Waiting ${RETRY_AFTER}s before dispatching the next run."
+          sleep "${RETRY_AFTER}"
+          gh workflow run cloud-rollout.yml \
+            --ref "$GITHUB_REF_NAME" \
+            -f scope="$SCOPE" \
+            -f reset=false \
+            -f batch_size="$BATCH_SIZE"
+
+      - name: Finish message
+        if: always()
+        shell: bash
+        run: |
+          echo "Cloud rollout status: ${{ steps.status.outputs.status }}"
+          echo "Stage: ${{ steps.status.outputs.stage }}"
+          if [ "${{ steps.status.outputs.status }}" = "complete" ]; then
+            echo "All requested rollout work is complete."
+          elif [ "${{ steps.status.outputs.status }}" = "blocked" ]; then
+            echo "Rollout is blocked. Check this run log and Firestore rollout_jobs/cloud_${{ inputs.scope }}_v30."
+          fi
