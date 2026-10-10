@@ -44,3 +44,10 @@ def export(region_id: str, format: str='csv', months: int=120):
         writer.writerow({'region_id':r.get('region_id'),'month':r.get('month'),'population_total':m.get('population_total'),'young_population_share':d.get('young_population_share'),'older_population_share':d.get('older_population_share'),'single_household_share':d.get('single_household_share'),'sale_price_per_m2':m.get('sale_price_per_m2'),'sale_price_yoy_pct':d.get('sale_price_yoy_pct'),'businesses_per_1000_people':d.get('businesses_per_1000_people'),'vitality_index':idx.get('vitality_index'),'housing_pressure_index':idx.get('housing_pressure_index'),'living_convenience_index':idx.get('living_convenience_index'),'commerce_change_index':idx.get('commerce_change_index')})
     return Response(buf.getvalue(),media_type='text/csv; charset=utf-8',headers={'Content-Disposition':f'attachment; filename={region_id}.csv'})
 
+
+@router.get('/regions/{region_id}/dashboard')
+def region_dashboard(region_id: str, answer_mode: str='basic'):
+    from ..dashboard import dashboard
+    result=dashboard(region_id,answer_mode)
+    if result.get('error'): raise HTTPException(404,result.get('message','지역을 찾을 수 없습니다.'))
+    return result
