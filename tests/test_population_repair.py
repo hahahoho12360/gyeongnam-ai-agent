@@ -47,3 +47,13 @@ def test_regular_collector_uses_children_without_parent_double_count(monkeypatch
     assert result[parent['id']]['population_total']==20
     parent['population_query_codes'].append('4812131021')
     with pytest.raises(RuntimeError):pipeline.collect_population('2026-09')
+
+def test_historical_reference_never_copies_latest_values():
+    from scripts.repair_population_history import reference_for
+    ref=reference_for('2022-10',{'regions':{'4812510600':{'name':'대성동1가','children':['4812510600'],
+                       'population_total':237,'age':{'age_20_29':11},'single_households':66}}},
+                      {'48120':{'population_total':100}})
+    assert ref['month']=='2022-10'
+    assert ref['regions']['4812510600']['population_total'] is None
+    assert 'age' not in ref['regions']['4812510600']
+    assert 'single_households' not in ref['regions']['4812510600']

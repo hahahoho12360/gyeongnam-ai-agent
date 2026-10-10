@@ -55,7 +55,9 @@ def population_reconciliation(regions, rows, benchmark):
     problems = []
     for code, official in expected.items():
         value = (by_id.get(code, {}).get('metrics') or {}).get('population_total')
-        if value != official['population_total']:
+        if (official.get('population_total') is None and value is None) or (
+            official.get('population_total') is not None and value != official['population_total']
+        ):
             problems.append({'code': code, 'stored': value, 'official': official['population_total']})
     for code, row in by_id.items():
         value = (row.get('metrics') or {}).get('population_total')

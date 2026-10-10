@@ -1,0 +1,1830 @@
+{
+  "source": "https://jumin.mois.go.kr/statMonth.do",
+  "category": "total_registered_population_excluding_foreigners",
+  "months": {
+    "2022-10": {
+      "48120": {
+        "population_total": 1023269,
+        "households": 456498,
+        "population_male": 518179,
+        "population_female": 505090
+      },
+      "48121": {
+        "population_total": 216095,
+        "households": 96715,
+        "population_male": 109983,
+        "population_female": 106112
+      },
+      "48123": {
+        "population_total": 248840,
+        "households": 106320,
+        "population_male": 126910,
+        "population_female": 121930
+      },
+      "48125": {
+        "population_total": 179985,
+        "households": 84846,
+        "population_male": 89511,
+        "population_female": 90474
+      },
+      "48127": {
+        "population_total": 184137,
+        "households": 82734,
+        "population_male": 91963,
+        "population_female": 92174
+      },
+      "48129": {
+        "population_total": 194212,
+        "households": 85883,
+        "population_male": 99812,
+        "population_female": 94400
+      }
+    },
+    "2022-11": {
+      "48120": {
+        "population_total": 1022641,
+        "households": 456313,
+        "population_male": 517816,
+        "population_female": 504825
+      },
+      "48121": {
+        "population_total": 216077,
+        "households": 96733,
+        "population_male": 109965,
+        "population_female": 106112
+      },
+      "48123": {
+        "population_total": 248650,
+        "households": 106201,
+        "population_male": 126810,
+        "population_female": 121840
+      },
+      "48125": {
+        "population_total": 179781,
+        "households": 84780,
+        "population_male": 89387,
+        "population_female": 90394
+      },
+      "48127": {
+        "population_total": 183995,
+        "households": 82728,
+        "population_male": 91884,
+        "population_female": 92111
+      },
+      "48129": {
+        "population_total": 194138,
+        "households": 85871,
+        "population_male": 99770,
+        "population_female": 94368
+      }
+    },
+    "2022-12": {
+      "48120": {
+        "population_total": 1021487,
+        "households": 456191,
+        "population_male": 517211,
+        "population_female": 504276
+      },
+      "48121": {
+        "population_total": 215823,
+        "households": 96712,
+        "population_male": 109824,
+        "population_female": 105999
+      },
+      "48123": {
+        "population_total": 248512,
+        "households": 106194,
+        "population_male": 126737,
+        "population_female": 121775
+      },
+      "48125": {
+        "population_total": 179496,
+        "households": 84722,
+        "population_male": 89243,
+        "population_female": 90253
+      },
+      "48127": {
+        "population_total": 183662,
+        "households": 82697,
+        "population_male": 91696,
+        "population_female": 91966
+      },
+      "48129": {
+        "population_total": 193994,
+        "households": 85866,
+        "population_male": 99711,
+        "population_female": 94283
+      }
+    },
+    "2023-01": {
+      "48120": {
+        "population_total": 1020593,
+        "households": 456181,
+        "population_male": 516701,
+        "population_female": 503892
+      },
+      "48121": {
+        "population_total": 215770,
+        "households": 96695,
+        "population_male": 109763,
+        "population_female": 106007
+      },
+      "48123": {
+        "population_total": 248280,
+        "households": 106182,
+        "population_male": 126627,
+        "population_female": 121653
+      },
+      "48125": {
+        "population_total": 179282,
+        "households": 84715,
+        "population_male": 89113,
+        "population_female": 90169
+      },
+      "48127": {
+        "population_total": 183365,
+        "households": 82692,
+        "population_male": 91524,
+        "population_female": 91841
+      },
+      "48129": {
+        "population_total": 193896,
+        "households": 85897,
+        "population_male": 99674,
+        "population_female": 94222
+      }
+    },
+    "2023-02": {
+      "48120": {
+        "population_total": 1018699,
+        "households": 456357,
+        "population_male": 515734,
+        "population_female": 502965
+      },
+      "48121": {
+        "population_total": 215429,
+        "households": 96737,
+        "population_male": 109534,
+        "population_female": 105895
+      },
+      "48123": {
+        "population_total": 247806,
+        "households": 106208,
+        "population_male": 126425,
+        "population_female": 121381
+      },
+      "48125": {
+        "population_total": 179004,
+        "households": 84783,
+        "population_male": 88954,
+        "population_female": 90050
+      },
+      "48127": {
+        "population_total": 182972,
+        "households": 82694,
+        "population_male": 91348,
+        "population_female": 91624
+      },
+      "48129": {
+        "population_total": 193488,
+        "households": 85935,
+        "population_male": 99473,
+        "population_female": 94015
+      }
+    },
+    "2023-03": {
+      "48120": {
+        "population_total": 1017273,
+        "households": 456620,
+        "population_male": 515053,
+        "population_female": 502220
+      },
+      "48121": {
+        "population_total": 215217,
+        "households": 96894,
+        "population_male": 109450,
+        "population_female": 105767
+      },
+      "48123": {
+        "population_total": 247396,
+        "households": 106300,
+        "population_male": 126234,
+        "population_female": 121162
+      },
+      "48125": {
+        "population_total": 178781,
+        "households": 84824,
+        "population_male": 88893,
+        "population_female": 89888
+      },
+      "48127": {
+        "population_total": 182699,
+        "households": 82680,
+        "population_male": 91154,
+        "population_female": 91545
+      },
+      "48129": {
+        "population_total": 193180,
+        "households": 85922,
+        "population_male": 99322,
+        "population_female": 93858
+      }
+    },
+    "2023-04": {
+      "48120": {
+        "population_total": 1016333,
+        "households": 456739,
+        "population_male": 514512,
+        "population_female": 501821
+      },
+      "48121": {
+        "population_total": 215220,
+        "households": 97092,
+        "population_male": 109442,
+        "population_female": 105778
+      },
+      "48123": {
+        "population_total": 247093,
+        "households": 106310,
+        "population_male": 126060,
+        "population_female": 121033
+      },
+      "48125": {
+        "population_total": 178598,
+        "households": 84788,
+        "population_male": 88793,
+        "population_female": 89805
+      },
+      "48127": {
+        "population_total": 182443,
+        "households": 82629,
+        "population_male": 91002,
+        "population_female": 91441
+      },
+      "48129": {
+        "population_total": 192979,
+        "households": 85920,
+        "population_male": 99215,
+        "population_female": 93764
+      }
+    },
+    "2023-05": {
+      "48120": {
+        "population_total": 1015361,
+        "households": 457024,
+        "population_male": 513976,
+        "population_female": 501385
+      },
+      "48121": {
+        "population_total": 215009,
+        "households": 97216,
+        "population_male": 109333,
+        "population_female": 105676
+      },
+      "48123": {
+        "population_total": 246893,
+        "households": 106367,
+        "population_male": 125980,
+        "population_female": 120913
+      },
+      "48125": {
+        "population_total": 178455,
+        "households": 84803,
+        "population_male": 88694,
+        "population_female": 89761
+      },
+      "48127": {
+        "population_total": 182193,
+        "households": 82696,
+        "population_male": 90865,
+        "population_female": 91328
+      },
+      "48129": {
+        "population_total": 192811,
+        "households": 85942,
+        "population_male": 99104,
+        "population_female": 93707
+      }
+    },
+    "2023-06": {
+      "48120": {
+        "population_total": 1014544,
+        "households": 457130,
+        "population_male": 513501,
+        "population_female": 501043
+      },
+      "48121": {
+        "population_total": 214960,
+        "households": 97301,
+        "population_male": 109298,
+        "population_female": 105662
+      },
+      "48123": {
+        "population_total": 246695,
+        "households": 106380,
+        "population_male": 125854,
+        "population_female": 120841
+      },
+      "48125": {
+        "population_total": 178255,
+        "households": 84779,
+        "population_male": 88586,
+        "population_female": 89669
+      },
+      "48127": {
+        "population_total": 182031,
+        "households": 82681,
+        "population_male": 90769,
+        "population_female": 91262
+      },
+      "48129": {
+        "population_total": 192603,
+        "households": 85989,
+        "population_male": 98994,
+        "population_female": 93609
+      }
+    },
+    "2023-07": {
+      "48120": {
+        "population_total": 1013603,
+        "households": 457059,
+        "population_male": 513017,
+        "population_female": 500586
+      },
+      "48121": {
+        "population_total": 214778,
+        "households": 97290,
+        "population_male": 109185,
+        "population_female": 105593
+      },
+      "48123": {
+        "population_total": 246448,
+        "households": 106399,
+        "population_male": 125716,
+        "population_female": 120732
+      },
+      "48125": {
+        "population_total": 178141,
+        "households": 84772,
+        "population_male": 88530,
+        "population_female": 89611
+      },
+      "48127": {
+        "population_total": 181821,
+        "households": 82656,
+        "population_male": 90673,
+        "population_female": 91148
+      },
+      "48129": {
+        "population_total": 192415,
+        "households": 85942,
+        "population_male": 98913,
+        "population_female": 93502
+      }
+    },
+    "2023-08": {
+      "48120": {
+        "population_total": 1012410,
+        "households": 456952,
+        "population_male": 512387,
+        "population_female": 500023
+      },
+      "48121": {
+        "population_total": 214560,
+        "households": 97303,
+        "population_male": 109098,
+        "population_female": 105462
+      },
+      "48123": {
+        "population_total": 246175,
+        "households": 106380,
+        "population_male": 125597,
+        "population_female": 120578
+      },
+      "48125": {
+        "population_total": 177926,
+        "households": 84753,
+        "population_male": 88413,
+        "population_female": 89513
+      },
+      "48127": {
+        "population_total": 181586,
+        "households": 82624,
+        "population_male": 90503,
+        "population_female": 91083
+      },
+      "48129": {
+        "population_total": 192163,
+        "households": 85892,
+        "population_male": 98776,
+        "population_female": 93387
+      }
+    },
+    "2023-09": {
+      "48120": {
+        "population_total": 1011688,
+        "households": 456985,
+        "population_male": 511963,
+        "population_female": 499725
+      },
+      "48121": {
+        "population_total": 214329,
+        "households": 97274,
+        "population_male": 109008,
+        "population_female": 105321
+      },
+      "48123": {
+        "population_total": 245918,
+        "households": 106326,
+        "population_male": 125419,
+        "population_female": 120499
+      },
+      "48125": {
+        "population_total": 178503,
+        "households": 85060,
+        "population_male": 88669,
+        "population_female": 89834
+      },
+      "48127": {
+        "population_total": 181104,
+        "households": 82519,
+        "population_male": 90263,
+        "population_female": 90841
+      },
+      "48129": {
+        "population_total": 191834,
+        "households": 85806,
+        "population_male": 98604,
+        "population_female": 93230
+      }
+    },
+    "2023-10": {
+      "48120": {
+        "population_total": 1010820,
+        "households": 456774,
+        "population_male": 511494,
+        "population_female": 499326
+      },
+      "48121": {
+        "population_total": 213987,
+        "households": 97096,
+        "population_male": 108798,
+        "population_female": 105189
+      },
+      "48123": {
+        "population_total": 245702,
+        "households": 106275,
+        "population_male": 125287,
+        "population_female": 120415
+      },
+      "48125": {
+        "population_total": 179040,
+        "households": 85292,
+        "population_male": 88943,
+        "population_female": 90097
+      },
+      "48127": {
+        "population_total": 180444,
+        "households": 82379,
+        "population_male": 89956,
+        "population_female": 90488
+      },
+      "48129": {
+        "population_total": 191647,
+        "households": 85732,
+        "population_male": 98510,
+        "population_female": 93137
+      }
+    },
+    "2023-11": {
+      "48120": {
+        "population_total": 1009998,
+        "households": 456830,
+        "population_male": 511118,
+        "population_female": 498880
+      },
+      "48121": {
+        "population_total": 213775,
+        "households": 97092,
+        "population_male": 108679,
+        "population_female": 105096
+      },
+      "48123": {
+        "population_total": 245448,
+        "households": 106232,
+        "population_male": 125189,
+        "population_female": 120259
+      },
+      "48125": {
+        "population_total": 179266,
+        "households": 85575,
+        "population_male": 89078,
+        "population_female": 90188
+      },
+      "48127": {
+        "population_total": 180145,
+        "households": 82273,
+        "population_male": 89801,
+        "population_female": 90344
+      },
+      "48129": {
+        "population_total": 191364,
+        "households": 85658,
+        "population_male": 98371,
+        "population_female": 92993
+      }
+    },
+    "2023-12": {
+      "48120": {
+        "population_total": 1009038,
+        "households": 456830,
+        "population_male": 510633,
+        "population_female": 498405
+      },
+      "48121": {
+        "population_total": 213342,
+        "households": 96997,
+        "population_male": 108453,
+        "population_female": 104889
+      },
+      "48123": {
+        "population_total": 245259,
+        "households": 106216,
+        "population_male": 125110,
+        "population_female": 120149
+      },
+      "48125": {
+        "population_total": 179394,
+        "households": 85763,
+        "population_male": 89116,
+        "population_female": 90278
+      },
+      "48127": {
+        "population_total": 179818,
+        "households": 82225,
+        "population_male": 89659,
+        "population_female": 90159
+      },
+      "48129": {
+        "population_total": 191225,
+        "households": 85629,
+        "population_male": 98295,
+        "population_female": 92930
+      }
+    },
+    "2024-01": {
+      "48120": {
+        "population_total": 1008228,
+        "households": 456960,
+        "population_male": 510299,
+        "population_female": 497929
+      },
+      "48121": {
+        "population_total": 212927,
+        "households": 96932,
+        "population_male": 108307,
+        "population_female": 104620
+      },
+      "48123": {
+        "population_total": 244866,
+        "households": 106175,
+        "population_male": 124898,
+        "population_female": 119968
+      },
+      "48125": {
+        "population_total": 179158,
+        "households": 85736,
+        "population_male": 88958,
+        "population_female": 90200
+      },
+      "48127": {
+        "population_total": 180296,
+        "households": 82480,
+        "population_male": 89904,
+        "population_female": 90392
+      },
+      "48129": {
+        "population_total": 190981,
+        "households": 85637,
+        "population_male": 98232,
+        "population_female": 92749
+      }
+    },
+    "2024-02": {
+      "48120": {
+        "population_total": 1006593,
+        "households": 457122,
+        "population_male": 509561,
+        "population_female": 497032
+      },
+      "48121": {
+        "population_total": 212543,
+        "households": 96993,
+        "population_male": 108168,
+        "population_female": 104375
+      },
+      "48123": {
+        "population_total": 244115,
+        "households": 106091,
+        "population_male": 124523,
+        "population_female": 119592
+      },
+      "48125": {
+        "population_total": 178910,
+        "households": 85779,
+        "population_male": 88828,
+        "population_female": 90082
+      },
+      "48127": {
+        "population_total": 180552,
+        "households": 82686,
+        "population_male": 90067,
+        "population_female": 90485
+      },
+      "48129": {
+        "population_total": 190473,
+        "households": 85573,
+        "population_male": 97975,
+        "population_female": 92498
+      }
+    },
+    "2024-03": {
+      "48120": {
+        "population_total": 1005519,
+        "households": 457841,
+        "population_male": 509049,
+        "population_female": 496470
+      },
+      "48121": {
+        "population_total": 212213,
+        "households": 97082,
+        "population_male": 107975,
+        "population_female": 104238
+      },
+      "48123": {
+        "population_total": 243755,
+        "households": 106238,
+        "population_male": 124385,
+        "population_female": 119370
+      },
+      "48125": {
+        "population_total": 179137,
+        "households": 86111,
+        "population_male": 88943,
+        "population_female": 90194
+      },
+      "48127": {
+        "population_total": 180302,
+        "households": 82780,
+        "population_male": 89952,
+        "population_female": 90350
+      },
+      "48129": {
+        "population_total": 190112,
+        "households": 85630,
+        "population_male": 97794,
+        "population_female": 92318
+      }
+    },
+    "2024-04": {
+      "48120": {
+        "population_total": 1004693,
+        "households": 458161,
+        "population_male": 508579,
+        "population_female": 496114
+      },
+      "48121": {
+        "population_total": 212105,
+        "households": 97214,
+        "population_male": 107913,
+        "population_female": 104192
+      },
+      "48123": {
+        "population_total": 243411,
+        "households": 106228,
+        "population_male": 124185,
+        "population_female": 119226
+      },
+      "48125": {
+        "population_total": 179218,
+        "households": 86318,
+        "population_male": 88992,
+        "population_female": 90226
+      },
+      "48127": {
+        "population_total": 180072,
+        "households": 82751,
+        "population_male": 89809,
+        "population_female": 90263
+      },
+      "48129": {
+        "population_total": 189887,
+        "households": 85650,
+        "population_male": 97680,
+        "population_female": 92207
+      }
+    },
+    "2024-05": {
+      "48120": {
+        "population_total": 1004102,
+        "households": 458565,
+        "population_male": 508294,
+        "population_female": 495808
+      },
+      "48121": {
+        "population_total": 211759,
+        "households": 97224,
+        "population_male": 107687,
+        "population_female": 104072
+      },
+      "48123": {
+        "population_total": 243496,
+        "households": 106471,
+        "population_male": 124274,
+        "population_female": 119222
+      },
+      "48125": {
+        "population_total": 179249,
+        "households": 86410,
+        "population_male": 89029,
+        "population_female": 90220
+      },
+      "48127": {
+        "population_total": 179795,
+        "households": 82723,
+        "population_male": 89668,
+        "population_female": 90127
+      },
+      "48129": {
+        "population_total": 189803,
+        "households": 85737,
+        "population_male": 97636,
+        "population_female": 92167
+      }
+    },
+    "2024-06": {
+      "48120": {
+        "population_total": 1003731,
+        "households": 458944,
+        "population_male": 508088,
+        "population_female": 495643
+      },
+      "48121": {
+        "population_total": 211060,
+        "households": 97090,
+        "population_male": 107324,
+        "population_female": 103736
+      },
+      "48123": {
+        "population_total": 244434,
+        "households": 106978,
+        "population_male": 124744,
+        "population_female": 119690
+      },
+      "48125": {
+        "population_total": 179162,
+        "households": 86449,
+        "population_male": 88984,
+        "population_female": 90178
+      },
+      "48127": {
+        "population_total": 179428,
+        "households": 82680,
+        "population_male": 89486,
+        "population_female": 89942
+      },
+      "48129": {
+        "population_total": 189647,
+        "households": 85747,
+        "population_male": 97550,
+        "population_female": 92097
+      }
+    },
+    "2024-07": {
+      "48120": {
+        "population_total": 1003176,
+        "households": 459271,
+        "population_male": 507814,
+        "population_female": 495362
+      },
+      "48121": {
+        "population_total": 210608,
+        "households": 97001,
+        "population_male": 107094,
+        "population_female": 103514
+      },
+      "48123": {
+        "population_total": 244933,
+        "households": 107342,
+        "population_male": 125035,
+        "population_female": 119898
+      },
+      "48125": {
+        "population_total": 179160,
+        "households": 86583,
+        "population_male": 88958,
+        "population_female": 90202
+      },
+      "48127": {
+        "population_total": 179034,
+        "households": 82614,
+        "population_male": 89283,
+        "population_female": 89751
+      },
+      "48129": {
+        "population_total": 189441,
+        "households": 85731,
+        "population_male": 97444,
+        "population_female": 91997
+      }
+    },
+    "2024-08": {
+      "48120": {
+        "population_total": 1002608,
+        "households": 459420,
+        "population_male": 507482,
+        "population_female": 495126
+      },
+      "48121": {
+        "population_total": 210332,
+        "households": 96993,
+        "population_male": 106932,
+        "population_female": 103400
+      },
+      "48123": {
+        "population_total": 245031,
+        "households": 107478,
+        "population_male": 125062,
+        "population_female": 119969
+      },
+      "48125": {
+        "population_total": 179049,
+        "households": 86582,
+        "population_male": 88895,
+        "population_female": 90154
+      },
+      "48127": {
+        "population_total": 178816,
+        "households": 82591,
+        "population_male": 89160,
+        "population_female": 89656
+      },
+      "48129": {
+        "population_total": 189380,
+        "households": 85776,
+        "population_male": 97433,
+        "population_female": 91947
+      }
+    },
+    "2024-09": {
+      "48120": {
+        "population_total": 1001902,
+        "households": 459553,
+        "population_male": 507069,
+        "population_female": 494833
+      },
+      "48121": {
+        "population_total": 209956,
+        "households": 96930,
+        "population_male": 106689,
+        "population_female": 103267
+      },
+      "48123": {
+        "population_total": 244953,
+        "households": 107544,
+        "population_male": 125017,
+        "population_female": 119936
+      },
+      "48125": {
+        "population_total": 178820,
+        "households": 86543,
+        "population_male": 88800,
+        "population_female": 90020
+      },
+      "48127": {
+        "population_total": 178922,
+        "households": 82750,
+        "population_male": 89198,
+        "population_female": 89724
+      },
+      "48129": {
+        "population_total": 189251,
+        "households": 85786,
+        "population_male": 97365,
+        "population_female": 91886
+      }
+    },
+    "2024-10": {
+      "48120": {
+        "population_total": 1001245,
+        "households": 459496,
+        "population_male": 506659,
+        "population_female": 494586
+      },
+      "48121": {
+        "population_total": 209609,
+        "households": 96838,
+        "population_male": 106507,
+        "population_female": 103102
+      },
+      "48123": {
+        "population_total": 244800,
+        "households": 107498,
+        "population_male": 124881,
+        "population_female": 119919
+      },
+      "48125": {
+        "population_total": 178577,
+        "households": 86477,
+        "population_male": 88632,
+        "population_female": 89945
+      },
+      "48127": {
+        "population_total": 179161,
+        "households": 82877,
+        "population_male": 89312,
+        "population_female": 89849
+      },
+      "48129": {
+        "population_total": 189098,
+        "households": 85806,
+        "population_male": 97327,
+        "population_female": 91771
+      }
+    },
+    "2024-11": {
+      "48120": {
+        "population_total": 1000693,
+        "households": 459479,
+        "population_male": 506420,
+        "population_female": 494273
+      },
+      "48121": {
+        "population_total": 209729,
+        "households": 96959,
+        "population_male": 106598,
+        "population_female": 103131
+      },
+      "48123": {
+        "population_total": 244657,
+        "households": 107418,
+        "population_male": 124781,
+        "population_female": 119876
+      },
+      "48125": {
+        "population_total": 178378,
+        "households": 86430,
+        "population_male": 88548,
+        "population_female": 89830
+      },
+      "48127": {
+        "population_total": 179026,
+        "households": 82870,
+        "population_male": 89245,
+        "population_female": 89781
+      },
+      "48129": {
+        "population_total": 188903,
+        "households": 85802,
+        "population_male": 97248,
+        "population_female": 91655
+      }
+    },
+    "2024-12": {
+      "48120": {
+        "population_total": 999858,
+        "households": 459474,
+        "population_male": 506050,
+        "population_female": 493808
+      },
+      "48121": {
+        "population_total": 209695,
+        "households": 97065,
+        "population_male": 106604,
+        "population_female": 103091
+      },
+      "48123": {
+        "population_total": 244489,
+        "households": 107403,
+        "population_male": 124687,
+        "population_female": 119802
+      },
+      "48125": {
+        "population_total": 178211,
+        "households": 86429,
+        "population_male": 88459,
+        "population_female": 89752
+      },
+      "48127": {
+        "population_total": 178724,
+        "households": 82805,
+        "population_male": 89115,
+        "population_female": 89609
+      },
+      "48129": {
+        "population_total": 188739,
+        "households": 85772,
+        "population_male": 97185,
+        "population_female": 91554
+      }
+    },
+    "2025-01": {
+      "48120": {
+        "population_total": 999399,
+        "households": 459671,
+        "population_male": 505837,
+        "population_female": 493562
+      },
+      "48121": {
+        "population_total": 209732,
+        "households": 97185,
+        "population_male": 106619,
+        "population_female": 103113
+      },
+      "48123": {
+        "population_total": 244262,
+        "households": 107367,
+        "population_male": 124629,
+        "population_female": 119633
+      },
+      "48125": {
+        "population_total": 178071,
+        "households": 86437,
+        "population_male": 88330,
+        "population_female": 89741
+      },
+      "48127": {
+        "population_total": 178806,
+        "households": 82915,
+        "population_male": 89184,
+        "population_female": 89622
+      },
+      "48129": {
+        "population_total": 188528,
+        "households": 85767,
+        "population_male": 97075,
+        "population_female": 91453
+      }
+    },
+    "2025-02": {
+      "48120": {
+        "population_total": 997306,
+        "households": 460203,
+        "population_male": 504914,
+        "population_female": 492392
+      },
+      "48121": {
+        "population_total": 209698,
+        "households": 97483,
+        "population_male": 106668,
+        "population_female": 103030
+      },
+      "48123": {
+        "population_total": 243386,
+        "households": 107370,
+        "population_male": 124231,
+        "population_female": 119155
+      },
+      "48125": {
+        "population_total": 177483,
+        "households": 86437,
+        "population_male": 88035,
+        "population_female": 89448
+      },
+      "48127": {
+        "population_total": 178965,
+        "households": 83198,
+        "population_male": 89263,
+        "population_female": 89702
+      },
+      "48129": {
+        "population_total": 187774,
+        "households": 85715,
+        "population_male": 96717,
+        "population_female": 91057
+      }
+    },
+    "2025-03": {
+      "48120": {
+        "population_total": 996295,
+        "households": 460732,
+        "population_male": 504379,
+        "population_female": 491916
+      },
+      "48121": {
+        "population_total": 209746,
+        "households": 97720,
+        "population_male": 106681,
+        "population_female": 103065
+      },
+      "48123": {
+        "population_total": 243344,
+        "households": 107667,
+        "population_male": 124241,
+        "population_female": 119103
+      },
+      "48125": {
+        "population_total": 177173,
+        "households": 86434,
+        "population_male": 87806,
+        "population_female": 89367
+      },
+      "48127": {
+        "population_total": 178734,
+        "households": 83248,
+        "population_male": 89138,
+        "population_female": 89596
+      },
+      "48129": {
+        "population_total": 187298,
+        "households": 85663,
+        "population_male": 96513,
+        "population_female": 90785
+      }
+    },
+    "2025-04": {
+      "48120": {
+        "population_total": 995575,
+        "households": 460941,
+        "population_male": 503982,
+        "population_female": 491593
+      },
+      "48121": {
+        "population_total": 209676,
+        "households": 97806,
+        "population_male": 106679,
+        "population_female": 102997
+      },
+      "48123": {
+        "population_total": 243195,
+        "households": 107678,
+        "population_male": 124157,
+        "population_female": 119038
+      },
+      "48125": {
+        "population_total": 176943,
+        "households": 86421,
+        "population_male": 87645,
+        "population_female": 89298
+      },
+      "48127": {
+        "population_total": 178704,
+        "households": 83355,
+        "population_male": 89129,
+        "population_female": 89575
+      },
+      "48129": {
+        "population_total": 187057,
+        "households": 85681,
+        "population_male": 96372,
+        "population_female": 90685
+      }
+    },
+    "2025-05": {
+      "48120": {
+        "population_total": 995372,
+        "households": 461364,
+        "population_male": 503892,
+        "population_female": 491480
+      },
+      "48121": {
+        "population_total": 209372,
+        "households": 97826,
+        "population_male": 106495,
+        "population_female": 102877
+      },
+      "48123": {
+        "population_total": 243777,
+        "households": 108059,
+        "population_male": 124462,
+        "population_female": 119315
+      },
+      "48125": {
+        "population_total": 176767,
+        "households": 86396,
+        "population_male": 87574,
+        "population_female": 89193
+      },
+      "48127": {
+        "population_total": 178597,
+        "households": 83387,
+        "population_male": 89046,
+        "population_female": 89551
+      },
+      "48129": {
+        "population_total": 186859,
+        "households": 85696,
+        "population_male": 96315,
+        "population_female": 90544
+      }
+    },
+    "2025-06": {
+      "48120": {
+        "population_total": 994887,
+        "households": 461660,
+        "population_male": 503585,
+        "population_female": 491302
+      },
+      "48121": {
+        "population_total": 209063,
+        "households": 97827,
+        "population_male": 106351,
+        "population_female": 102712
+      },
+      "48123": {
+        "population_total": 244239,
+        "households": 108325,
+        "population_male": 124631,
+        "population_female": 119608
+      },
+      "48125": {
+        "population_total": 176591,
+        "households": 86437,
+        "population_male": 87494,
+        "population_female": 89097
+      },
+      "48127": {
+        "population_total": 178468,
+        "households": 83422,
+        "population_male": 88966,
+        "population_female": 89502
+      },
+      "48129": {
+        "population_total": 186526,
+        "households": 85649,
+        "population_male": 96143,
+        "population_female": 90383
+      }
+    },
+    "2025-07": {
+      "48120": {
+        "population_total": 994283,
+        "households": 461798,
+        "population_male": 503278,
+        "population_female": 491005
+      },
+      "48121": {
+        "population_total": 208888,
+        "households": 97883,
+        "population_male": 106253,
+        "population_female": 102635
+      },
+      "48123": {
+        "population_total": 244326,
+        "households": 108462,
+        "population_male": 124645,
+        "population_female": 119681
+      },
+      "48125": {
+        "population_total": 176470,
+        "households": 86426,
+        "population_male": 87438,
+        "population_female": 89032
+      },
+      "48127": {
+        "population_total": 178275,
+        "households": 83382,
+        "population_male": 88833,
+        "population_female": 89442
+      },
+      "48129": {
+        "population_total": 186324,
+        "households": 85645,
+        "population_male": 96109,
+        "population_female": 90215
+      }
+    },
+    "2025-08": {
+      "48120": {
+        "population_total": 993530,
+        "households": 461948,
+        "population_male": 502720,
+        "population_female": 490810
+      },
+      "48121": {
+        "population_total": 208793,
+        "households": 97920,
+        "population_male": 106163,
+        "population_female": 102630
+      },
+      "48123": {
+        "population_total": 244273,
+        "households": 108525,
+        "population_male": 124598,
+        "population_female": 119675
+      },
+      "48125": {
+        "population_total": 176380,
+        "households": 86538,
+        "population_male": 87355,
+        "population_female": 89025
+      },
+      "48127": {
+        "population_total": 177975,
+        "households": 83339,
+        "population_male": 88616,
+        "population_female": 89359
+      },
+      "48129": {
+        "population_total": 186109,
+        "households": 85626,
+        "population_male": 95988,
+        "population_female": 90121
+      }
+    },
+    "2025-09": {
+      "48120": {
+        "population_total": 992802,
+        "households": 462129,
+        "population_male": 502344,
+        "population_female": 490458
+      },
+      "48121": {
+        "population_total": 208584,
+        "households": 97977,
+        "population_male": 106059,
+        "population_female": 102525
+      },
+      "48123": {
+        "population_total": 244467,
+        "households": 108653,
+        "population_male": 124718,
+        "population_female": 119749
+      },
+      "48125": {
+        "population_total": 176338,
+        "households": 86662,
+        "population_male": 87348,
+        "population_female": 88990
+      },
+      "48127": {
+        "population_total": 177652,
+        "households": 83268,
+        "population_male": 88416,
+        "population_female": 89236
+      },
+      "48129": {
+        "population_total": 185761,
+        "households": 85569,
+        "population_male": 95803,
+        "population_female": 89958
+      }
+    },
+    "2025-10": {
+      "48120": {
+        "population_total": 992428,
+        "households": 462302,
+        "population_male": 502109,
+        "population_female": 490319
+      },
+      "48121": {
+        "population_total": 207991,
+        "households": 97836,
+        "population_male": 105727,
+        "population_female": 102264
+      },
+      "48123": {
+        "population_total": 245661,
+        "households": 109094,
+        "population_male": 125317,
+        "population_female": 120344
+      },
+      "48125": {
+        "population_total": 176229,
+        "households": 86659,
+        "population_male": 87304,
+        "population_female": 88925
+      },
+      "48127": {
+        "population_total": 177205,
+        "households": 83187,
+        "population_male": 88171,
+        "population_female": 89034
+      },
+      "48129": {
+        "population_total": 185342,
+        "households": 85526,
+        "population_male": 95590,
+        "population_female": 89752
+      }
+    },
+    "2025-11": {
+      "48120": {
+        "population_total": 991634,
+        "households": 462161,
+        "population_male": 501715,
+        "population_female": 489919
+      },
+      "48121": {
+        "population_total": 207451,
+        "households": 97685,
+        "population_male": 105497,
+        "population_female": 101954
+      },
+      "48123": {
+        "population_total": 246509,
+        "households": 109416,
+        "population_male": 125740,
+        "population_female": 120769
+      },
+      "48125": {
+        "population_total": 175946,
+        "households": 86591,
+        "population_male": 87160,
+        "population_female": 88786
+      },
+      "48127": {
+        "population_total": 176744,
+        "households": 83038,
+        "population_male": 87958,
+        "population_female": 88786
+      },
+      "48129": {
+        "population_total": 184984,
+        "households": 85431,
+        "population_male": 95360,
+        "population_female": 89624
+      }
+    },
+    "2025-12": {
+      "48120": {
+        "population_total": 990898,
+        "households": 462257,
+        "population_male": 501281,
+        "population_female": 489617
+      },
+      "48121": {
+        "population_total": 207141,
+        "households": 97655,
+        "population_male": 105313,
+        "population_female": 101828
+      },
+      "48123": {
+        "population_total": 246904,
+        "households": 109601,
+        "population_male": 125918,
+        "population_female": 120986
+      },
+      "48125": {
+        "population_total": 175800,
+        "households": 86635,
+        "population_male": 87061,
+        "population_female": 88739
+      },
+      "48127": {
+        "population_total": 176275,
+        "households": 82902,
+        "population_male": 87721,
+        "population_female": 88554
+      },
+      "48129": {
+        "population_total": 184778,
+        "households": 85464,
+        "population_male": 95268,
+        "population_female": 89510
+      }
+    },
+    "2026-01": {
+      "48120": {
+        "population_total": 990407,
+        "households": 462345,
+        "population_male": 501043,
+        "population_female": 489364
+      },
+      "48121": {
+        "population_total": 207050,
+        "households": 97619,
+        "population_male": 105277,
+        "population_female": 101773
+      },
+      "48123": {
+        "population_total": 247164,
+        "households": 109777,
+        "population_male": 126072,
+        "population_female": 121092
+      },
+      "48125": {
+        "population_total": 175634,
+        "households": 86614,
+        "population_male": 86950,
+        "population_female": 88684
+      },
+      "48127": {
+        "population_total": 176002,
+        "households": 82863,
+        "population_male": 87578,
+        "population_female": 88424
+      },
+      "48129": {
+        "population_total": 184557,
+        "households": 85472,
+        "population_male": 95166,
+        "population_female": 89391
+      }
+    },
+    "2026-02": {
+      "48120": {
+        "population_total": 988918,
+        "households": 462696,
+        "population_male": 500341,
+        "population_female": 488577
+      },
+      "48121": {
+        "population_total": 206993,
+        "households": 97797,
+        "population_male": 105299,
+        "population_female": 101694
+      },
+      "48123": {
+        "population_total": 247105,
+        "households": 109950,
+        "population_male": 126099,
+        "population_female": 121006
+      },
+      "48125": {
+        "population_total": 175375,
+        "households": 86689,
+        "population_male": 86813,
+        "population_female": 88562
+      },
+      "48127": {
+        "population_total": 175539,
+        "households": 82857,
+        "population_male": 87354,
+        "population_female": 88185
+      },
+      "48129": {
+        "population_total": 183906,
+        "households": 85403,
+        "population_male": 94776,
+        "population_female": 89130
+      }
+    },
+    "2026-03": {
+      "48120": {
+        "population_total": 987728,
+        "households": 463390,
+        "population_male": 499748,
+        "population_female": 487980
+      },
+      "48121": {
+        "population_total": 207900,
+        "households": 98365,
+        "population_male": 105753,
+        "population_female": 102147
+      },
+      "48123": {
+        "population_total": 246261,
+        "households": 109867,
+        "population_male": 125648,
+        "population_female": 120613
+      },
+      "48125": {
+        "population_total": 175126,
+        "households": 86845,
+        "population_male": 86665,
+        "population_female": 88461
+      },
+      "48127": {
+        "population_total": 174912,
+        "households": 82861,
+        "population_male": 87058,
+        "population_female": 87854
+      },
+      "48129": {
+        "population_total": 183529,
+        "households": 85452,
+        "population_male": 94624,
+        "population_female": 88905
+      }
+    },
+    "2026-04": {
+      "48120": {
+        "population_total": 987251,
+        "households": 463678,
+        "population_male": 499439,
+        "population_female": 487812
+      },
+      "48121": {
+        "population_total": 208174,
+        "households": 98648,
+        "population_male": 105899,
+        "population_female": 102275
+      },
+      "48123": {
+        "population_total": 246074,
+        "households": 109885,
+        "population_male": 125546,
+        "population_female": 120528
+      },
+      "48125": {
+        "population_total": 174969,
+        "households": 86835,
+        "population_male": 86559,
+        "population_female": 88410
+      },
+      "48127": {
+        "population_total": 174705,
+        "households": 82853,
+        "population_male": 86940,
+        "population_female": 87765
+      },
+      "48129": {
+        "population_total": 183329,
+        "households": 85457,
+        "population_male": 94495,
+        "population_female": 88834
+      }
+    },
+    "2026-05": {
+      "48120": {
+        "population_total": 986759,
+        "households": 464001,
+        "population_male": 499172,
+        "population_female": 487587
+      },
+      "48121": {
+        "population_total": 208424,
+        "households": 98884,
+        "population_male": 106007,
+        "population_female": 102417
+      },
+      "48123": {
+        "population_total": 245920,
+        "households": 109940,
+        "population_male": 125493,
+        "population_female": 120427
+      },
+      "48125": {
+        "population_total": 174767,
+        "households": 86827,
+        "population_male": 86437,
+        "population_female": 88330
+      },
+      "48127": {
+        "population_total": 174485,
+        "households": 82864,
+        "population_male": 86807,
+        "population_female": 87678
+      },
+      "48129": {
+        "population_total": 183163,
+        "households": 85486,
+        "population_male": 94428,
+        "population_female": 88735
+      }
+    },
+    "2026-06": {
+      "48120": {
+        "population_total": 986273,
+        "households": 464306,
+        "population_male": 498877,
+        "population_female": 487396
+      },
+      "48121": {
+        "population_total": 209377,
+        "households": 99359,
+        "population_male": 106478,
+        "population_female": 102899
+      },
+      "48123": {
+        "population_total": 245292,
+        "households": 109823,
+        "population_male": 125181,
+        "population_female": 120111
+      },
+      "48125": {
+        "population_total": 174487,
+        "households": 86765,
+        "population_male": 86258,
+        "population_female": 88229
+      },
+      "48127": {
+        "population_total": 174175,
+        "households": 82838,
+        "population_male": 86623,
+        "population_female": 87552
+      },
+      "48129": {
+        "population_total": 182942,
+        "households": 85521,
+        "population_male": 94337,
+        "population_female": 88605
+      }
+    },
+    "2026-07": {
+      "48120": {
+        "population_total": 985937,
+        "households": 464531,
+        "population_male": 498688,
+        "population_female": 487249
+      },
+      "48121": {
+        "population_total": 209814,
+        "households": 99601,
+        "population_male": 106671,
+        "population_female": 103143
+      },
+      "48123": {
+        "population_total": 245097,
+        "households": 109831,
+        "population_male": 125031,
+        "population_female": 120066
+      },
+      "48125": {
+        "population_total": 174360,
+        "households": 86766,
+        "population_male": 86230,
+        "population_female": 88130
+      },
+      "48127": {
+        "population_total": 173916,
+        "households": 82803,
+        "population_male": 86509,
+        "population_female": 87407
+      },
+      "48129": {
+        "population_total": 182750,
+        "households": 85530,
+        "population_male": 94247,
+        "population_female": 88503
+      }
+    },
+    "2026-08": {
+      "48120": {
+        "population_total": 985013,
+        "households": 464555,
+        "population_male": 498147,
+        "population_female": 486866
+      },
+      "48121": {
+        "population_total": 209833,
+        "households": 99719,
+        "population_male": 106673,
+        "population_female": 103160
+      },
+      "48123": {
+        "population_total": 244872,
+        "households": 109796,
+        "population_male": 124890,
+        "population_female": 119982
+      },
+      "48125": {
+        "population_total": 174168,
+        "households": 86733,
+        "population_male": 86111,
+        "population_female": 88057
+      },
+      "48127": {
+        "population_total": 173677,
+        "households": 82780,
+        "population_male": 86370,
+        "population_female": 87307
+      },
+      "48129": {
+        "population_total": 182463,
+        "households": 85527,
+        "population_male": 94103,
+        "population_female": 88360
+      }
+    },
+    "2026-09": {
+      "48120": {
+        "population_total": 984721,
+        "households": 464666,
+        "population_male": 498029,
+        "population_female": 486692
+      },
+      "48121": {
+        "population_total": 209795,
+        "households": 99768,
+        "population_male": 106686,
+        "population_female": 103109
+      },
+      "48123": {
+        "population_total": 245153,
+        "households": 109970,
+        "population_male": 125010,
+        "population_female": 120143
+      },
+      "48125": {
+        "population_total": 173914,
+        "households": 86617,
+        "population_male": 86000,
+        "population_female": 87914
+      },
+      "48127": {
+        "population_total": 173485,
+        "households": 82755,
+        "population_male": 86264,
+        "population_female": 87221
+      },
+      "48129": {
+        "population_total": 182374,
+        "households": 85556,
+        "population_male": 94069,
+        "population_female": 88305
+      }
+    }
+  }
+}

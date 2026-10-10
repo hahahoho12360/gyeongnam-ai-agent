@@ -1,8 +1,5 @@
 name: Changwon population latest repair v3.7
 on:
-  push:
-    branches: [main]
-    paths: [scripts/repair_population_latest.py]
   workflow_dispatch:
 permissions:
   contents: read

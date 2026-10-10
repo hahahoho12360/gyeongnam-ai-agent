@@ -24,8 +24,8 @@ def master_doc(row):
             'peer_group':'rural' if name.endswith(('읍','면')) else 'urban','valid_from':row.get('adpt_de'),
             'source':'MOIS StanReginCd','is_demo':False}
 
-def main(apply=False):
-    ref=json.loads((ROOT/'data/population_reference_202609.json').read_text())
+def main(apply=False, reference=None):
+    ref=json.loads(Path(reference or ROOT/'data/population_reference_202609.json').read_text())
     month=ref['month']
     code_path=OUT/'current_changwon_codes.json'
     if not code_path.exists():code_path=ROOT/'data/current_changwon_codes_verified20261010.json'
@@ -74,9 +74,9 @@ def main(apply=False):
         bundle={s:ADAPTERS[s](rows,[master[rid]],rid[:5]).get(rid,{}) for s,rows in source_rows.items()}
         validate_bundle(bundle)
         pop=bundle['population']; official=ref['regions'][rid]
-        if any(pop[k]!=official[k] for k in ['population_total','population_male','population_female']):
+        if official.get('population_total') is not None and any(pop[k]!=official[k] for k in ['population_total','population_male','population_female']):
             raise ValueError('API population disagrees with official CSV')
-        if any(bundle['age_population'].get(k)!=v for k,v in official['age'].items()):
+        if any(bundle['age_population'].get(k)!=v for k,v in official.get('age',{}).items()):
             raise ValueError('API age buckets disagree with official CSV')
         if 'single_households' in official and bundle['single_household']['single_households']!=official['single_households']:
             raise ValueError('API one-person households disagree with official CSV')
@@ -93,7 +93,14 @@ def main(apply=False):
         if actual!=ref['totals'][sig]['households']:
             reconciliation['status']='failed'
             reconciliation['problems'].append({'district':sig,'metric':'households','stored':actual,'official':ref['totals'][sig]['households']})
-    save('staged_latest_validation.json',{'apply_requested':apply,'reconciliation':reconciliation,'target_regions':sorted(ids),'household_sums':households})
+    for sig,total in ref['totals'].items():
+        for metric in ['population_male','population_female']:
+            if metric not in total:continue
+            actual=sum((r.get('metrics',{}).get(metric) or 0) for code,r in rows.items() if sig=='48120' or code.startswith(sig))
+            if actual!=total[metric]:
+                reconciliation['status']='failed'
+                reconciliation['problems'].append({'district':sig,'metric':metric,'stored':actual,'official':total[metric]})
+    save(f'staged_validation_{month}.json',{'apply_requested':apply,'reconciliation':reconciliation,'target_regions':sorted(ids),'household_sums':households,'reference_kind':ref.get('reference_kind','official_code_values')})
     if reconciliation['status']!='passed':
         raise ValueError('Staged full-city reconciliation failed; no writes made')
     if not apply:
@@ -103,7 +110,7 @@ def main(apply=False):
     backup={'month':month,'regions':{rid:store.get('regions',rid) for rid in ids},
             'monthly_data':{rid:store.get('monthly_data',f'{rid}_{month}') for rid in ids},
             'region_latest':{rid:store.get('region_latest',rid) for rid in ids}}
-    save('firestore_before_latest.json',backup)
+    save(f'firestore_before_{month}.json',backup)
     batch=store.client.batch(); now=utcnow_iso()
     for rid,bundle in staged.items():
         before=backup['monthly_data'][rid] or {}
@@ -131,18 +138,18 @@ def main(apply=False):
                  'population_query_hierarchy_source':'MOIS StanReginCd verified against official monthly code inventory'}
         if not backup['regions'][rid]:doc={**doc,'neighbors':[]}
         batch.set(store.client.collection('regions').document(rid),doc,merge=True)
-    batch.set(store.client.collection('rollout_reports').document('changwon_population_repair_v37'),
-              {'month':month,'status':'latest_applied_pending_index_recompute','reconciliation':reconciliation,'updated_at':now})
+    batch.set(store.client.collection('rollout_reports').document(f'changwon_population_repair_v37_{month}'),
+              {'month':month,'status':'applied_pending_index_recompute','reconciliation':reconciliation,'updated_at':now})
     batch.commit()
     after=[r for r in store.filter_eq('monthly_data','month',month) if str(r.get('region_id','')).startswith('4812')]
     result=population_reconciliation(list(master.values()),after,ref)
-    save('latest_after_write.json',result)
+    save(f'after_write_{month}.json',result)
     if result['status']!='passed':raise RuntimeError('Post-write verification failed')
-    print('Latest month applied atomically; population 984721 verified',flush=True)
+    print(f'Month {month} applied atomically; population {result["population_sum"]} verified',flush=True)
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--apply',action='store_true');args=parser.parse_args()
-    try:main(args.apply)
+    parser=argparse.ArgumentParser();parser.add_argument('--apply',action='store_true');parser.add_argument('--reference',type=Path);args=parser.parse_args()
+    try:main(args.apply,args.reference)
     except Exception as exc:
         save('repair_failure.json',{'status':'blocked','exception_type':type(exc).__name__,'stage':'inspect artifacts before assuming apply succeeded'})
         print('Repair blocked:',type(exc).__name__,flush=True);sys.exit(2)
