@@ -1,5 +1,7 @@
 {
   "buildCommand": "node scripts/build-config.mjs",
   "outputDirectory": "frontend",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "framework": null,
+  "installCommand": ""
 }
