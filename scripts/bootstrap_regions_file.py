@@ -65,13 +65,12 @@ def normalize_gyeongnam_regions(rows: Iterable[dict]) -> list[dict]:
         ri = _first(row, '리명', 'ri_nm', '리')
         created = _first(row, '생성일자', 'adpt_de', '생성일') or None
 
-        if sido != '경상남도' or not code or len(code) != 10:
+        if sido != '경상남도' or not code.isascii() or not code.isdigit() or len(code) != 10 or not code.startswith('48') or not code.endswith('00'):
             continue
         # 시도/시군구 상위 행 및 리 상세행 제외
         if not umd or ri:
             continue
-        if not umd.endswith(('읍', '면', '동')):
-            continue
+        # 대성동1가 등도 법정동: 이름 접미사가 아니라 코드 계층으로 판별한다.
         if code in seen:
             continue
 
@@ -114,7 +113,8 @@ def main(path: str, dry_run: bool = False) -> int:
 
     store = get_store()
     for region in regions:
-        store.set('regions', region['id'], region, merge=False)
+        from scripts.region_master_utils import upsert_region_master
+        upsert_region_master(store,region)
     print(f'regions 컬렉션에 {len(regions)}건 저장 완료')
     return 0
 
@@ -125,3 +125,4 @@ if __name__ == '__main__':
     ap.add_argument('--dry-run', action='store_true')
     args = ap.parse_args()
     raise SystemExit(main(args.csv_path, args.dry_run))
+

@@ -1,0 +1,52 @@
+{
+  "source_file": "LSMD_ADM_SECT_UMD_경남.zip",
+  "source_layer": "LSMD_ADM_SECT_UMD_48_202609",
+  "source_url": "https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?dsId=30603",
+  "source_version": "202609",
+  "source_sha256": "7d6574a85aa629089efa1a3f76675df6ab8312a5aec2e0367db02750afd97d73",
+  "source_crs_wkt": "BOUNDCRS[SOURCECRS[PROJCRS[\"Korea 2000 / Central Belt 2010\",BASEGEOGCRS[\"Korea 2000\",DATUM[\"Geocentric datum of Korea\",ELLIPSOID[\"GRS 1980\",6378137,298.257222101,LENGTHUNIT[\"metre\",1]]],PRIMEM[\"Greenwich\",0,ANGLEUNIT[\"degree\",0.0174532925199433]]],CONVERSION[\"unnamed\",METHOD[\"Transverse Mercator\",ID[\"EPSG\",9807]],PARAMETER[\"Longitude of natural origin\",127,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"Latitude of natural origin\",38,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8801]],PARAMETER[\"Scale factor at natural origin\",1,SCALEUNIT[\"unity\",1],ID[\"EPSG\",8805]],PARAMETER[\"False easting\",200000,LENGTHUNIT[\"m\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",600000,LENGTHUNIT[\"m\",1],ID[\"EPSG\",8807]]],CS[Cartesian,2],AXIS[\"easting\",east,ORDER[1],LENGTHUNIT[\"m\",1]],AXIS[\"northing\",north,ORDER[2],LENGTHUNIT[\"m\",1]],ID[\"EPSG\",5186]]],TARGETCRS[GEOGCRS[\"WGS 84\",DATUM[\"World Geodetic System 1984\",ELLIPSOID[\"WGS 84\",6378137,298.257223563,LENGTHUNIT[\"metre\",1]]],PRIMEM[\"Greenwich\",0,ANGLEUNIT[\"degree\",0.0174532925199433]],CS[ellipsoidal,2],AXIS[\"latitude\",north,ORDER[1],ANGLEUNIT[\"degree\",0.0174532925199433]],AXIS[\"longitude\",east,ORDER[2],ANGLEUNIT[\"degree\",0.0174532925199433]],ID[\"EPSG\",4326]]],ABRIDGEDTRANSFORMATION[\"Transformation from Korea 2000 to WGS84\",METHOD[\"Position Vector transformation (geog2D domain)\",ID[\"EPSG\",9606]],PARAMETER[\"X-axis translation\",0,ID[\"EPSG\",8605]],PARAMETER[\"Y-axis translation\",0,ID[\"EPSG\",8606]],PARAMETER[\"Z-axis translation\",0,ID[\"EPSG\",8607]],PARAMETER[\"X-axis rotation\",0,ID[\"EPSG\",8608]],PARAMETER[\"Y-axis rotation\",0,ID[\"EPSG\",8609]],PARAMETER[\"Z-axis rotation\",0,ID[\"EPSG\",8610]],PARAMETER[\"Scale difference\",1,ID[\"EPSG\",8611]]]]",
+  "source_crs_epsg": null,
+  "output_crs": "EPSG:4326",
+  "encoding": "EUC-KR",
+  "simplified": false,
+  "features": 547,
+  "unique_codes": 547,
+  "invalid_source_geometries": [
+    {
+      "code": "48220310",
+      "name": "용남면",
+      "reason": "Ring Self-intersection[334967.69358574 257974.513534495]"
+    },
+    {
+      "code": "48220250",
+      "name": "산양읍",
+      "reason": "Ring Self-intersection[329987.620613698 241878.898976932]"
+    },
+    {
+      "code": "48220370",
+      "name": "사량면",
+      "reason": "Ring Self-intersection[314471.600361967 246584.610176894]"
+    },
+    {
+      "code": "48220360",
+      "name": "한산면",
+      "reason": "Ring Self-intersection[334664.283376669 241703.584630407]"
+    },
+    {
+      "code": "48220350",
+      "name": "욕지면",
+      "reason": "Ring Self-intersection[319419.702927225 225770.169973779]"
+    },
+    {
+      "code": "48240350",
+      "name": "곤양면",
+      "reason": "Ring Self-intersection[294141.508153093 274458.302908463]"
+    },
+    {
+      "code": "48240330",
+      "name": "용현면",
+      "reason": "Ring Self-intersection[296042.828519881 273073.394603598]"
+    }
+  ],
+  "output_sha256": "6d2010afcf2d63ec6ca4669e603dae26be83c41074143345a5285fa9c63b6549"
+}

@@ -127,7 +127,8 @@ def _is_gyeongnam_eup_myeon_dong(x: dict) -> bool:
         return False
     if ri not in ("", "00", "000"):
         return False
-    if not name.endswith(("읍", "면", "동")):
+    # 법정동에는 대성동1가처럼 가로 끝나는 명칭도 있다.
+    if not name:
         return False
     return True
 
@@ -184,7 +185,8 @@ def main():
             "source": "MOIS StanReginCd",
             "is_demo": False,
         }
-        store.set("regions", code, doc, merge=False)
+        from scripts.region_master_utils import upsert_region_master
+        upsert_region_master(store,doc)
         count += 1
 
     print(f"경상남도 법정읍면동 Master {count:,}건 저장 완료")
@@ -193,3 +195,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

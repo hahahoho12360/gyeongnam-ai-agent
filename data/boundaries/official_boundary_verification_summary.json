@@ -1,0 +1,1127 @@
+{
+  "source": {
+    "source_file": "LSMD_ADM_SECT_UMD_경남.zip",
+    "source_layer": "LSMD_ADM_SECT_UMD_48_202609",
+    "source_url": "https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?dsId=30603",
+    "source_version": "202609",
+    "source_sha256": "7d6574a85aa629089efa1a3f76675df6ab8312a5aec2e0367db02750afd97d73",
+    "source_crs_wkt": "BOUNDCRS[SOURCECRS[PROJCRS[\"Korea 2000 / Central Belt 2010\",BASEGEOGCRS[\"Korea 2000\",DATUM[\"Geocentric datum of Korea\",ELLIPSOID[\"GRS 1980\",6378137,298.257222101,LENGTHUNIT[\"metre\",1]]],PRIMEM[\"Greenwich\",0,ANGLEUNIT[\"degree\",0.0174532925199433]]],CONVERSION[\"unnamed\",METHOD[\"Transverse Mercator\",ID[\"EPSG\",9807]],PARAMETER[\"Longitude of natural origin\",127,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8802]],PARAMETER[\"Latitude of natural origin\",38,ANGLEUNIT[\"degree\",0.0174532925199433],ID[\"EPSG\",8801]],PARAMETER[\"Scale factor at natural origin\",1,SCALEUNIT[\"unity\",1],ID[\"EPSG\",8805]],PARAMETER[\"False easting\",200000,LENGTHUNIT[\"m\",1],ID[\"EPSG\",8806]],PARAMETER[\"False northing\",600000,LENGTHUNIT[\"m\",1],ID[\"EPSG\",8807]]],CS[Cartesian,2],AXIS[\"easting\",east,ORDER[1],LENGTHUNIT[\"m\",1]],AXIS[\"northing\",north,ORDER[2],LENGTHUNIT[\"m\",1]],ID[\"EPSG\",5186]]],TARGETCRS[GEOGCRS[\"WGS 84\",DATUM[\"World Geodetic System 1984\",ELLIPSOID[\"WGS 84\",6378137,298.257223563,LENGTHUNIT[\"metre\",1]]],PRIMEM[\"Greenwich\",0,ANGLEUNIT[\"degree\",0.0174532925199433]],CS[ellipsoidal,2],AXIS[\"latitude\",north,ORDER[1],ANGLEUNIT[\"degree\",0.0174532925199433]],AXIS[\"longitude\",east,ORDER[2],ANGLEUNIT[\"degree\",0.0174532925199433]],ID[\"EPSG\",4326]]],ABRIDGEDTRANSFORMATION[\"Transformation from Korea 2000 to WGS84\",METHOD[\"Position Vector transformation (geog2D domain)\",ID[\"EPSG\",9606]],PARAMETER[\"X-axis translation\",0,ID[\"EPSG\",8605]],PARAMETER[\"Y-axis translation\",0,ID[\"EPSG\",8606]],PARAMETER[\"Z-axis translation\",0,ID[\"EPSG\",8607]],PARAMETER[\"X-axis rotation\",0,ID[\"EPSG\",8608]],PARAMETER[\"Y-axis rotation\",0,ID[\"EPSG\",8609]],PARAMETER[\"Z-axis rotation\",0,ID[\"EPSG\",8610]],PARAMETER[\"Scale difference\",1,ID[\"EPSG\",8611]]]]",
+    "source_crs_epsg": null,
+    "output_crs": "EPSG:4326",
+    "encoding": "EUC-KR",
+    "simplified": false,
+    "features": 547,
+    "unique_codes": 547,
+    "invalid_source_geometries": [
+      {
+        "code": "48220310",
+        "name": "용남면",
+        "reason": "Ring Self-intersection[334967.69358574 257974.513534495]"
+      },
+      {
+        "code": "48220250",
+        "name": "산양읍",
+        "reason": "Ring Self-intersection[329987.620613698 241878.898976932]"
+      },
+      {
+        "code": "48220370",
+        "name": "사량면",
+        "reason": "Ring Self-intersection[314471.600361967 246584.610176894]"
+      },
+      {
+        "code": "48220360",
+        "name": "한산면",
+        "reason": "Ring Self-intersection[334664.283376669 241703.584630407]"
+      },
+      {
+        "code": "48220350",
+        "name": "욕지면",
+        "reason": "Ring Self-intersection[319419.702927225 225770.169973779]"
+      },
+      {
+        "code": "48240350",
+        "name": "곤양면",
+        "reason": "Ring Self-intersection[294141.508153093 274458.302908463]"
+      },
+      {
+        "code": "48240330",
+        "name": "용현면",
+        "reason": "Ring Self-intersection[296042.828519881 273073.394603598]"
+      }
+    ],
+    "output_sha256": "6d2010afcf2d63ec6ca4669e603dae26be83c41074143345a5285fa9c63b6549"
+  },
+  "source_records": 547,
+  "valid_code_records": 546,
+  "invalid_code_records": [
+    {
+      "feature": 529,
+      "emd_code": "1140-4구",
+      "bjd_code": null,
+      "boundary_name": "4889045026111400004",
+      "valid_code": false,
+      "valid_geometry": true,
+      "geometry_issue": null,
+      "snapshot_id": null,
+      "scope": "outside_changwon"
+    }
+  ],
+  "invalid_geometry_records": [
+    {
+      "feature": 253,
+      "emd_code": "48220310",
+      "bjd_code": "4822031000",
+      "boundary_name": "용남면",
+      "valid_code": true,
+      "valid_geometry": false,
+      "geometry_issue": "Ring Self-intersection[128.476786228028 34.9088162740727]",
+      "snapshot_id": null,
+      "scope": "outside_changwon"
+    },
+    {
+      "feature": 257,
+      "emd_code": "48220250",
+      "bjd_code": "4822025000",
+      "boundary_name": "산양읍",
+      "valid_code": true,
+      "valid_geometry": false,
+      "geometry_issue": "Ring Self-intersection[128.419817680147 34.7644237876297]",
+      "snapshot_id": null,
+      "scope": "outside_changwon"
+    },
+    {
+      "feature": 265,
+      "emd_code": "48220370",
+      "bjd_code": "4822037000",
+      "boundary_name": "사량면",
+      "valid_code": true,
+      "valid_geometry": false,
+      "geometry_issue": "Ring Self-intersection[128.25101905608 34.8086898665307]",
+      "snapshot_id": null,
+      "scope": "outside_changwon"
+    },
+    {
+      "feature": 271,
+      "emd_code": "48220360",
+      "bjd_code": "4822036000",
+      "boundary_name": "한산면",
+      "valid_code": true,
+      "valid_geometry": false,
+      "geometry_issue": "Ring Self-intersection[128.470856859923 34.7622376842415]",
+      "snapshot_id": null,
+      "scope": "outside_changwon"
+    },
+    {
+      "feature": 273,
+      "emd_code": "48220350",
+      "bjd_code": "4822035000",
+      "boundary_name": "욕지면",
+      "valid_code": true,
+      "valid_geometry": false,
+      "geometry_issue": "Ring Self-intersection[128.302139043989 34.620543938243]",
+      "snapshot_id": null,
+      "scope": "outside_changwon"
+    },
+    {
+      "feature": 277,
+      "emd_code": "48240350",
+      "bjd_code": "4824035000",
+      "boundary_name": "곤양면",
+      "valid_code": true,
+      "valid_geometry": false,
+      "geometry_issue": "Ring Self-intersection[128.032016075885 35.061981838725]",
+      "snapshot_id": null,
+      "scope": "outside_changwon"
+    },
+    {
+      "feature": 278,
+      "emd_code": "48240330",
+      "bjd_code": "4824033000",
+      "boundary_name": "용현면",
+      "valid_code": true,
+      "valid_geometry": false,
+      "geometry_issue": "Ring Self-intersection[128.052695790834 35.0493216205864]",
+      "snapshot_id": null,
+      "scope": "outside_changwon"
+    }
+  ],
+  "changwon_boundaries": 204,
+  "missing_snapshot_regions": 23,
+  "existing_master_validation": {
+    "scope_prefix": "4812",
+    "features": 547,
+    "master_regions": 181,
+    "matched_regions": 181,
+    "missing_regions": [],
+    "unmatched_codes": [
+      "48125106",
+      "48125107",
+      "48125112",
+      "48125113",
+      "48125114",
+      "48125125",
+      "48125126",
+      "48125129",
+      "48125130",
+      "48125131",
+      "48125132",
+      "48125133",
+      "48125141",
+      "48125142",
+      "48125143",
+      "48125144",
+      "48125145",
+      "48125147",
+      "48125148",
+      "48125149",
+      "48125151",
+      "48125152",
+      "48125153"
+    ],
+    "invalid_features": [],
+    "name_mismatches": [],
+    "outside_scope_features": 343,
+    "outside_scope_invalid_codes": [
+      {
+        "feature": 529,
+        "reason": "invalid_code",
+        "value": "1140-4구",
+        "name": "4889045026111400004"
+      }
+    ],
+    "overlaps": [
+      {
+        "a": "4812110800",
+        "b": "4812310100",
+        "area_m2": 150.7074,
+        "shared_boundary_m": 1596.55
+      },
+      {
+        "a": "4812111900",
+        "b": "4812112000",
+        "area_m2": 0.0101,
+        "shared_boundary_m": 330.513
+      },
+      {
+        "a": "4812111900",
+        "b": "4812112900",
+        "area_m2": 0.5098,
+        "shared_boundary_m": 815.9
+      },
+      {
+        "a": "4812112000",
+        "b": "4812112900",
+        "area_m2": 6.7633,
+        "shared_boundary_m": 2339.864
+      },
+      {
+        "a": "4812112900",
+        "b": "4812313700",
+        "area_m2": 0.3748,
+        "shared_boundary_m": 1464.331
+      },
+      {
+        "a": "4812310100",
+        "b": "4812310200",
+        "area_m2": 1.5425,
+        "shared_boundary_m": 1535.733
+      },
+      {
+        "a": "4812310100",
+        "b": "4812313000",
+        "area_m2": 5.3444,
+        "shared_boundary_m": 1039.095
+      },
+      {
+        "a": "4812310300",
+        "b": "4812310400",
+        "area_m2": 0.8368,
+        "shared_boundary_m": 358.669
+      },
+      {
+        "a": "4812310300",
+        "b": "4812310500",
+        "area_m2": 0.168,
+        "shared_boundary_m": 161.642
+      },
+      {
+        "a": "4812310300",
+        "b": "4812312700",
+        "area_m2": 0.0716,
+        "shared_boundary_m": 2305.724
+      },
+      {
+        "a": "4812310300",
+        "b": "4812313100",
+        "area_m2": 14.3906,
+        "shared_boundary_m": 977.136
+      },
+      {
+        "a": "4812310400",
+        "b": "4812311100",
+        "area_m2": 17.1943,
+        "shared_boundary_m": 1049.486
+      },
+      {
+        "a": "4812310400",
+        "b": "4812312700",
+        "area_m2": 0.0595,
+        "shared_boundary_m": 1659.207
+      },
+      {
+        "a": "4812310400",
+        "b": "4812312900",
+        "area_m2": 0.0192,
+        "shared_boundary_m": 0.0
+      },
+      {
+        "a": "4812310400",
+        "b": "4812313200",
+        "area_m2": 0.0239,
+        "shared_boundary_m": 971.269
+      },
+      {
+        "a": "4812310600",
+        "b": "4812313100",
+        "area_m2": 0.0328,
+        "shared_boundary_m": 116.664
+      },
+      {
+        "a": "4812310700",
+        "b": "4812310900",
+        "area_m2": 0.6443,
+        "shared_boundary_m": 545.494
+      },
+      {
+        "a": "4812310800",
+        "b": "4812312800",
+        "area_m2": 21095.5466,
+        "shared_boundary_m": 0.0
+      },
+      {
+        "a": "4812311000",
+        "b": "4812312800",
+        "area_m2": 10982.3651,
+        "shared_boundary_m": 835.014
+      },
+      {
+        "a": "4812311100",
+        "b": "4812312300",
+        "area_m2": 0.1124,
+        "shared_boundary_m": 47.593
+      },
+      {
+        "a": "4812311100",
+        "b": "4812312500",
+        "area_m2": 5.1354,
+        "shared_boundary_m": 3609.239
+      },
+      {
+        "a": "4812311100",
+        "b": "4812313800",
+        "area_m2": 3.8473,
+        "shared_boundary_m": 390.336
+      },
+      {
+        "a": "4812311100",
+        "b": "4812313900",
+        "area_m2": 26.5719,
+        "shared_boundary_m": 196.522
+      },
+      {
+        "a": "4812311600",
+        "b": "4812312300",
+        "area_m2": 1.675,
+        "shared_boundary_m": 282.66
+      },
+      {
+        "a": "4812311800",
+        "b": "4812312300",
+        "area_m2": 1.2436,
+        "shared_boundary_m": 7169.257
+      },
+      {
+        "a": "4812311900",
+        "b": "4812312600",
+        "area_m2": 1.1443,
+        "shared_boundary_m": 2663.9
+      },
+      {
+        "a": "4812311900",
+        "b": "4812314100",
+        "area_m2": 0.0177,
+        "shared_boundary_m": 967.699
+      },
+      {
+        "a": "4812312000",
+        "b": "4812910600",
+        "area_m2": 0.0275,
+        "shared_boundary_m": 1707.908
+      },
+      {
+        "a": "4812312100",
+        "b": "4812312300",
+        "area_m2": 0.0132,
+        "shared_boundary_m": 0.0
+      },
+      {
+        "a": "4812312300",
+        "b": "4812312900",
+        "area_m2": 0.058,
+        "shared_boundary_m": 2095.763
+      },
+      {
+        "a": "4812312300",
+        "b": "4812313700",
+        "area_m2": 1.2169,
+        "shared_boundary_m": 869.432
+      },
+      {
+        "a": "4812312400",
+        "b": "4812313700",
+        "area_m2": 0.7055,
+        "shared_boundary_m": 467.501
+      },
+      {
+        "a": "4812312500",
+        "b": "4812313900",
+        "area_m2": 27.189,
+        "shared_boundary_m": 1053.745
+      },
+      {
+        "a": "4812312600",
+        "b": "4812313500",
+        "area_m2": 0.4036,
+        "shared_boundary_m": 906.121
+      },
+      {
+        "a": "4812312700",
+        "b": "4812313100",
+        "area_m2": 32.0463,
+        "shared_boundary_m": 140.726
+      },
+      {
+        "a": "4812313000",
+        "b": "4812313600",
+        "area_m2": 0.6702,
+        "shared_boundary_m": 753.826
+      },
+      {
+        "a": "4812313700",
+        "b": "4812313800",
+        "area_m2": 4.993,
+        "shared_boundary_m": 1929.389
+      },
+      {
+        "a": "4812313700",
+        "b": "4812313900",
+        "area_m2": 0.0523,
+        "shared_boundary_m": 2205.582
+      },
+      {
+        "a": "4812313700",
+        "b": "4812314000",
+        "area_m2": 0.0218,
+        "shared_boundary_m": 225.96
+      },
+      {
+        "a": "4812313800",
+        "b": "4812313900",
+        "area_m2": 0.2206,
+        "shared_boundary_m": 426.259
+      },
+      {
+        "a": "4812510100",
+        "b": "4812513400",
+        "area_m2": 0.1274,
+        "shared_boundary_m": 1516.446
+      },
+      {
+        "a": "4812510100",
+        "b": "4812513800",
+        "area_m2": 9.0927,
+        "shared_boundary_m": 321.651
+      },
+      {
+        "a": "4812510100",
+        "b": "4812515900",
+        "area_m2": 4.632,
+        "shared_boundary_m": 850.486
+      },
+      {
+        "a": "4812510200",
+        "b": "4812512800",
+        "area_m2": 1129.4308,
+        "shared_boundary_m": 0.0
+      },
+      {
+        "a": "4812510200",
+        "b": "4812710800",
+        "area_m2": 18.2229,
+        "shared_boundary_m": 2987.29
+      },
+      {
+        "a": "4812511000",
+        "b": "4812515900",
+        "area_m2": 69.9769,
+        "shared_boundary_m": 1155.473
+      },
+      {
+        "a": "4812512300",
+        "b": "4812512800",
+        "area_m2": 7.1907,
+        "shared_boundary_m": 0.0
+      },
+      {
+        "a": "4812512800",
+        "b": "4812513400",
+        "area_m2": 13.6883,
+        "shared_boundary_m": 0.0
+      },
+      {
+        "a": "4812512800",
+        "b": "4812514000",
+        "area_m2": 53.301,
+        "shared_boundary_m": 6.011
+      },
+      {
+        "a": "4812512800",
+        "b": "4812725000",
+        "area_m2": 23.0589,
+        "shared_boundary_m": 408.222
+      },
+      {
+        "a": "4812513600",
+        "b": "4812513800",
+        "area_m2": 188.8346,
+        "shared_boundary_m": 886.384
+      },
+      {
+        "a": "4812513800",
+        "b": "4812515900",
+        "area_m2": 0.0335,
+        "shared_boundary_m": 3345.261
+      },
+      {
+        "a": "4812513800",
+        "b": "4812532000",
+        "area_m2": 413.9979,
+        "shared_boundary_m": 0.0
+      },
+      {
+        "a": "4812515900",
+        "b": "4812531000",
+        "area_m2": 46.8817,
+        "shared_boundary_m": 2266.971
+      },
+      {
+        "a": "4812515900",
+        "b": "4812532000",
+        "area_m2": 200.7928,
+        "shared_boundary_m": 1002.278
+      },
+      {
+        "a": "4812710300",
+        "b": "4812710500",
+        "area_m2": 0.0265,
+        "shared_boundary_m": 2659.753
+      },
+      {
+        "a": "4812915000",
+        "b": "4812915300",
+        "area_m2": 2.7331,
+        "shared_boundary_m": 234.973
+      },
+      {
+        "a": "4812915200",
+        "b": "4812915300",
+        "area_m2": 1.1321,
+        "shared_boundary_m": 48.716
+      }
+    ],
+    "neighbor_edges": 399,
+    "isolated_regions": [
+      "4812310100",
+      "4812512700",
+      "4812512800",
+      "4812513500",
+      "4812513800",
+      "4812515900",
+      "4812915300"
+    ],
+    "method": "shared_boundary",
+    "min_shared_m": 1.0,
+    "source_crs": "EPSG:4326",
+    "measurement_crs": "EPSG:5179",
+    "graph_symmetric": true,
+    "self_edges": 0,
+    "validation_passed": false,
+    "applied": false
+  },
+  "complete_boundary_master_validation": {
+    "scope_prefix": "4812",
+    "features": 547,
+    "master_regions": 204,
+    "matched_regions": 204,
+    "missing_regions": [],
+    "unmatched_codes": [],
+    "invalid_features": [],
+    "name_mismatches": [],
+    "outside_scope_features": 343,
+    "outside_scope_invalid_codes": [
+      {
+        "feature": 529,
+        "reason": "invalid_code",
+        "value": "1140-4구",
+        "name": "4889045026111400004"
+      }
+    ],
+    "overlaps": [
+      {
+        "a": "4812110800",
+        "b": "4812310100",
+        "area_m2": 150.7074,
+        "shared_boundary_m": 1596.55,
+        "a_name": "경상남도 창원시 의창구 용동",
+        "b_name": "경상남도 창원시 성산구 토월동"
+      },
+      {
+        "a": "4812111900",
+        "b": "4812112000",
+        "area_m2": 0.0101,
+        "shared_boundary_m": 330.513,
+        "a_name": "경상남도 창원시 의창구 반계동",
+        "b_name": "경상남도 창원시 의창구 사화동"
+      },
+      {
+        "a": "4812111900",
+        "b": "4812112900",
+        "area_m2": 0.5098,
+        "shared_boundary_m": 815.9,
+        "a_name": "경상남도 창원시 의창구 반계동",
+        "b_name": "경상남도 창원시 의창구 팔용동"
+      },
+      {
+        "a": "4812112000",
+        "b": "4812112900",
+        "area_m2": 6.7633,
+        "shared_boundary_m": 2339.864,
+        "a_name": "경상남도 창원시 의창구 사화동",
+        "b_name": "경상남도 창원시 의창구 팔용동"
+      },
+      {
+        "a": "4812112900",
+        "b": "4812313700",
+        "area_m2": 0.3748,
+        "shared_boundary_m": 1464.331,
+        "a_name": "경상남도 창원시 의창구 팔용동",
+        "b_name": "경상남도 창원시 성산구 대원동"
+      },
+      {
+        "a": "4812310100",
+        "b": "4812310200",
+        "area_m2": 1.5425,
+        "shared_boundary_m": 1535.733,
+        "a_name": "경상남도 창원시 성산구 토월동",
+        "b_name": "경상남도 창원시 성산구 사파정동"
+      },
+      {
+        "a": "4812310100",
+        "b": "4812313000",
+        "area_m2": 5.3444,
+        "shared_boundary_m": 1039.095,
+        "a_name": "경상남도 창원시 성산구 토월동",
+        "b_name": "경상남도 창원시 성산구 사파동"
+      },
+      {
+        "a": "4812310300",
+        "b": "4812310400",
+        "area_m2": 0.8368,
+        "shared_boundary_m": 358.669,
+        "a_name": "경상남도 창원시 성산구 가음정동",
+        "b_name": "경상남도 창원시 성산구 외동"
+      },
+      {
+        "a": "4812310300",
+        "b": "4812310500",
+        "area_m2": 0.168,
+        "shared_boundary_m": 161.642,
+        "a_name": "경상남도 창원시 성산구 가음정동",
+        "b_name": "경상남도 창원시 성산구 대방동"
+      },
+      {
+        "a": "4812310300",
+        "b": "4812312700",
+        "area_m2": 0.0716,
+        "shared_boundary_m": 2305.724,
+        "a_name": "경상남도 창원시 성산구 가음정동",
+        "b_name": "경상남도 창원시 성산구 상남동"
+      },
+      {
+        "a": "4812310300",
+        "b": "4812313100",
+        "area_m2": 14.3906,
+        "shared_boundary_m": 977.136,
+        "a_name": "경상남도 창원시 성산구 가음정동",
+        "b_name": "경상남도 창원시 성산구 가음동"
+      },
+      {
+        "a": "4812310400",
+        "b": "4812311100",
+        "area_m2": 17.1943,
+        "shared_boundary_m": 1049.486,
+        "a_name": "경상남도 창원시 성산구 외동",
+        "b_name": "경상남도 창원시 성산구 내동"
+      },
+      {
+        "a": "4812310400",
+        "b": "4812312700",
+        "area_m2": 0.0595,
+        "shared_boundary_m": 1659.207,
+        "a_name": "경상남도 창원시 성산구 외동",
+        "b_name": "경상남도 창원시 성산구 상남동"
+      },
+      {
+        "a": "4812310400",
+        "b": "4812312900",
+        "area_m2": 0.0192,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 성산구 외동",
+        "b_name": "경상남도 창원시 성산구 웅남동"
+      },
+      {
+        "a": "4812310400",
+        "b": "4812313200",
+        "area_m2": 0.0239,
+        "shared_boundary_m": 971.269,
+        "a_name": "경상남도 창원시 성산구 외동",
+        "b_name": "경상남도 창원시 성산구 성산동"
+      },
+      {
+        "a": "4812310600",
+        "b": "4812313100",
+        "area_m2": 0.0328,
+        "shared_boundary_m": 116.664,
+        "a_name": "경상남도 창원시 성산구 남산동",
+        "b_name": "경상남도 창원시 성산구 가음동"
+      },
+      {
+        "a": "4812310700",
+        "b": "4812310900",
+        "area_m2": 0.6443,
+        "shared_boundary_m": 545.494,
+        "a_name": "경상남도 창원시 성산구 삼정자동",
+        "b_name": "경상남도 창원시 성산구 불모산동"
+      },
+      {
+        "a": "4812310800",
+        "b": "4812312800",
+        "area_m2": 21095.5466,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 성산구 천선동",
+        "b_name": "경상남도 창원시 성산구 성주동"
+      },
+      {
+        "a": "4812311000",
+        "b": "4812312800",
+        "area_m2": 10982.3651,
+        "shared_boundary_m": 835.014,
+        "a_name": "경상남도 창원시 성산구 안민동",
+        "b_name": "경상남도 창원시 성산구 성주동"
+      },
+      {
+        "a": "4812311100",
+        "b": "4812312300",
+        "area_m2": 0.1124,
+        "shared_boundary_m": 47.593,
+        "a_name": "경상남도 창원시 성산구 내동",
+        "b_name": "경상남도 창원시 성산구 신촌동"
+      },
+      {
+        "a": "4812311100",
+        "b": "4812312500",
+        "area_m2": 5.1354,
+        "shared_boundary_m": 3609.239,
+        "a_name": "경상남도 창원시 성산구 내동",
+        "b_name": "경상남도 창원시 성산구 중앙동"
+      },
+      {
+        "a": "4812311100",
+        "b": "4812313800",
+        "area_m2": 3.8473,
+        "shared_boundary_m": 390.336,
+        "a_name": "경상남도 창원시 성산구 내동",
+        "b_name": "경상남도 창원시 성산구 두대동"
+      },
+      {
+        "a": "4812311100",
+        "b": "4812313900",
+        "area_m2": 26.5719,
+        "shared_boundary_m": 196.522,
+        "a_name": "경상남도 창원시 성산구 내동",
+        "b_name": "경상남도 창원시 성산구 삼동동"
+      },
+      {
+        "a": "4812311600",
+        "b": "4812312300",
+        "area_m2": 1.675,
+        "shared_boundary_m": 282.66,
+        "a_name": "경상남도 창원시 성산구 월림동",
+        "b_name": "경상남도 창원시 성산구 신촌동"
+      },
+      {
+        "a": "4812311800",
+        "b": "4812312300",
+        "area_m2": 1.2436,
+        "shared_boundary_m": 7169.257,
+        "a_name": "경상남도 창원시 성산구 양곡동",
+        "b_name": "경상남도 창원시 성산구 신촌동"
+      },
+      {
+        "a": "4812311900",
+        "b": "4812312600",
+        "area_m2": 1.1443,
+        "shared_boundary_m": 2663.9,
+        "a_name": "경상남도 창원시 성산구 반송동",
+        "b_name": "경상남도 창원시 성산구 반림동"
+      },
+      {
+        "a": "4812311900",
+        "b": "4812314100",
+        "area_m2": 0.0177,
+        "shared_boundary_m": 967.699,
+        "a_name": "경상남도 창원시 성산구 반송동",
+        "b_name": "경상남도 창원시 성산구 퇴촌동"
+      },
+      {
+        "a": "4812312000",
+        "b": "4812910600",
+        "area_m2": 0.0275,
+        "shared_boundary_m": 1707.908,
+        "a_name": "경상남도 창원시 성산구 귀산동",
+        "b_name": "경상남도 창원시 진해구 비봉동"
+      },
+      {
+        "a": "4812312100",
+        "b": "4812312300",
+        "area_m2": 0.0132,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 성산구 귀곡동",
+        "b_name": "경상남도 창원시 성산구 신촌동"
+      },
+      {
+        "a": "4812312300",
+        "b": "4812312900",
+        "area_m2": 0.058,
+        "shared_boundary_m": 2095.763,
+        "a_name": "경상남도 창원시 성산구 신촌동",
+        "b_name": "경상남도 창원시 성산구 웅남동"
+      },
+      {
+        "a": "4812312300",
+        "b": "4812313700",
+        "area_m2": 1.2169,
+        "shared_boundary_m": 869.432,
+        "a_name": "경상남도 창원시 성산구 신촌동",
+        "b_name": "경상남도 창원시 성산구 대원동"
+      },
+      {
+        "a": "4812312400",
+        "b": "4812313700",
+        "area_m2": 0.7055,
+        "shared_boundary_m": 467.501,
+        "a_name": "경상남도 창원시 성산구 반지동",
+        "b_name": "경상남도 창원시 성산구 대원동"
+      },
+      {
+        "a": "4812312500",
+        "b": "4812313900",
+        "area_m2": 27.189,
+        "shared_boundary_m": 1053.745,
+        "a_name": "경상남도 창원시 성산구 중앙동",
+        "b_name": "경상남도 창원시 성산구 삼동동"
+      },
+      {
+        "a": "4812312600",
+        "b": "4812313500",
+        "area_m2": 0.4036,
+        "shared_boundary_m": 906.121,
+        "a_name": "경상남도 창원시 성산구 반림동",
+        "b_name": "경상남도 창원시 성산구 용호동"
+      },
+      {
+        "a": "4812312700",
+        "b": "4812313100",
+        "area_m2": 32.0463,
+        "shared_boundary_m": 140.726,
+        "a_name": "경상남도 창원시 성산구 상남동",
+        "b_name": "경상남도 창원시 성산구 가음동"
+      },
+      {
+        "a": "4812313000",
+        "b": "4812313600",
+        "area_m2": 0.6702,
+        "shared_boundary_m": 753.826,
+        "a_name": "경상남도 창원시 성산구 사파동",
+        "b_name": "경상남도 창원시 성산구 신월동"
+      },
+      {
+        "a": "4812313700",
+        "b": "4812313800",
+        "area_m2": 4.993,
+        "shared_boundary_m": 1929.389,
+        "a_name": "경상남도 창원시 성산구 대원동",
+        "b_name": "경상남도 창원시 성산구 두대동"
+      },
+      {
+        "a": "4812313700",
+        "b": "4812313900",
+        "area_m2": 0.0523,
+        "shared_boundary_m": 2205.582,
+        "a_name": "경상남도 창원시 성산구 대원동",
+        "b_name": "경상남도 창원시 성산구 삼동동"
+      },
+      {
+        "a": "4812313700",
+        "b": "4812314000",
+        "area_m2": 0.0218,
+        "shared_boundary_m": 225.96,
+        "a_name": "경상남도 창원시 성산구 대원동",
+        "b_name": "경상남도 창원시 성산구 덕정동"
+      },
+      {
+        "a": "4812313800",
+        "b": "4812313900",
+        "area_m2": 0.2206,
+        "shared_boundary_m": 426.259,
+        "a_name": "경상남도 창원시 성산구 두대동",
+        "b_name": "경상남도 창원시 성산구 삼동동"
+      },
+      {
+        "a": "4812510100",
+        "b": "4812513400",
+        "area_m2": 0.1274,
+        "shared_boundary_m": 1516.446,
+        "a_name": "경상남도 창원시 마산합포구 가포동",
+        "b_name": "경상남도 창원시 마산합포구 월영동"
+      },
+      {
+        "a": "4812510100",
+        "b": "4812513800",
+        "area_m2": 9.0927,
+        "shared_boundary_m": 321.651,
+        "a_name": "경상남도 창원시 마산합포구 가포동",
+        "b_name": "경상남도 창원시 마산합포구 우산동"
+      },
+      {
+        "a": "4812510100",
+        "b": "4812515900",
+        "area_m2": 4.632,
+        "shared_boundary_m": 850.486,
+        "a_name": "경상남도 창원시 마산합포구 가포동",
+        "b_name": "경상남도 창원시 마산합포구 현동"
+      },
+      {
+        "a": "4812510200",
+        "b": "4812512800",
+        "area_m2": 1129.4308,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 마산합포구 교방동",
+        "b_name": "경상남도 창원시 마산합포구 완월동"
+      },
+      {
+        "a": "4812510200",
+        "b": "4812710800",
+        "area_m2": 18.2229,
+        "shared_boundary_m": 2987.29,
+        "a_name": "경상남도 창원시 마산합포구 교방동",
+        "b_name": "경상남도 창원시 마산회원구 회원동"
+      },
+      {
+        "a": "4812510700",
+        "b": "4812512800",
+        "area_m2": 4.9178,
+        "shared_boundary_m": 96.022,
+        "a_name": "경상남도 창원시 마산합포구 대성동2가",
+        "b_name": "경상남도 창원시 마산합포구 완월동"
+      },
+      {
+        "a": "4812511000",
+        "b": "4812515900",
+        "area_m2": 69.9769,
+        "shared_boundary_m": 1155.473,
+        "a_name": "경상남도 창원시 마산합포구 덕동동",
+        "b_name": "경상남도 창원시 마산합포구 현동"
+      },
+      {
+        "a": "4812512300",
+        "b": "4812512800",
+        "area_m2": 7.1907,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 마산합포구 신월동",
+        "b_name": "경상남도 창원시 마산합포구 완월동"
+      },
+      {
+        "a": "4812512500",
+        "b": "4812513700",
+        "area_m2": 35.2602,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 마산합포구 신포동1가",
+        "b_name": "경상남도 창원시 마산합포구 오동동"
+      },
+      {
+        "a": "4812512700",
+        "b": "4812514400",
+        "area_m2": 6.0739,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 마산합포구 신흥동",
+        "b_name": "경상남도 창원시 마산합포구 장군동4가"
+      },
+      {
+        "a": "4812512800",
+        "b": "4812513400",
+        "area_m2": 13.6883,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 마산합포구 완월동",
+        "b_name": "경상남도 창원시 마산합포구 월영동"
+      },
+      {
+        "a": "4812512800",
+        "b": "4812514000",
+        "area_m2": 53.301,
+        "shared_boundary_m": 6.011,
+        "a_name": "경상남도 창원시 마산합포구 완월동",
+        "b_name": "경상남도 창원시 마산합포구 자산동"
+      },
+      {
+        "a": "4812512800",
+        "b": "4812514300",
+        "area_m2": 3.0517,
+        "shared_boundary_m": 25.822,
+        "a_name": "경상남도 창원시 마산합포구 완월동",
+        "b_name": "경상남도 창원시 마산합포구 장군동3가"
+      },
+      {
+        "a": "4812512800",
+        "b": "4812725000",
+        "area_m2": 23.0589,
+        "shared_boundary_m": 408.222,
+        "a_name": "경상남도 창원시 마산합포구 완월동",
+        "b_name": "경상남도 창원시 마산회원구 내서읍"
+      },
+      {
+        "a": "4812513600",
+        "b": "4812513800",
+        "area_m2": 188.8346,
+        "shared_boundary_m": 886.384,
+        "a_name": "경상남도 창원시 마산합포구 예곡동",
+        "b_name": "경상남도 창원시 마산합포구 우산동"
+      },
+      {
+        "a": "4812513800",
+        "b": "4812515900",
+        "area_m2": 0.0335,
+        "shared_boundary_m": 3345.261,
+        "a_name": "경상남도 창원시 마산합포구 우산동",
+        "b_name": "경상남도 창원시 마산합포구 현동"
+      },
+      {
+        "a": "4812513800",
+        "b": "4812532000",
+        "area_m2": 413.9979,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 마산합포구 우산동",
+        "b_name": "경상남도 창원시 마산합포구 진동면"
+      },
+      {
+        "a": "4812514000",
+        "b": "4812514500",
+        "area_m2": 29.6193,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 마산합포구 자산동",
+        "b_name": "경상남도 창원시 마산합포구 장군동5"
+      },
+      {
+        "a": "4812514300",
+        "b": "4812514400",
+        "area_m2": 7.2882,
+        "shared_boundary_m": 5.904,
+        "a_name": "경상남도 창원시 마산합포구 장군동3가",
+        "b_name": "경상남도 창원시 마산합포구 장군동4가"
+      },
+      {
+        "a": "4812514400",
+        "b": "4812514900",
+        "area_m2": 70.0969,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 마산합포구 장군동4가",
+        "b_name": "경상남도 창원시 마산합포구 중앙동3가"
+      },
+      {
+        "a": "4812514500",
+        "b": "4812514900",
+        "area_m2": 23.4442,
+        "shared_boundary_m": 0.0,
+        "a_name": "경상남도 창원시 마산합포구 장군동5",
+        "b_name": "경상남도 창원시 마산합포구 중앙동3가"
+      },
+      {
+        "a": "4812515900",
+        "b": "4812531000",
+        "area_m2": 46.8817,
+        "shared_boundary_m": 2266.971,
+        "a_name": "경상남도 창원시 마산합포구 현동",
+        "b_name": "경상남도 창원시 마산합포구 구산면"
+      },
+      {
+        "a": "4812515900",
+        "b": "4812532000",
+        "area_m2": 200.7928,
+        "shared_boundary_m": 1002.278,
+        "a_name": "경상남도 창원시 마산합포구 현동",
+        "b_name": "경상남도 창원시 마산합포구 진동면"
+      },
+      {
+        "a": "4812710300",
+        "b": "4812710500",
+        "area_m2": 0.0265,
+        "shared_boundary_m": 2659.753,
+        "a_name": "경상남도 창원시 마산회원구 봉암동",
+        "b_name": "경상남도 창원시 마산회원구 양덕동"
+      },
+      {
+        "a": "4812915000",
+        "b": "4812915300",
+        "area_m2": 2.7331,
+        "shared_boundary_m": 234.973,
+        "a_name": "경상남도 창원시 진해구 남문동",
+        "b_name": "경상남도 창원시 진해구 연도동"
+      },
+      {
+        "a": "4812915200",
+        "b": "4812915300",
+        "area_m2": 1.1321,
+        "shared_boundary_m": 48.716,
+        "a_name": "경상남도 창원시 진해구 수도동",
+        "b_name": "경상남도 창원시 진해구 연도동"
+      }
+    ],
+    "neighbor_edges": 467,
+    "isolated_regions": [
+      "4812310100",
+      "4812513800",
+      "4812515900",
+      "4812915300"
+    ],
+    "method": "shared_boundary",
+    "min_shared_m": 1.0,
+    "source_crs": "EPSG:4326",
+    "measurement_crs": "EPSG:5179",
+    "graph_symmetric": true,
+    "self_edges": 0,
+    "validation_passed": false,
+    "applied": false
+  },
+  "firestore_applied": false,
+  "note": "boundary204는 누락 후보를 포함한 오프라인 검증용 목록이며 신규 지역의 월별 데이터는 아직 수집하지 않았습니다."
+}

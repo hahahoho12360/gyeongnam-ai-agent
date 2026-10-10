@@ -110,8 +110,8 @@ def peer_regions(region_id: str, k: int=2) -> list[dict]:
 
 def comparison_regions(region_id: str, seed_month: str | None=None) -> dict:
     reg=get_store().get('regions',region_id) or {}
-    neighbors=[get_store().get('regions',x) for x in reg.get('neighbors',[])][:2]
-    neighbors=[x for x in neighbors if x and _in_scope(x)]
+    neighbors=[get_store().get('regions',x) for x in reg.get('neighbors',[])]
+    neighbors=[x for x in neighbors if x and _in_scope(x)][:2]
     peers=peer_regions(region_id,2)
     excluded={region_id,*[x['id'] for x in neighbors],*[x['id'] for x in peers]}
     pool=[r for r in list_regions() if r['id'] not in excluded]
