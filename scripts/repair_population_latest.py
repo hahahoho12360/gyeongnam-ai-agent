@@ -27,6 +27,7 @@ def master_doc(row):
 def main(apply=False, reference=None):
     ref=json.loads(Path(reference or ROOT/'data/population_reference_202609.json').read_text())
     month=ref['month']
+    historical=month<'2026-09'
     code_path=OUT/'current_changwon_codes.json'
     if not code_path.exists():code_path=ROOT/'data/current_changwon_codes_verified20261010.json'
     codes=json.loads(code_path.read_text())
@@ -39,7 +40,6 @@ def main(apply=False, reference=None):
     store=get_store()
     if apply and not isinstance(store,FirestoreStore):
         raise ValueError('Apply requires actual Firestore')
-    current_regions=[r for r in store.list('regions') if str(r.get('id','')).startswith('4812') and not r.get('is_demo')]
     current_rows=[r for r in store.filter_eq('monthly_data','month',month) if str(r.get('region_id','')).startswith('4812')]
     tasks=[]
     for rid in sorted(ids):
@@ -107,9 +107,10 @@ def main(apply=False, reference=None):
         print('Staged API data verified; dry-run only',flush=True)
         return
     # All API requests and reconciliation pass before any Firebase mutation.
-    backup={'month':month,'regions':{rid:store.get('regions',rid) for rid in ids},
-            'monthly_data':{rid:store.get('monthly_data',f'{rid}_{month}') for rid in ids},
-            'region_latest':{rid:store.get('region_latest',rid) for rid in ids}}
+    original_rows={row['region_id']:row for row in current_rows}
+    backup={'month':month,'regions':{} if historical else {rid:store.get('regions',rid) for rid in ids},
+            'monthly_data':{rid:original_rows.get(rid) for rid in ids},
+            'region_latest':{} if historical else {rid:store.get('region_latest',rid) for rid in ids}}
     save(f'firestore_before_{month}.json',backup)
     batch=store.client.batch(); now=utcnow_iso()
     for rid,bundle in staged.items():
@@ -124,24 +125,32 @@ def main(apply=False, reference=None):
         freshness=dict(before.get('freshness') or {})
         freshness.update({'sources':sources,'fetched_at':now,'source_as_of':max(str(s.get('source_as_of') or '') for s in sources.values()),'is_demo':False})
         row['freshness']=freshness
-        prev=store.get('monthly_data',f'{rid}_{month_shift(month,-1)}') or {}
-        year=store.get('monthly_data',f'{rid}_{month_shift(month,-12)}') or {}
-        row['derived']=compute_derived(row['metrics'],prev.get('metrics',{}),year.get('metrics',{}))
+        if not historical:
+            prev=store.get('monthly_data',f'{rid}_{month_shift(month,-1)}') or {}
+            year=store.get('monthly_data',f'{rid}_{month_shift(month,-12)}') or {}
+            row['derived']=compute_derived(row['metrics'],prev.get('metrics',{}),year.get('metrics',{}))
         row['index_meta']={**row.get('index_meta',{}),'requires_recompute':True}
         batch.set(store.client.collection('monthly_data').document(f'{rid}_{month}'),row)
-        latest=backup['region_latest'][rid]
-        if not latest or str(latest.get('month',''))<=month:
+        latest=backup['region_latest'].get(rid)
+        if not historical and (not latest or str(latest.get('month',''))<=month):
             batch.set(store.client.collection('region_latest').document(rid),row)
         doc=master[rid]
         if doc['region_type']=='eup_myeon':
             doc={**doc,'population_query_codes':ref['regions'][rid]['children'],
                  'population_query_hierarchy_source':'MOIS StanReginCd verified against official monthly code inventory'}
-        if not backup['regions'][rid]:doc={**doc,'neighbors':[]}
-        batch.set(store.client.collection('regions').document(rid),doc,merge=True)
+        if not historical:
+            if not backup['regions'][rid]:doc={**doc,'neighbors':[]}
+            batch.set(store.client.collection('regions').document(rid),doc,merge=True)
     batch.set(store.client.collection('rollout_reports').document(f'changwon_population_repair_v37_{month}'),
               {'month':month,'status':'applied_pending_index_recompute','reconciliation':reconciliation,'updated_at':now})
     batch.commit()
-    after=[r for r in store.filter_eq('monthly_data','month',month) if str(r.get('region_id','')).startswith('4812')]
+    if historical:
+        after={row['region_id']:row for row in current_rows}
+        for rid in staged:
+            after[rid]=store.get('monthly_data',f'{rid}_{month}')
+        after=list(after.values())
+    else:
+        after=[r for r in store.filter_eq('monthly_data','month',month) if str(r.get('region_id','')).startswith('4812')]
     result=population_reconciliation(list(master.values()),after,ref)
     save(f'after_write_{month}.json',result)
     if result['status']!='passed':raise RuntimeError('Post-write verification failed')
