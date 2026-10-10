@@ -52,14 +52,24 @@ def population_reconciliation(regions, rows, benchmark):
     by_id = {r['region_id']: r for r in rows}
     expected = benchmark['regions']
     district = defaultdict(int)
-    problems = []
+    problems = []; warnings = []
+    policy=benchmark.get('validation_policy','strict')
+    if policy not in ('strict','totals_first'):raise ValueError('Unknown reconciliation policy')
+    if policy=='totals_first':
+        if benchmark.get('reference_kind')!='official_historical_city_district_totals_only':
+            raise ValueError('Totals-first policy is restricted to historical references')
+        for code in ['48120','48121','48123','48125','48127','48129']:
+            if code not in benchmark['totals']:problems.append({'district':code,'error':'official_total_missing'})
     for code, official in expected.items():
         value = (by_id.get(code, {}).get('metrics') or {}).get('population_total')
         if (official.get('population_total') is None and value is None
                 and code not in benchmark.get('verified_empty_api_codes', [])) or (
             official.get('population_total') is not None and value != official['population_total']
         ):
-            problems.append({'code': code, 'stored': value, 'official': official['population_total']})
+            item={'code':code,'stored':value,'official':official['population_total']}
+            if policy=='totals_first' and value is None and official.get('population_total') is None:
+                warnings.append({**item,'reason':'unresolved_missing_population','interpretation':'unknown_not_zero'})
+            else:problems.append(item)
     for code, row in by_id.items():
         value = (row.get('metrics') or {}).get('population_total')
         if value is not None:
@@ -75,7 +85,11 @@ def population_reconciliation(regions, rows, benchmark):
     for code in expected:
         if code not in master_ids:
             problems.append({'code':code,'error':'master_missing'})
+    missing=[r['id'] for r in regions if (by_id.get(r['id'],{}).get('metrics') or {}).get('population_total') is None]
     return {'status':'passed' if not problems else 'failed','problems':problems,
+            'validation_policy':policy,'warnings':warnings,'missing_population_codes':missing,
+            'quality_status':'failed' if problems else ('passed_with_warnings' if warnings or missing else 'passed'),
+            'population_coverage':{'known':len(regions)-len(missing),'master':len(regions)},
             'verified_empty_api_codes':benchmark.get('verified_empty_api_codes', []),
             'population_sum':sum(district.values()),'district_sums':dict(district),
             'unknown_no_official_rows':[r['id'] for r in regions if r['id'] not in expected]}

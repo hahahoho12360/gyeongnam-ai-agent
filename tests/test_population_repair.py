@@ -69,3 +69,36 @@ def test_verified_empty_exception_is_month_specific_and_keeps_totals():
     assert population_reconciliation(master,[],reference_for('2022-11',base,totals))['status']=='failed'
     ref['totals']={'48120':{'population_total':1}}
     assert population_reconciliation(master,[],ref)['status']=='failed'
+
+def historical_benchmark():
+    return {'reference_kind':'official_historical_city_district_totals_only','validation_policy':'totals_first',
+            'regions':{'4812311700':{'population_total':None},'4812510100':{'population_total':None}},
+            'totals':{code:{'population_total':10 if code in ('48120','48125') else 0}
+                      for code in ['48120','48121','48123','48125','48127','48129']}}
+
+def test_totals_first_continues_with_null_and_reports_warning():
+    benchmark=historical_benchmark()
+    rows=[{'region_id':'4812311700','metrics':{'population_total':None}},
+          {'region_id':'4812510100','metrics':{'population_total':10}}]
+    master=[{'id':r['region_id']} for r in rows]
+    result=population_reconciliation(master,rows,benchmark)
+    assert result['status']=='passed' and result['quality_status']=='passed_with_warnings'
+    assert result['warnings'][0]['code']=='4812311700'
+    assert result['population_coverage']=={'known':1,'master':2}
+    assert rows[0]['metrics']['population_total'] is None
+    benchmark['validation_policy']='strict'
+    assert population_reconciliation(master,rows,benchmark)['status']=='failed'
+
+def test_totals_first_still_rejects_totals_or_known_value_errors():
+    benchmark=historical_benchmark();master=[{'id':c} for c in benchmark['regions']]
+    rows=[{'region_id':'4812510100','metrics':{'population_total':9}}]
+    assert population_reconciliation(master,rows,benchmark)['status']=='failed'
+    rows[0]['metrics']['population_total']=10
+    benchmark['regions']['4812510100']['population_total']=11
+    assert population_reconciliation(master,rows,benchmark)['status']=='failed'
+    benchmark=historical_benchmark();del benchmark['totals']['48129']
+    assert population_reconciliation(master,rows,benchmark)['status']=='failed'
+
+def test_totals_first_cannot_relax_latest_reference():
+    benchmark=historical_benchmark();benchmark['reference_kind']='official_code_values'
+    with pytest.raises(ValueError):population_reconciliation([],[],benchmark)

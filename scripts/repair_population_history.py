@@ -54,7 +54,7 @@ def prefetch(months, base):
     finally:
         for qe,value in originals.items():os.environ[qe]=value
 
-def reference_for(month, base, totals):
+def reference_for(month, base, totals, validation_policy="strict"):
     # Independent historical benchmark is city/district totals, not per-dong CSV.
     # Detailed latest-month CSV values must NEVER be copied into older months.
     regions={code:{'name':row['name'],'children':row['children'],'population_total':None}
@@ -70,11 +70,11 @@ def reference_for(month, base, totals):
                     and evidence['total_counts'] == [0] and evidence['pages'] == 1):
                 raise ValueError('Invalid historical empty-response evidence')
         verified_empty.append('4812311700')
-    return {'month':month,'regions':regions,'totals':totals,
+    return {'month':month,'regions':regions,'totals':totals,'validation_policy':validation_policy,
             'verified_empty_api_codes': verified_empty,
             'reference_kind':'official_historical_city_district_totals_only'}
 
-def reindex_all(store, totals):
+def reindex_all(store, totals, validation_policy="strict"):
     regions=[r for r in store.list('regions') if str(r.get('id','')).startswith('4812') and not r.get('is_demo')]
     ids={r['id'] for r in regions}
     all_rows=[r for r in store.list('monthly_data') if r.get('region_id') in ids and r.get('month') in totals]
@@ -87,14 +87,15 @@ def reindex_all(store, totals):
         indexes=compute_index_rows(rows);batch=store.client.batch()
         for row in rows:
             rid=row['region_id'];meta={'method_version':'3.7','comparison_scope':'changwon','comparison_month':month,
-                                      'comparison_region_count':len(rows),'official_statistic':False,'computed_at':utcnow_iso(),'requires_recompute':False}
+                                      'comparison_region_count':len(rows),'official_statistic':False,'computed_at':utcnow_iso(),'requires_recompute':False,'validation_policy':validation_policy,
+                                      'population_missing':row.get('metrics',{}).get('population_total') is None}
             patch={'derived':row['derived'],'indexes':indexes.get(rid,{}),'index_meta':meta}
             batch.update(store.client.collection('monthly_data').document(row['id']),patch)
             if month==max(totals):batch.set(store.client.collection('region_latest').document(rid),patch,merge=True)
         batch.commit()
         print('Historical derived/index recomputation:',month,len(rows),flush=True)
 
-def main(max_months=6,max_minutes=180):
+def main(max_months=6,max_minutes=180,validation_policy="totals_first"):
     store=get_store()
     if not isinstance(store,FirestoreStore):raise ValueError('History repair requires Firestore')
     latest=store.get('rollout_reports','changwon_population_repair_v37_2026-09') or store.get('rollout_reports','changwon_population_repair_v37')
@@ -113,7 +114,8 @@ def main(max_months=6,max_minutes=180):
         window=remaining[applied:min(applied+3,max_months)]
         if applied%3==0:prefetch(window,base)
         path=OUT/f'historical_reference_{month}.json';OUT.mkdir(parents=True,exist_ok=True)
-        path.write_text(json.dumps(reference_for(month,base,totals[month]),ensure_ascii=False))
+        path.write_text(json.dumps(reference_for(month,base,totals[month],validation_policy),ensure_ascii=False))
+        save('history_status.json',{'status':'running','current_month':month,'applied_this_run':applied,'validation_policy':validation_policy})
         repair_month(True,path)
         applied+=1
         save('history_status.json',{'status':'running','applied_this_run':applied,'remaining_months':len(remaining)-applied})
@@ -125,18 +127,20 @@ def main(max_months=6,max_minutes=180):
     regions=[r for r in store.list('regions') if str(r.get('id','')).startswith('4812') and not r.get('is_demo')]
     for month in sorted(totals):
         rows=[r for r in store.filter_eq('monthly_data','month',month) if str(r.get('region_id','')).startswith('4812')]
-        check=population_reconciliation(regions,rows,reference_for(month,base,totals[month]))
+        check=population_reconciliation(regions,rows,reference_for(month,base,totals[month],validation_policy))
         if check['status']!='passed':raise RuntimeError('Persisted historical total validation failed')
-    reindex_all(store,totals)
+    reindex_all(store,totals,validation_policy)
     status={'status':'complete','verified_months':len(totals),'updated_at':utcnow_iso(),
-            'historical_validation':'official_city_district_totals_and_API_internal_consistency; independent per-dong history not checked'}
+            'validation_policy':validation_policy,'totals_verified_months':len(totals),
+            'historical_validation':'official_city_district_totals_and_API_internal_consistency; independent per-dong history not checked; unresolved missing population retained as null'}
     store.set('rollout_reports','changwon_population_history_v37',status,merge=False)
     save('history_status.json',status)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--max-months',type=int,default=6);p.add_argument('--max-minutes',type=int,default=180);a=p.parse_args()
-    try:main(a.max_months,a.max_minutes)
+    p=argparse.ArgumentParser();p.add_argument('--max-months',type=int,default=6);p.add_argument('--max-minutes',type=int,default=180);p.add_argument('--validation-policy',choices=['strict','totals_first'],default='totals_first');a=p.parse_args()
+    try:main(a.max_months,a.max_minutes,a.validation_policy)
     except Exception as exc:
-        save('history_status.json',{'status':'blocked','exception_type':type(exc).__name__,
+        prior=json.loads((OUT/'history_status.json').read_text()) if (OUT/'history_status.json').exists() else {}
+        save('history_status.json',{**prior,'status':'blocked','exception_type':type(exc).__name__,
                                   'instruction':'Inspect checkpoint and artifacts; no immediate automatic retry on failure.'})
         print('History repair blocked:',type(exc).__name__,flush=True);sys.exit(2)

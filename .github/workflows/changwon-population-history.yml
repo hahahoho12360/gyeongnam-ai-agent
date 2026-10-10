@@ -5,6 +5,12 @@ on:
     types: [completed]
     branches: [main]
   workflow_dispatch:
+    inputs:
+      validation_policy:
+        description: 'totals_first: 시·5개 구 총계 일치 시 결측 경고로 계속 / strict: 개별 결측도 차단'
+        type: choice
+        options: [totals_first, strict]
+        default: totals_first
 permissions:
   contents: read
   actions: write
@@ -23,6 +29,7 @@ jobs:
       USE_MEMORY_DB: 'false'
       DEMO_SEED_ON_START: 'false'
       DEFER_INDEX_RECOMPUTE: 'true'
+      VALIDATION_POLICY: ${{ inputs.validation_policy || 'totals_first' }}
       POPULATION_API_URL: https://apis.data.go.kr/1741000/stdgPpltnHhStus/selectStdgPpltnHhStus
       AGE_POPULATION_API_URL: https://apis.data.go.kr/1741000/stdgSexdAgePpltn/selectStdgSexdAgePpltn
       SINGLE_HOUSEHOLD_API_URL: https://apis.data.go.kr/1741000/stdgSexdAgeOneHh/selectStdgSexdAgeOneHh
@@ -38,18 +45,22 @@ jobs:
       - run: python -m pip install -r requirements.txt -r requirements-dev.txt
       - run: python -m pytest -q
       - name: Repair historical months using original APIs and Firebase checkpoints
-        run: python scripts/repair_population_history.py --max-months 6 --max-minutes 180
+        run: python scripts/repair_population_history.py --max-months 6 --max-minutes 180 --validation-policy "$VALIDATION_POLICY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: changwon-population-history-${{ github.run_id }}
           path: artifacts/population_repair/
           retention-days: 30
+      - name: Explain result and retained missing values
+        if: always()
+        run: |
+          python scripts/summarize_population_history.py
       - name: Continue unfinished successful batches
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           STATUS=$(python -c "import json; print(json.load(open('artifacts/population_repair/history_status.json'))['status'])")
           if [ "$STATUS" = "needs_continue" ]; then
-            gh workflow run changwon-population-history.yml --ref main
+            gh workflow run changwon-population-history.yml --ref main -f validation_policy="$VALIDATION_POLICY"
           fi
