@@ -12,7 +12,11 @@ SYSTEM="""당신은 경상남도 생활·주거·부동산·상권 변화 데이
 5) 인접·Peer·seeded random 비교군은 도구 결과의 선정근거를 구분해 설명하세요.
 6) source_as_of와 fetched_at을 혼동하지 말고, 잠정치(is_provisional)는 확정치처럼 표현하지 마세요.
 7) 도구 결과가 region_ambiguous이면 임의 지역을 고르지 말고 후보를 사용자에게 제시하세요.
-8) 답변은 한국어로 작성하세요."""
+8) 답변은 한국어로 작성하세요.
+9) answer_mode=simple이면 핵심 결론, 비교 1~2문장, 기준시점/한계, 후속 제안으로 간결하게 끝내세요. 월별 전체 표는 별도 차트에 있으므로 사용자가 요구할 때만 작성하세요.
+10) comparison_reasoning과 comparison_summaries가 있으면 실제 제공된 비교군의 역할(인접/유사/무작위)을 밝히고 자료에 근거한 비교를 추가하세요. neighbors가 비어 있으면 인접지역 미구축을 밝히고 다른 비교군을 인접지역이라 부르지 마세요.
+11) sample_size=null 또는 data_confidence=unknown은 앱 메타데이터 미제공/미분류라는 뜻이며 공식 통계가 부정확하다는 증거로 해석하지 마세요. 지표별 sources 메타데이터를 사용하세요.
+12) 첫 관측월과 마지막 관측월의 변화율을 전년 동월 대비로 부르지 마세요. 후속 분석 제안을 한 문장 포함하고 문장을 끝까지 완성하세요."""
 
 
 def _compact_context(context: dict | None) -> dict | None:
@@ -39,6 +43,7 @@ def _compact_context(context: dict | None) -> dict | None:
             key: [{'id':r.get('id'),'name':r.get('full_name') or r.get('name')} for r in comparison.get(key,[]) if isinstance(r,dict)]
             for key in ('neighbors','peers','seeded_random')
         },
+        'comparison_summaries': context.get('comparison_summaries', {}),
         'answer_mode': context.get('answer_mode'),
     }
     return compact
@@ -51,6 +56,13 @@ def _dump_output_item(item):
     if isinstance(item, dict):
         return item
     return item
+
+
+def _final_answer(response):
+    text = response.output_text or ''
+    if getattr(response, 'status', None) == 'incomplete':
+        return (text.rstrip() + '\n\n[응답 미완료] 생성이 완료되지 않았습니다. 위 내용은 일부 답변이며 질문 범위를 줄여 다시 요청해 주세요.').strip()
+    return text or '응답을 생성하지 못했습니다.'
 
 
 def run_agent(message: str, context: dict | None=None) -> tuple[str,list[dict]]:
@@ -77,9 +89,11 @@ def run_agent(message: str, context: dict | None=None) -> tuple[str,list[dict]]:
     )
     used=[]
     for _ in range(5):
+        if getattr(response, 'status', None) == 'incomplete':
+            return (_final_answer(response), used)
         calls=[x for x in response.output if getattr(x,'type',None)=='function_call']
         if not calls:
-            return (response.output_text or '응답을 생성하지 못했습니다.', used)
+            return (_final_answer(response), used)
 
         # reasoning item과 function_call item을 포함한 모델 출력을 순서대로 보존한다.
         sequence.extend(_dump_output_item(x) for x in response.output)

@@ -46,3 +46,21 @@ def test_stateless_function_call_replays_output(monkeypatch):
     assert any(isinstance(x,dict) and x.get('type')=='function_call' for x in second)
     assert any(isinstance(x,dict) and x.get('type')=='function_call_output' and x.get('call_id')=='call_1' for x in second)
     assert 'previous_response_id' not in calls[1]
+
+
+
+def test_incomplete_answer_is_explicitly_marked():
+    response=SimpleNamespace(output_text='분석 일부', status='incomplete')
+    answer=agent._final_answer(response)
+    assert answer.startswith('분석 일부')
+    assert '[응답 미완료]' in answer
+
+
+def test_comparison_context_preserves_actual_data_and_missing_neighbors():
+    compact=agent._compact_context({
+        'summary': {}, 'comparison': {'neighbors': [], 'peers': [{'id':'peer','name':'유사지역'}]},
+        'comparison_summaries': {'peer': {'period':'2025-10 ~ 2026-09','metrics':{'population_total':100}}},
+        'answer_mode':'simple'})
+    assert compact['comparison_reasoning']['neighbors']==[]
+    assert compact['comparison_reasoning']['peers'][0]['id']=='peer'
+    assert compact['comparison_summaries']['peer']['metrics']['population_total']==100
