@@ -8,11 +8,33 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from scripts.bootstrap_regions import _fetch_all, _is_gyeongnam_eup_myeon_dong
+from scripts.bootstrap_regions import _extract, _is_gyeongnam_eup_myeon_dong, URL
 from scripts.collect.data_go_kr import DataGoKrClient
 from scripts.probe_configured_api import SPECS, render
 
 OUT = ROOT / 'artifacts/population_repair'
+
+def current_codes(key):
+    import requests
+    session=requests.Session()
+    from requests.adapters import HTTPAdapter
+    from urllib3.util.retry import Retry
+    retry=Retry(total=3,connect=3,read=3,status=3,backoff_factor=1.5,status_forcelist=[429,500,502,503,504])
+    session.mount('https://', HTTPAdapter(max_retries=retry))
+    rows=[]
+    for page in range(1,101):
+        response=session.get(URL,params={'ServiceKey':key,'pageNo':page,'numOfRows':1000,'type':'json'},timeout=60)
+        response.raise_for_status()
+        batch,total=_extract(response.json())
+        if not batch:
+            raise RuntimeError('Current code response was empty before completion')
+        rows.extend(batch)
+        print(f'Current code page {page}: {len(batch)} rows; cumulative {len(rows)}',flush=True)
+        if total and len(rows)>=total:
+            return rows
+        if not total and len(batch)<1000:
+            return rows
+    raise RuntimeError('Code pagination incomplete')
 
 def save(name, value):
     OUT.mkdir(parents=True, exist_ok=True)
@@ -48,7 +70,7 @@ def query(client, source, code, month):
 
 def main():
     missing=json.loads((ROOT/'data/boundaries/changwon_missing_regions_202609.json').read_text())
-    all_codes=_fetch_all(os.environ['DATA_GO_KR_SERVICE_KEY'])
+    all_codes=current_codes(os.environ['DATA_GO_KR_SERVICE_KEY'])
     master=[r for r in all_codes if _is_gyeongnam_eup_myeon_dong(r) and str(r['region_cd']).startswith('4812')]
     index={str(r['region_cd']):r for r in master}
     unresolved=[r['id'] for r in missing if r['id'] not in index]
