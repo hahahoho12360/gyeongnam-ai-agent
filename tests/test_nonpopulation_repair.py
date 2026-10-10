@@ -60,3 +60,31 @@ def test_mapping_and_stable_dedup():
 def test_nonempty_rows_without_aggregate_cannot_be_labelled_empty():
     with pytest.raises(ValueError): merge_patch({},'apt_sale',{},'2026-09','4812110100',3)
     with pytest.raises(ValueError): merge_patch({},'apt_sale',{'sale_count':3},'2026-09','4812110100',0)
+
+
+def test_scope_uses_204_legal_regions_not_193_population_benchmark():
+    import json
+    from backend.db import MemoryStore
+    from scripts.repair_nonpopulation import ROOT, scope, master_doc, _is_gyeongnam_eup_myeon_dong
+    codes=json.loads((ROOT/'data/current_changwon_codes_verified20261010.json').read_text())
+    store=MemoryStore()
+    for r in codes:
+        if _is_gyeongnam_eup_myeon_dong(r) and str(r['region_cd']).startswith('4812'):
+            doc=master_doc(r); store.set('regions',doc['id'],doc)
+    regions, hierarchy=scope(store)
+    assert len(regions)==len(hierarchy)==204
+    reference=json.loads((ROOT/'data/population_reference_202609.json').read_text())['regions']
+    absent=set(hierarchy)-set(reference)
+    assert len(absent)==11
+    assert all(hierarchy[rid]['children']==[rid] for rid in absent)
+    rural=[r for r in regions if r['region_type']=='eup_myeon']
+    assert len(rural)==8
+    for r in rural:
+        assert hierarchy[r['id']]['children']
+        assert all(c[:8]==r['id'][:8] and c[-2:]!='00' for c in hierarchy[r['id']]['children'])
+    for rid, entry in reference.items():
+        assert set(entry['children']).issubset(hierarchy[rid]['children'])
+    official_ri={str(r['region_cd']) for r in codes if len(str(r['region_cd']))==10 and str(r['region_cd'])[-2:]!='00'}
+    assert {c for r in rural for c in hierarchy[r['id']]['children']}==official_ri
+    store.delete('regions',regions[0]['id'])
+    with pytest.raises(ValueError,match='204'): scope(store)

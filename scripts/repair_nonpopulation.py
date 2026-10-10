@@ -84,10 +84,18 @@ def scope(store):
     if len(expected)!=204 or set(actual)!=set(expected): raise ValueError('Firebase master differs from verified Changwon 204 codes')
     for rid in actual:
         if str(actual[rid].get('bjd_code',rid))!=rid: raise ValueError('Firebase legal-code mismatch')
-    reference=json.loads((ROOT/'data/population_reference_202609.json').read_text())
+    # Population benchmarks omit some legal regions; never use them as the
+    # inventory for building/commerce/K-APT collection.
+    children={}
     valid_codes={str(r['region_cd']) for r in codes}
-    if set(reference['regions'])!=set(expected) or any(c not in valid_codes for r in reference['regions'].values() for c in r['children']): raise ValueError('Verified ri hierarchy differs from current code master')
-    return list(actual.values()), reference['regions']
+    for rid, region in expected.items():
+        if region['region_type']=='eup_myeon':
+            descendants=sorted(c for c in valid_codes if len(c)==10 and c[:8]==rid[:8] and c!=rid and c[-2:]!='00')
+            if not descendants: raise ValueError('Official code master has no ri for eup/myeon')
+        else:
+            descendants=[rid]
+        children[rid]={'children':descendants}
+    return list(actual.values()), children
 
 def normalized(row):
     row=dict(row)
