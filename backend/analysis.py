@@ -101,10 +101,12 @@ def peer_regions(region_id: str, k: int=2) -> list[dict]:
     base=latest(region_id); reg=get_store().get('regions',region_id)
     if not base or not reg: return []
     target=_feature_vector(base); candidates=[]
+    # One Firestore stream replaces hundreds of sequential document round trips.
+    snapshots={r['id']:r for r in get_store().list('region_latest')}
     for r in list_regions():
         if r['id']==region_id: continue
         if r.get('peer_group')!=reg.get('peer_group'): continue
-        row=latest(r['id'])
+        row=snapshots.get(r['id']) or latest(r['id'])
         if row: candidates.append((_dist(target,_feature_vector(row)),r))
     return [r for _,r in sorted(candidates,key=lambda x:x[0])[:k]]
 

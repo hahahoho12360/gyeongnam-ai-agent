@@ -13,7 +13,7 @@ def select_region(message, fallback):
             length=max(len(r['name']) for r in named)
             hits=[r for r in named if len(r['name'])==length]
     if len(hits)>1:
-        qualified=[r for r in hits if r.get('sigungu') and r['sigungu'] in message]
+        qualified=[r for r in hits if r.get('sigungu') and (r['sigungu'] in message or r['sigungu'].split()[-1] in message)]
         if len(qualified)==1:hits=qualified
     if len(hits)==1:return hits[0]['id'],[]
     if hits:return None,hits
