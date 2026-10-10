@@ -3,6 +3,9 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '40 21 2 * *' # 매월 3일 KST 06:40
+concurrency:
+  group: changwon-population-repair
+  cancel-in-progress: false
 jobs:
   refresh:
     runs-on: ubuntu-latest
@@ -47,3 +50,4 @@ jobs:
           ONBID_PROPERTY_QUERY_JSON: ${{ secrets.ONBID_PROPERTY_QUERY_JSON }}
           ONBID_RESULT_API_URL: ${{ vars.ONBID_RESULT_API_URL }}
           ONBID_RESULT_QUERY_JSON: ${{ secrets.ONBID_RESULT_QUERY_JSON }}
+

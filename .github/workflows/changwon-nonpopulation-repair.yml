@@ -1,0 +1,86 @@
+name: Changwon non-population audit and repair v3.9
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'audit: Firebase 기록만 점검 / fill: 미조회 소스만 추가 수집'
+        type: choice
+        options: [audit, fill]
+        default: audit
+      start:
+        description: '매매·전월세 시작월'
+        default: '2022-10'
+      end:
+        description: '매매·전월세 종료월 (완료된 월만)'
+        default: '2026-09'
+      snapshot:
+        description: '현재 재고를 연결할 분석월; 실제 관측일은 별도 기록'
+        default: '2026-09'
+      max_months:
+        description: '소스당 한 번에 보완할 최대 월수; 재실행하면 남은 월부터 계속'
+        default: '6'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      USE_MEMORY_DB: 'false'
+      DEMO_SEED_ON_START: 'false'
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+      START_MONTH: ${{ inputs.start }}
+      END_MONTH: ${{ inputs.end }}
+      SNAPSHOT_MONTH: ${{ inputs.snapshot }}
+      MAX_MONTHS: ${{ inputs.max_months }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - run: python -m pytest -q tests/test_nonpopulation_repair.py
+      - name: Compare 11 approved APIs against actual Firebase records
+        run: python scripts/repair_nonpopulation.py --mode audit --start "$START_MONTH" --end "$END_MONTH" --snapshot "$SNAPSHOT_MONTH" --max-months "$MAX_MONTHS"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: changwon-nonpopulation-audit-${{ github.run_id }}
+          path: artifacts/nonpopulation/
+          retention-days: 30
+  fill:
+    if: inputs.mode == 'fill'
+    needs: audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    concurrency:
+      group: changwon-population-repair
+      cancel-in-progress: false
+    env:
+      USE_MEMORY_DB: 'false'
+      DEMO_SEED_ON_START: 'false'
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+      START_MONTH: ${{ inputs.start }}
+      END_MONTH: ${{ inputs.end }}
+      SNAPSHOT_MONTH: ${{ inputs.snapshot }}
+      MAX_MONTHS: ${{ inputs.max_months }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - name: Fill only unqueried non-population source-region-month combinations
+        run: python scripts/repair_nonpopulation.py --mode fill --start "$START_MONTH" --end "$END_MONTH" --snapshot "$SNAPSHOT_MONTH" --max-months "$MAX_MONTHS"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: changwon-nonpopulation-repair-${{ github.run_id }}
+          path: artifacts/nonpopulation/
+          retention-days: 30

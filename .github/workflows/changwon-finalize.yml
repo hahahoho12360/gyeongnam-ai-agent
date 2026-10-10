@@ -11,6 +11,9 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: changwon-population-repair
+  cancel-in-progress: false
 jobs:
   finalize:
     runs-on: ubuntu-latest
@@ -69,3 +72,4 @@ jobs:
           path: artifacts/changwon_v32_final_report.json
           if-no-files-found: error
           retention-days: 30
+

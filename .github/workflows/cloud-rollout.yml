@@ -32,7 +32,7 @@ permissions:
   actions: write
 
 concurrency:
-  group: gyeongnam-ai-cloud-rollout-${{ inputs.scope }}
+  group: changwon-population-repair
   cancel-in-progress: false
 
 jobs:
@@ -170,3 +170,4 @@ jobs:
         run: |
           echo "Cloud rollout is blocked. This run is intentionally marked failed so the red X is visible."
           exit 1
+
