@@ -33,12 +33,16 @@ class Conversation(BaseModel):
     updated_at: datetime
 
 class ChatRequest(BaseModel):
+    analysis_target: Literal['region','personal'] = 'region'
     message: str = Field(min_length=1, max_length=4000)
     conversation_id: str | None = None
     region_id: str | None = None
     answer_mode: Literal['simple','basic','detail'] = 'basic'
 
 class ChatResponse(BaseModel):
+    resolved_region: dict[str, Any] | None = None
+    region_candidates: list[dict[str, Any]] = Field(default_factory=list)
+    analysis_target: str = 'region'
     answer: str
     conversation_id: str
     tools_used: list[dict[str, Any]] = Field(default_factory=list)
@@ -53,3 +57,4 @@ class MonthlyRecord(BaseModel):
     derived: dict[str, Any] = Field(default_factory=dict)
     indexes: dict[str, Any] = Field(default_factory=dict)
     freshness: dict[str, Any] = Field(default_factory=dict)
+

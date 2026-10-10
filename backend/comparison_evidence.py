@@ -13,6 +13,7 @@ def append_comparison(answer, context):
     for group,label in roles.items():
         rows=comps.get(group,[])
         if not rows:
+            if group=='neighbors': continue
             lines.append(f'- {label}: 비교 대상이 없습니다.' + (' 경계자료 검증·등록 여부를 확인해야 하며, 실제 이웃이 없다는 뜻은 아닙니다.' if group=='neighbors' else ''))
         for r in rows:
             s=summaries.get(r['id'],{});name=r.get('full_name') or r.get('name') or r['id'];value=s.get('metrics',{}).get('population_total');b=base.get('metrics',{}).get('population_total')

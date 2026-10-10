@@ -4,7 +4,7 @@ def context(period='2025-10 ~ 2026-09',value=120):
     a={'region':{'id':'a'},'period':'2025-10 ~ 2026-09','metrics':{'population_total':100}}
     return {'summary':a,'comparison':{'neighbors':[],'peers':[{'id':'b','full_name':'창원 비교동'}],'seeded_random':[]},'comparison_summaries':{'a':a,'b':{'period':period,'metrics':{'population_total':value}}}}
 def test_actual_numbers_and_missing_neighbors():
-    s=append_comparison('답변',context());assert '120명' in s and '+20명' in s and '실제 이웃이 없다는 뜻은 아닙니다' in s
+    s=append_comparison('답변',context());assert '120명' in s and '+20명' in s and '실제 이웃이 없다는 뜻은 아닙니다' not in s
 
 def test_different_period_missing_nan_are_not_computed():
     s=append_comparison('답변',context('2024-01 ~ 2024-12'));assert '+20명' not in s and '차이 계산 제외' in s
