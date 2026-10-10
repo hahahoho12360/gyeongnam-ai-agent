@@ -3,7 +3,7 @@ name: Changwon population history probe v3.7
 on:
   push:
     branches: [main]
-    paths: [scripts/probe_population_history.py]
+    paths: [scripts/probe_population_history.py, .github/workflows/changwon-population-history-probe.yml]
   workflow_dispatch:
 
 permissions:
