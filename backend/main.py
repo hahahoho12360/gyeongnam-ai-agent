@@ -12,7 +12,7 @@ async def lifespan(app: FastAPI):
         seed_demo(get_store())
     yield
 
-app=FastAPI(title='경상남도 생활·주거·부동산·상권 변화 AI 비서',version='3.8.0',description='AI Agent 과제용 FastAPI 백엔드',lifespan=lifespan)
+app=FastAPI(title='경상남도 생활·주거·부동산·상권 변화 AI 비서',version='3.8.1',description='AI Agent 과제용 FastAPI 백엔드',lifespan=lifespan)
 app.add_middleware(CORSMiddleware,allow_origins=settings.allowed_origins or ['*'],allow_credentials=False,allow_methods=['*'],allow_headers=['*'])
 app.include_router(data.router); app.include_router(conversations.router); app.include_router(analytics.router); app.include_router(chat.router); app.include_router(admin.router); app.include_router(meta.router)
 @app.get('/')

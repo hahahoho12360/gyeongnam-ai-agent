@@ -7,7 +7,7 @@ def append_comparison(answer, context):
     if not context.get('summary',{}).get('region') or '[응답 미완료]' in answer:return answer
     comps=context.get('comparison',{});summaries=context.get('comparison_summaries',{})
     lines=['[저장 데이터 기반 자동 비교]']
-    roles={'neighbors':'인접지역','peers':'유사 지역','seeded_random':'월별 고정 추출 지역'}
+    roles={'neighbors':'인접지역','peers':'유사 지역','seeded_random':'무작위 비교 지역'}
     base=context['summary']; base_id=base['region']['id']
     base=summaries.get(base_id,base)
     for group,label in roles.items():
@@ -25,5 +25,5 @@ def append_comparison(answer, context):
                 else:text+=', 기간이 같지 않거나 대상 수치가 없어 차이 계산 제외'
             else:text+='인구 자료가 없어 수치 비교 불가'
             lines.append(text+'.')
-    lines.append('선정 근거: 인접지역은 등록된 경계 공유 관계, 유사 지역은 같은 peer_group의 지표 거리, 고정 추출은 지역코드·월을 이용한 추출입니다. 유사도 계산에서 결측치를 0으로 처리하므로 유사 지역 선정에는 한계가 있습니다.')
+    lines.append('선정 근거: 인접지역은 등록된 경계 공유 관계, 유사 지역은 같은 지역 유형의 지표 거리, 고정 추출은 지역코드·월을 이용한 추출입니다. 유사도 계산에서 결측치를 0으로 처리하므로 유사 지역 선정에는 한계가 있습니다.')
     return answer+'\n\n'+'\n'.join(lines)
