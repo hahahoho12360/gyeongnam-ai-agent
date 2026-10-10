@@ -32,6 +32,7 @@ def _compact_context(context: dict | None) -> dict | None:
             'metrics': summary.get('metrics'),
             'derived': summary.get('derived'),
             'indexes': summary.get('indexes'),
+            'index_meta': summary.get('index_meta'),
             'freshness': summary.get('freshness'),
         },
         'comparison_reasoning': {
@@ -103,4 +104,5 @@ def run_agent(message: str, context: dict | None=None) -> tuple[str,list[dict]]:
             store=False,
         )
     return ('도구 호출 횟수 제한에 도달했습니다. 질문 범위를 조금 좁혀 주세요.',used)
+
 

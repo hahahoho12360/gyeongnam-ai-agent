@@ -13,6 +13,7 @@ def _csv(name: str, default: str='') -> list[str]:
 
 @dataclass(frozen=True)
 class Settings:
+    analysis_scope_prefix: str = os.getenv('ANALYSIS_SCOPE_PREFIX','').strip()
     openai_api_key: str = os.getenv('OPENAI_API_KEY','')
     openai_model: str = os.getenv('OPENAI_MODEL','gpt-6-luna')
     openai_max_output_tokens: int = int(os.getenv('OPENAI_MAX_OUTPUT_TOKENS','1200'))
@@ -32,3 +33,4 @@ class Settings:
         object.__setattr__(self, 'allowed_origins', _csv('ALLOWED_ORIGINS','http://127.0.0.1:5500,http://localhost:5500'))
 
 settings = Settings()
+

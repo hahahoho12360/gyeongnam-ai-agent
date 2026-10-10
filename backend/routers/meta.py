@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from ..config import settings
 from ..db import get_store
@@ -24,6 +24,7 @@ def readiness():
         })
     return {
         'db_mode': 'memory' if settings.use_memory_db else 'firestore',
+        'analysis_scope_prefix': settings.analysis_scope_prefix,
         'openai_configured': bool(settings.openai_api_key),
         'firebase_project_configured': bool(settings.firebase_project_id),
         'public_data_key_configured': bool(settings.data_go_kr_service_key),
@@ -44,3 +45,13 @@ def source_status():
 def data_quality():
     """실데이터 커버리지·100포인트·freshness·신뢰도 제출 점검."""
     return quality_report()
+
+
+@router.get('/changwon-mvp')
+def changwon_mvp():
+    """v3.2 완료 리포트를 직접 읽는다. 대시보드 요청마다 전체 월별자료를 스캔하지 않는다."""
+    report=get_store().get('rollout_reports','changwon_v32_final')
+    if not report:
+        raise HTTPException(404, '창원 v3.2 최종 리포트가 없습니다.')
+    return report
+

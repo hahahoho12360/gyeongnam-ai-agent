@@ -56,8 +56,9 @@ def dispatch(name: str, args: dict):
         return bundle
     if name=='get_region_indexes':
         row=analysis.latest(rid)
-        return {'region':reg,'indexes':(row or {}).get('indexes',{}),'freshness':(row or {}).get('freshness',{})}
+        return {'region':reg,'indexes':(row or {}).get('indexes',{}),'index_meta':(row or {}).get('index_meta',{}),'freshness':(row or {}).get('freshness',{})}
     if name=='get_live_area_snapshot':
         from .live import live_snapshot
         return live_snapshot(rid)
     return {'error':'unknown_tool','name':name}
+

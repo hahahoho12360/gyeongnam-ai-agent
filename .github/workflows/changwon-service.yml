@@ -1,0 +1,30 @@
+name: Changwon service verify v3.3
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      USE_MEMORY_DB: "false"
+      DEMO_SEED_ON_START: "false"
+      ANALYSIS_SCOPE_PREFIX: "4812"
+      ENABLE_ON_DEMAND_REFRESH: "false"
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: API and conversation regression tests (memory only)
+        run: python -m pytest -q
+      - name: Read-only Firestore service verification
+        run: python scripts/verify_changwon_service.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: changwon-v33-service-report
+          path: artifacts/changwon_v33_service_report.json

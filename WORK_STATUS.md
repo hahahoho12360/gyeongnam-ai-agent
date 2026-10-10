@@ -175,3 +175,13 @@ Checkpoint 1.4는 **비밀키/사용자 계정이 없어도 작성 가능한 코
 - 기존 Firestore source freshness를 이용한 부분 Batch resume 추가.
 - blocked 발생 시 GitHub Actions를 빨간 X로 표시하도록 workflow 개선.
 - Firestore rollout state ID를 v31로 분리.
+
+
+
+## Checkpoint 3.3 — 창원 서비스 연결 보완
+- 창원 서비스 범위 설정, v3.2 지수 메타데이터 API/AI/UI 전달, 간단 그래프 및 전체 비교군 연결.
+- 저장된 v3.2 보고서 조회 API 및 읽기 전용 Firebase 서비스 검증 Actions 추가.
+- 이 환경에서 MemoryStore 자동테스트 검증. 실제 Firebase/AI/외부 배포/MCP 및 원격 push는 별도 실행 필요.
+- 실행 안내: docs/CHANGWON_SERVICE_V33.md.
+
+

@@ -3,22 +3,27 @@ import hashlib, random
 from datetime import datetime, timezone
 from typing import Any
 from .db import get_store
+from .config import settings
+
+def _in_scope(region: dict) -> bool:
+    prefix=settings.analysis_scope_prefix
+    return not prefix or str(region.get('bjd_code') or region.get('id') or '').startswith(prefix)
 
 def _month_sort(rows): return sorted(rows, key=lambda x:x.get('month',''))
 
 def list_regions() -> list[dict]:
-    return sorted(get_store().list('regions'), key=lambda x:(x.get('sigungu',''),x.get('name','')))
+    return sorted([r for r in get_store().list('regions') if _in_scope(r)], key=lambda x:(x.get('sigungu',''),x.get('name','')))
 
 def find_region_candidates(region_id_or_name: str, limit: int=10) -> list[dict]:
     """지역 코드/정확명/부분명을 검색하되 중복 이름을 임의 선택하지 않는다."""
     store=get_store()
     direct=store.get('regions', region_id_or_name)
-    if direct:
+    if direct and _in_scope(direct):
         return [direct]
     q=region_id_or_name.strip().lower()
     if not q:
         return []
-    rows=store.list('regions')
+    rows=list_regions()
     # 1) 전체명 정확 일치
     exact_full=[r for r in rows if str(r.get('full_name','')).strip().lower()==q]
     if exact_full:
@@ -52,12 +57,16 @@ def region_resolution_error(region_id_or_name: str) -> dict:
     }
 
 def series(region_id: str, months: int=36) -> list[dict]:
+    if settings.analysis_scope_prefix and not _in_scope(get_store().get('regions',region_id) or {}):
+        return []
     # Firestore에서 monthly_data 전체를 읽지 않고 region_id만 읽는다.
     # 경남 전체 운용 시 무료 읽기 쿼터를 지키는 핵심 최적화다.
     rows=get_store().filter_eq('monthly_data','region_id',region_id)
     return _month_sort(rows)[-max(1,months):]
 
 def latest(region_id: str) -> dict | None:
+    if settings.analysis_scope_prefix and not _in_scope(get_store().get('regions',region_id) or {}):
+        return None
     # 수집 파이프라인이 유지하는 denormalized 최신 snapshot을 우선 사용한다.
     cached=get_store().get('region_latest',region_id)
     if cached: return cached
@@ -74,6 +83,7 @@ def summary(region_id: str, months: int=12) -> dict:
     return {
       'region':r,'period':f"{first['month']} ~ {last['month']}",'count':len(rows),
       'metrics':last.get('metrics',{}),'derived':last.get('derived',{}),'indexes':last.get('indexes',{}),
+      'index_meta':last.get('index_meta',{}),
       'population_min':min(pop) if pop else None,'population_max':max(pop) if pop else None,
       'freshness':last.get('freshness',{}),
     }
@@ -101,7 +111,7 @@ def peer_regions(region_id: str, k: int=2) -> list[dict]:
 def comparison_regions(region_id: str, seed_month: str | None=None) -> dict:
     reg=get_store().get('regions',region_id) or {}
     neighbors=[get_store().get('regions',x) for x in reg.get('neighbors',[])][:2]
-    neighbors=[x for x in neighbors if x]
+    neighbors=[x for x in neighbors if x and _in_scope(x)]
     peers=peer_regions(region_id,2)
     excluded={region_id,*[x['id'] for x in neighbors],*[x['id'] for x in peers]}
     pool=[r for r in list_regions() if r['id'] not in excluded]
@@ -132,13 +142,12 @@ def proactive_bundle(region_id: str, answer_mode='basic') -> dict:
     months=12 if answer_mode=='simple' else 36
     comps=comparison_regions(reg['id'])
     raw_ids=[reg['id']]+[r['id'] for group in ('neighbors','peers','seeded_random') for r in comps[group]]
-    compare_ids=list(dict.fromkeys(raw_ids))[:5]
+    compare_ids=list(dict.fromkeys(raw_ids))
     comp_summaries={rid:summary(rid,12) for rid in compare_ids}
     charts=[]
-    if answer_mode!='simple':
-        charts.append(chart_population(compare_ids,months))
-        if answer_mode=='detail':
-            charts.append(chart_metric(compare_ids,'sale_price_per_m2',months,f'최근 {months}개월 ㎡당 매매가격 추세'))
+    charts.append(chart_population(compare_ids,months))
+    if answer_mode=='detail':
+        charts.append(chart_metric(compare_ids,'sale_price_per_m2',months,f'최근 {months}개월 ㎡당 매매가격 추세'))
     return {'summary':summary(reg['id'],12),'comparison':comps,'comparison_summaries':comp_summaries,'charts':charts,'answer_mode':answer_mode}
 
 def statistics(region_id: str, months: int=36) -> dict:
@@ -146,3 +155,4 @@ def statistics(region_id: str, months: int=36) -> dict:
     vals=[r.get('metrics',{}).get('population_total') for r in rows]
     vals=[v for v in vals if isinstance(v,(int,float))]
     return {'region_id':region_id,'months':months,'count':len(rows),'population_avg':round(sum(vals)/len(vals),2) if vals else None,'population_min':min(vals) if vals else None,'population_max':max(vals) if vals else None}
+
