@@ -1,0 +1,22 @@
+{
+  "source": "population",
+  "requested_code": "4812311700",
+  "month": "2022-10",
+  "url": "https://apis.data.go.kr/1741000/stdgPpltnHhStus/selectStdgPpltnHhStus",
+  "params": {
+    "stdgCd": "4812311700",
+    "srchFrYm": "202210",
+    "srchToYm": "202210",
+    "lv": "7",
+    "regSeCd": "1",
+    "type": "JSON"
+  },
+  "pages": 1,
+  "total_counts": [
+    0
+  ],
+  "row_count": 0,
+  "elapsed_seconds": 3.22,
+  "http": "client requires successful HTTP status; errors abort",
+  "rows": []
+}

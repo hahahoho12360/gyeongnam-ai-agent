@@ -55,7 +55,8 @@ def population_reconciliation(regions, rows, benchmark):
     problems = []
     for code, official in expected.items():
         value = (by_id.get(code, {}).get('metrics') or {}).get('population_total')
-        if (official.get('population_total') is None and value is None) or (
+        if (official.get('population_total') is None and value is None
+                and code not in benchmark.get('verified_empty_api_codes', [])) or (
             official.get('population_total') is not None and value != official['population_total']
         ):
             problems.append({'code': code, 'stored': value, 'official': official['population_total']})
@@ -75,5 +76,6 @@ def population_reconciliation(regions, rows, benchmark):
         if code not in master_ids:
             problems.append({'code':code,'error':'master_missing'})
     return {'status':'passed' if not problems else 'failed','problems':problems,
+            'verified_empty_api_codes':benchmark.get('verified_empty_api_codes', []),
             'population_sum':sum(district.values()),'district_sums':dict(district),
             'unknown_no_official_rows':[r['id'] for r in regions if r['id'] not in expected]}

@@ -59,7 +59,19 @@ def reference_for(month, base, totals):
     # Detailed latest-month CSV values must NEVER be copied into older months.
     regions={code:{'name':row['name'],'children':row['children'],'population_total':None}
              for code,row in base['regions'].items()}
+    verified_empty = []
+    if month == '2022-10' and '4812311700' in regions:
+        for source in ['population', 'age_population', 'single_household']:
+            evidence = json.loads((ROOT / 'data/population_empty_evidence' / f'{source}_4812311700_2022-10.json').read_text())
+            expected_params = {'stdgCd':'4812311700','srchFrYm':'202210','srchToYm':'202210','lv':'7','regSeCd':'1','type':'JSON'}
+            if not (evidence['source'] == source and evidence['requested_code'] == '4812311700'
+                    and evidence['month'] == month and evidence['params'] == expected_params
+                    and evidence['rows'] == [] and evidence['row_count'] == 0
+                    and evidence['total_counts'] == [0] and evidence['pages'] == 1):
+                raise ValueError('Invalid historical empty-response evidence')
+        verified_empty.append('4812311700')
     return {'month':month,'regions':regions,'totals':totals,
+            'verified_empty_api_codes': verified_empty,
             'reference_kind':'official_historical_city_district_totals_only'}
 
 def reindex_all(store, totals):

@@ -57,3 +57,15 @@ def test_historical_reference_never_copies_latest_values():
     assert ref['regions']['4812510600']['population_total'] is None
     assert 'age' not in ref['regions']['4812510600']
     assert 'single_households' not in ref['regions']['4812510600']
+
+
+def test_verified_empty_exception_is_month_specific_and_keeps_totals():
+    from scripts.repair_population_history import reference_for
+    base={'regions':{'4812311700':{'name':'적현동','children':['4812311700']}}}
+    totals={'48120':{'population_total':0}}
+    ref=reference_for('2022-10',base,totals)
+    master=[{'id':'4812311700'}]
+    assert population_reconciliation(master,[],ref)['status']=='passed'
+    assert population_reconciliation(master,[],reference_for('2022-11',base,totals))['status']=='failed'
+    ref['totals']={'48120':{'population_total':1}}
+    assert population_reconciliation(master,[],ref)['status']=='failed'
