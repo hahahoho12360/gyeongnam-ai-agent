@@ -51,7 +51,8 @@ def dashboard(region_id,answer_mode='basic'):
     region=analysis.resolve_region(region_id)
     if not region or not str(region.get('bjd_code') or region['id']).startswith('4812'):
         return {'error':'region_not_found','message':'창원 법정읍·면·동을 선택하세요.'}
-    bundle=analysis.proactive_bundle(region['id'],answer_mode)
+    comparisons=analysis.comparison_regions(region['id'])
+    bundle={'comparison':comparisons,'answer_mode':answer_mode,'summary':{'region':region,'count':0}}
     store=get_store()
     master={r['id']:r for r in analysis.list_regions() if str(r.get('bjd_code') or r['id']).startswith('4812') and not r.get('is_demo')}
     target=analysis.series(region['id'],120)
@@ -73,8 +74,7 @@ def dashboard(region_id,answer_mode='basic'):
         benchmarks.append({'key':key,'label':label,'unit':unit,'selected':value(current.get(region['id']),key,previous.get(region['id'])),
                            'minimum':extreme(low),'maximum':extreme(high),'mean':sum(v for _,v in vals)/len(vals) if vals else None,
                            'valid_count':len(vals),'region_count':len(master),'month':month,'mean_method':'unweighted_region_mean'})
-    comparisons=bundle.get('comparison',{})
-    ids=list(dict.fromkeys([region['id']]+[r['id'] for group in ('neighbors','peers','seeded_random') for r in comparisons.get(group,[]) if r['id'] in master]))
+        ids=list(dict.fromkeys([region['id']]+[r['id'] for group in ('neighbors','peers','seeded_random') for r in comparisons.get(group,[]) if r['id'] in master]))
     histories={rid:target if rid==region['id'] else analysis.series(rid,120) for rid in ids}
     months=12 if answer_mode=='simple' else 36
     labels=[shift(month,i) for i in range(-months+1,1)]
@@ -84,6 +84,11 @@ def dashboard(region_id,answer_mode='basic'):
         for rid,rows in histories.items():
             lookup={r['month']:r for r in rows}
             datasets.append({'label':master[rid]['name'],'data':[value(lookup.get(m),key,lookup.get(shift(m,-12))) for m in labels]})
-        charts[key]={'title':tab+'比較추세'.replace('比較',' 비교 '),'unit':unit,'metric':key,'labels':labels,'datasets':datasets}
+        charts[key]={'title':tab+' 비교 추세','unit':unit,'metric':key,'labels':labels,'datasets':datasets}
+    last=target[-1]; recent=target[-12:]
+    bundle['summary']={'region':region,'count':len(recent),'period':f"{recent[0]['month']} ~ {last['month']}",
+                       'metrics':last.get('metrics',{}),'derived':last.get('derived',{}),'indexes':last.get('indexes',{}),
+                       'freshness':last.get('freshness',{}),'index_meta':last.get('index_meta',{})}
+    bundle['charts']=[charts['population_total']]
     return {**bundle,'benchmark_month':month,'benchmarks':benchmarks,'metric_charts':charts,
             'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in METRICS]}

@@ -27,7 +27,7 @@ def test_same_month_extremes_ties_scope_and_trend_gaps(monkeypatch):
         store.set('regions',rid,{'id':rid,'bjd_code':rid,'name':name})
     for rid,month,pop in [('4812110100','2026-09',10),('4812110200','2026-09',20),('4812110300','2026-09',20),('4825010100','2026-09',999),('4812110100','2026-07',99)]:
         store.set('monthly_data',rid+'_'+month,{'region_id':rid,'month':month,'metrics':{'population_total':pop}})
-    monkeypatch.setattr(analysis,'proactive_bundle',lambda *args:{'summary':{},'comparison':{'peers':[store.get('regions','4812110200')]}})
+    monkeypatch.setattr(analysis,'comparison_regions',lambda *args:{'peers':[store.get('regions','4812110200')]})
     result=dashboard('4812110100','simple')
     pop=result['benchmarks'][0]
     assert pop['valid_count']==pop['region_count']==3
