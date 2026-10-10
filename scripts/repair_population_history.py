@@ -3,6 +3,8 @@ import argparse
 import json
 import sys
 import time
+import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
@@ -13,6 +15,44 @@ from backend.db import get_store, FirestoreStore, utcnow_iso
 from backend.metrics import compute_derived
 from backend.indexes import compute_index_rows, methodology_payload
 from scripts.pipeline import month_shift
+from scripts.probe_configured_api import SPECS
+from scripts.collect.data_go_kr import DataGoKrClient
+from scripts.probe_population_repair import query
+from scripts.population_repair_core import validate_rows
+
+def prefetch(months, base):
+    """The same APIs were live-tested with a three-month range; split by statsYm."""
+    targets={r['id'] for r in json.loads((ROOT/'data/boundaries/changwon_missing_regions_202609.json').read_text())}
+    master=json.loads((ROOT/'data/current_changwon_codes_verified20261010.json').read_text())
+    targets.update(str(r['region_cd']) for r in master if str(r.get('locallow_nm','')).endswith(('읍','면')) and str(r['region_cd'])[-2:]=='00')
+    codes=sorted({code for rid in targets for code in base['regions'][rid]['children']})
+    tasks=[]
+    originals={}
+    for source,(ue,qe) in [(s,SPECS[s]) for s in ['population','age_population','single_household']]:
+        originals[qe]=os.environ[qe]
+        template=json.loads(originals[qe]);template['srchFrYm']=months[0].replace('-','');template['srchToYm']=months[-1].replace('-','')
+        os.environ[qe]=json.dumps(template)
+        for code in codes:
+            if not all((OUT/f'{source}_{code}_{month}.json').exists() for month in months):tasks.append((source,code))
+    def collect(task):
+        source,code=task
+        rows=query(DataGoKrClient(),source,code,months[-1])
+        captures={month:[] for month in months}
+        for row in rows:
+            period=str(row.get('statsYm',''));month=period[:4]+'-'+period[4:6]
+            if month not in captures:raise ValueError('Unexpected range period')
+            captures[month].append(row)
+        for month,items in captures.items():
+            clean=validate_rows(items,code,month)
+            if not clean:raise ValueError('Historical range missing a required month')
+            # Save API rows, not benchmark values. Preserve range query provenance.
+            save(f'{source}_{code}_{month}.json',{'source':source,'requested_code':code,'month':month,'rows':clean,
+                  'requested_range':months,'collection_method':'original_api_three_month_range'})
+    try:
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            for future in as_completed([executor.submit(collect,t) for t in tasks]):future.result()
+    finally:
+        for qe,value in originals.items():os.environ[qe]=value
 
 def reference_for(month, base, totals):
     # Independent historical benchmark is city/district totals, not per-dong CSV.
@@ -58,6 +98,8 @@ def main(max_months=6,max_minutes=180):
         remaining.append(month)
     for month in remaining:
         if applied>=max_months or time.monotonic()-begun>max_minutes*60:break
+        window=remaining[applied:min(applied+3,max_months)]
+        if applied%3==0:prefetch(window,base)
         path=OUT/f'historical_reference_{month}.json';OUT.mkdir(parents=True,exist_ok=True)
         path.write_text(json.dumps(reference_for(month,base,totals[month]),ensure_ascii=False))
         repair_month(True,path)
