@@ -15,10 +15,15 @@ def main():
     for source in ['population','age_population','single_household']:
         _, qe=SPECS[source]
         template=json.loads(os.environ[qe])
-        template['srchFrYm']='202210';template['srchToYm']='202609'
+        template['srchFrYm']='202607';template['srchToYm']='202609'
         os.environ[qe]=json.dumps(template)
         for code in ['4812510600','4812131021']:
-            rows=query(DataGoKrClient(),source,code,'2026-09')
+            try:
+                rows=query(DataGoKrClient(),source,code,'2026-09')
+            except RuntimeError as exc:
+                message=str(exc).replace(os.getenv('DATA_GO_KR_SERVICE_KEY',''),'[redacted]')[:500]
+                outcomes.append({'source':source,'code':code,'status':'range_rejected','safe_error':message})
+                continue
             months=sorted({str(r.get('statsYm','')) for r in rows})
             for month in months:
                 if len(month)!=6 or not '202210'<=month<='202609':raise ValueError('Unexpected historical month')
@@ -29,5 +34,6 @@ def main():
 if __name__=='__main__':
     try:main()
     except Exception as exc:
-        save('history_probe_failure.json',{'status':'blocked','exception_type':type(exc).__name__,'database_writes':0})
+        message=str(exc).replace(os.getenv('DATA_GO_KR_SERVICE_KEY',''),'[redacted]')[:500] if isinstance(exc,RuntimeError) else ''
+        save('history_probe_failure.json',{'status':'blocked','exception_type':type(exc).__name__,'database_writes':0,'safe_error':message})
         print('Historical range probe blocked:',type(exc).__name__);sys.exit(2)
