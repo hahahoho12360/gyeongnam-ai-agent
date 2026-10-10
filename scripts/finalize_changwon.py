@@ -100,6 +100,18 @@ def finalize(month:str|None=None, *, dry_run:bool=False) -> dict[str,Any]:
         r for r in store.filter_eq('monthly_data','month',month)
         if str(r.get('region_id')) in region_ids and not (r.get('freshness') or {}).get('is_demo')
     ]
+    reference_path=ROOT/'data'/'population_reference_202609.json'
+    if reference_path.exists():
+        reference=json.loads(reference_path.read_text(encoding='utf-8'))
+        if reference.get('month')==month:
+            from scripts.population_repair_core import population_reconciliation
+            scope_regions=[r for r in store.list('regions') if str(r.get('id','')) in region_ids]
+            check=population_reconciliation(scope_regions,latest_rows,reference)
+            out=ROOT/'artifacts'/'changwon_population_completeness.json'
+            out.parent.mkdir(exist_ok=True)
+            out.write_text(json.dumps(check,ensure_ascii=False,indent=2),encoding='utf-8')
+            if check['status']!='passed':
+                raise RuntimeError('창원 인구 완전성 검증 실패: 공식 지역별·시구 합계 대조를 통과해야 지수를 확정할 수 있습니다.')
     if dry_run:
         return {
             'dry_run':True,
@@ -165,3 +177,4 @@ def main()->int:
 
 if __name__=='__main__':
     raise SystemExit(main())
+

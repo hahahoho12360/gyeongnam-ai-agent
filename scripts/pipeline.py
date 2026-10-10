@@ -536,6 +536,29 @@ def collect_configured_per_region(
         return out
 
     for region in regions:
+        children=region.get('population_query_codes') or []
+        if children and region.get('region_type')=='eup_myeon':
+            # Verified legal-ri hierarchy, maintained by population repair.
+            # Query either children or parent; never mix overlapping hierarchy levels.
+            from scripts.population_repair_core import validate_rows
+            parent_code=str(region.get('bjd_code') or region['id'])
+            if len(set(children))!=len(children) or any(
+                len(str(c))!=10 or str(c)[:8]!=parent_code[:8] or str(c)[-2:]=='00' for c in children
+            ):
+                raise RuntimeError('Invalid rural population query hierarchy')
+            rural_rows=[]
+            for child in children:
+                child_region={**region,'bjd_code':str(child),'id':str(child)}
+                child_params={k:_render_template(v,region=child_region,month=month) for k,v in template.items()}
+                child_rows=client.get_all(url,child_params)
+                if not child_rows:
+                    raise RuntimeError('Rural child response empty; refusing incomplete aggregate')
+                rural_rows.extend(validate_rows(child_rows,str(child),month))
+            normalized=adapter(rural_rows,[region],parent_code[:5])
+            if region['id'] not in normalized:
+                raise RuntimeError('Rural response could not map to parent')
+            out[region['id']]=normalized[region['id']]
+            continue
         params = {k: _render_template(v, region=region, month=month) for k, v in template.items()}
         try:
             rows = client.get_all(url, params)
@@ -633,3 +656,4 @@ def run_source(source: str, month: str) -> dict[str, Any]:
         result = {'source': source, 'month': month, 'status': 'error', 'error': f'{type(exc).__name__}: {exc}', 'started_at': started, 'finished_at': utcnow_iso()}
     get_store().set('source_status', f'{source}_{month}', result, merge=False)
     return result
+

@@ -1,0 +1,4579 @@
+{
+  "month": "2026-09",
+  "source": "MOIS official CSV independent benchmark, never imported as API data",
+  "url": "https://www.data.go.kr/data/15099158/fileData.do",
+  "raw_sha256": "fd1bd082f7de7918031831f9bc5973b061f96d2ce9571c26f4253dc90e2ab87b",
+  "regions": {
+    "4812110100": {
+      "population_total": 739,
+      "population_male": 369,
+      "population_female": 370,
+      "children": [
+        "4812110100"
+      ],
+      "age": {
+        "age_0_9": 24,
+        "age_10_19": 54,
+        "age_20_29": 42,
+        "age_30_39": 61,
+        "age_40_49": 80,
+        "age_50_59": 112,
+        "age_60_69": 168,
+        "age_70_79": 141,
+        "age_80_89": 47,
+        "age_90_99": 10,
+        "age_100_plus": 0
+      },
+      "name": "북동",
+      "single_households": 225
+    },
+    "4812110200": {
+      "population_total": 19710,
+      "population_male": 9827,
+      "population_female": 9883,
+      "children": [
+        "4812110200"
+      ],
+      "age": {
+        "age_0_9": 2050,
+        "age_10_19": 2650,
+        "age_20_29": 1658,
+        "age_30_39": 2615,
+        "age_40_49": 3814,
+        "age_50_59": 3386,
+        "age_60_69": 2629,
+        "age_70_79": 683,
+        "age_80_89": 184,
+        "age_90_99": 41,
+        "age_100_plus": 0
+      },
+      "name": "중동",
+      "single_households": 1234
+    },
+    "4812110300": {
+      "population_total": 7848,
+      "population_male": 4135,
+      "population_female": 3713,
+      "children": [
+        "4812110300"
+      ],
+      "age": {
+        "age_0_9": 266,
+        "age_10_19": 518,
+        "age_20_29": 1212,
+        "age_30_39": 1295,
+        "age_40_49": 1074,
+        "age_50_59": 1392,
+        "age_60_69": 1306,
+        "age_70_79": 572,
+        "age_80_89": 181,
+        "age_90_99": 31,
+        "age_100_plus": 1
+      },
+      "name": "서상동",
+      "single_households": 2396
+    },
+    "4812110400": {
+      "population_total": 10802,
+      "population_male": 5353,
+      "population_female": 5449,
+      "children": [
+        "4812110400"
+      ],
+      "age": {
+        "age_0_9": 286,
+        "age_10_19": 785,
+        "age_20_29": 945,
+        "age_30_39": 1090,
+        "age_40_49": 1248,
+        "age_50_59": 2112,
+        "age_60_69": 2419,
+        "age_70_79": 1407,
+        "age_80_89": 452,
+        "age_90_99": 58,
+        "age_100_plus": 0
+      },
+      "name": "소답동",
+      "single_households": 2139
+    },
+    "4812110500": {
+      "population_total": 17477,
+      "population_male": 8599,
+      "population_female": 8878,
+      "children": [
+        "4812110500"
+      ],
+      "age": {
+        "age_0_9": 466,
+        "age_10_19": 1489,
+        "age_20_29": 1970,
+        "age_30_39": 1763,
+        "age_40_49": 2061,
+        "age_50_59": 3922,
+        "age_60_69": 3748,
+        "age_70_79": 1525,
+        "age_80_89": 464,
+        "age_90_99": 69,
+        "age_100_plus": 0
+      },
+      "name": "도계동",
+      "single_households": 2805
+    },
+    "4812110600": {
+      "population_total": 3734,
+      "population_male": 1800,
+      "population_female": 1934,
+      "children": [
+        "4812110600"
+      ],
+      "age": {
+        "age_0_9": 108,
+        "age_10_19": 274,
+        "age_20_29": 330,
+        "age_30_39": 336,
+        "age_40_49": 438,
+        "age_50_59": 684,
+        "age_60_69": 893,
+        "age_70_79": 483,
+        "age_80_89": 166,
+        "age_90_99": 22,
+        "age_100_plus": 0
+      },
+      "name": "동정동",
+      "single_households": 657
+    },
+    "4812110700": {
+      "population_total": 3863,
+      "population_male": 1974,
+      "population_female": 1889,
+      "children": [
+        "4812110700"
+      ],
+      "age": {
+        "age_0_9": 88,
+        "age_10_19": 270,
+        "age_20_29": 295,
+        "age_30_39": 323,
+        "age_40_49": 477,
+        "age_50_59": 693,
+        "age_60_69": 931,
+        "age_70_79": 580,
+        "age_80_89": 186,
+        "age_90_99": 20,
+        "age_100_plus": 0
+      },
+      "name": "소계동",
+      "single_households": 833
+    },
+    "4812110800": {
+      "population_total": 12,
+      "population_male": 7,
+      "population_female": 5,
+      "children": [
+        "4812110800"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 2,
+        "age_50_59": 1,
+        "age_60_69": 3,
+        "age_70_79": 6,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "용동",
+      "single_households": 8
+    },
+    "4812111400": {
+      "population_total": 5,
+      "population_male": 3,
+      "population_female": 2,
+      "children": [
+        "4812111400"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 2,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 1,
+        "age_50_59": 0,
+        "age_60_69": 0,
+        "age_70_79": 2,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "서곡동",
+      "single_households": 0
+    },
+    "4812111600": {
+      "population_total": 4559,
+      "population_male": 2291,
+      "population_female": 2268,
+      "children": [
+        "4812111600"
+      ],
+      "age": {
+        "age_0_9": 147,
+        "age_10_19": 337,
+        "age_20_29": 502,
+        "age_30_39": 546,
+        "age_40_49": 442,
+        "age_50_59": 878,
+        "age_60_69": 1061,
+        "age_70_79": 490,
+        "age_80_89": 128,
+        "age_90_99": 28,
+        "age_100_plus": 0
+      },
+      "name": "봉림동",
+      "single_households": 1291
+    },
+    "4812111700": {
+      "population_total": 264,
+      "population_male": 122,
+      "population_female": 142,
+      "children": [
+        "4812111700"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 26,
+        "age_20_29": 229,
+        "age_30_39": 4,
+        "age_40_49": 2,
+        "age_50_59": 0,
+        "age_60_69": 1,
+        "age_70_79": 1,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "퇴촌동",
+      "single_households": 261
+    },
+    "4812111800": {
+      "population_total": 1458,
+      "population_male": 719,
+      "population_female": 739,
+      "children": [
+        "4812111800"
+      ],
+      "age": {
+        "age_0_9": 305,
+        "age_10_19": 35,
+        "age_20_29": 154,
+        "age_30_39": 682,
+        "age_40_49": 168,
+        "age_50_59": 33,
+        "age_60_69": 27,
+        "age_70_79": 42,
+        "age_80_89": 11,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "명곡동",
+      "single_households": 200
+    },
+    "4812111900": {
+      "population_total": 67,
+      "population_male": 42,
+      "population_female": 25,
+      "children": [
+        "4812111900"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 9,
+        "age_30_39": 7,
+        "age_40_49": 5,
+        "age_50_59": 10,
+        "age_60_69": 9,
+        "age_70_79": 19,
+        "age_80_89": 8,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "반계동",
+      "single_households": 35
+    },
+    "4812112000": {
+      "population_total": 5300,
+      "population_male": 2650,
+      "population_female": 2650,
+      "children": [
+        "4812112000"
+      ],
+      "age": {
+        "age_0_9": 749,
+        "age_10_19": 492,
+        "age_20_29": 458,
+        "age_30_39": 1119,
+        "age_40_49": 937,
+        "age_50_59": 972,
+        "age_60_69": 495,
+        "age_70_79": 64,
+        "age_80_89": 13,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "사화동",
+      "single_households": 250
+    },
+    "4812112100": {
+      "population_total": 20,
+      "population_male": 10,
+      "population_female": 10,
+      "children": [
+        "4812112100"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 2,
+        "age_40_49": 0,
+        "age_50_59": 5,
+        "age_60_69": 4,
+        "age_70_79": 8,
+        "age_80_89": 0,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "차용동",
+      "single_households": 8
+    },
+    "4812112400": {
+      "population_total": 18425,
+      "population_male": 9582,
+      "population_female": 8843,
+      "children": [
+        "4812112400"
+      ],
+      "age": {
+        "age_0_9": 800,
+        "age_10_19": 1384,
+        "age_20_29": 1749,
+        "age_30_39": 2159,
+        "age_40_49": 2275,
+        "age_50_59": 3568,
+        "age_60_69": 3790,
+        "age_70_79": 1949,
+        "age_80_89": 641,
+        "age_90_99": 107,
+        "age_100_plus": 3
+      },
+      "name": "명서동",
+      "single_households": 4355
+    },
+    "4812112500": {
+      "population_total": 10416,
+      "population_male": 5709,
+      "population_female": 4707,
+      "children": [
+        "4812112500"
+      ],
+      "age": {
+        "age_0_9": 221,
+        "age_10_19": 509,
+        "age_20_29": 2416,
+        "age_30_39": 1444,
+        "age_40_49": 1160,
+        "age_50_59": 1584,
+        "age_60_69": 1765,
+        "age_70_79": 959,
+        "age_80_89": 304,
+        "age_90_99": 52,
+        "age_100_plus": 2
+      },
+      "name": "사림동",
+      "single_households": 4443
+    },
+    "4812112700": {
+      "population_total": 12684,
+      "population_male": 6756,
+      "population_female": 5928,
+      "children": [
+        "4812112700"
+      ],
+      "age": {
+        "age_0_9": 321,
+        "age_10_19": 784,
+        "age_20_29": 1247,
+        "age_30_39": 1379,
+        "age_40_49": 1593,
+        "age_50_59": 2353,
+        "age_60_69": 2899,
+        "age_70_79": 1555,
+        "age_80_89": 471,
+        "age_90_99": 79,
+        "age_100_plus": 3
+      },
+      "name": "봉곡동",
+      "single_households": 3867
+    },
+    "4812112900": {
+      "population_total": 23630,
+      "population_male": 11986,
+      "population_female": 11644,
+      "children": [
+        "4812112900"
+      ],
+      "age": {
+        "age_0_9": 1205,
+        "age_10_19": 2098,
+        "age_20_29": 2859,
+        "age_30_39": 3414,
+        "age_40_49": 3371,
+        "age_50_59": 4894,
+        "age_60_69": 3738,
+        "age_70_79": 1556,
+        "age_80_89": 418,
+        "age_90_99": 77,
+        "age_100_plus": 0
+      },
+      "name": "팔용동",
+      "single_households": 4381
+    },
+    "4812125000": {
+      "population_total": 18117,
+      "population_male": 9204,
+      "population_female": 8913,
+      "children": [
+        "4812125021",
+        "4812125022",
+        "4812125023",
+        "4812125025",
+        "4812125026",
+        "4812125027",
+        "4812125028",
+        "4812125029",
+        "4812125030",
+        "4812125031",
+        "4812125032",
+        "4812125033",
+        "4812125034",
+        "4812125035",
+        "4812125036",
+        "4812125037",
+        "4812125038",
+        "4812125039",
+        "4812125040",
+        "4812125041",
+        "4812125042",
+        "4812125043",
+        "4812125044"
+      ],
+      "age": {
+        "age_0_9": 487,
+        "age_10_19": 1373,
+        "age_20_29": 1589,
+        "age_30_39": 1549,
+        "age_40_49": 1999,
+        "age_50_59": 3841,
+        "age_60_69": 3839,
+        "age_70_79": 2316,
+        "age_80_89": 947,
+        "age_90_99": 176,
+        "age_100_plus": 1
+      },
+      "name": "동읍",
+      "single_households": 3924
+    },
+    "4812131000": {
+      "population_total": 44304,
+      "population_male": 22299,
+      "population_female": 22005,
+      "children": [
+        "4812131021",
+        "4812131022",
+        "4812131023",
+        "4812131024",
+        "4812131025",
+        "4812131026",
+        "4812131027",
+        "4812131028",
+        "4812131029",
+        "4812131030",
+        "4812131031",
+        "4812131032",
+        "4812131033",
+        "4812131034",
+        "4812131035",
+        "4812131036",
+        "4812131037",
+        "4812131038"
+      ],
+      "age": {
+        "age_0_9": 4268,
+        "age_10_19": 5770,
+        "age_20_29": 2576,
+        "age_30_39": 6024,
+        "age_40_49": 8859,
+        "age_50_59": 6224,
+        "age_60_69": 6328,
+        "age_70_79": 3038,
+        "age_80_89": 1016,
+        "age_90_99": 199,
+        "age_100_plus": 2
+      },
+      "name": "북면",
+      "single_households": 4622
+    },
+    "4812132000": {
+      "population_total": 6361,
+      "population_male": 3249,
+      "population_female": 3112,
+      "children": [
+        "4812132021",
+        "4812132022",
+        "4812132023",
+        "4812132024",
+        "4812132025",
+        "4812132026",
+        "4812132027",
+        "4812132028",
+        "4812132029"
+      ],
+      "age": {
+        "age_0_9": 131,
+        "age_10_19": 288,
+        "age_20_29": 354,
+        "age_30_39": 420,
+        "age_40_49": 640,
+        "age_50_59": 993,
+        "age_60_69": 1683,
+        "age_70_79": 1172,
+        "age_80_89": 569,
+        "age_90_99": 108,
+        "age_100_plus": 3
+      },
+      "name": "대산면",
+      "single_households": 1861
+    },
+    "4812310100": {
+      "population_total": 12,
+      "population_male": 7,
+      "population_female": 5,
+      "children": [
+        "4812310100"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 1,
+        "age_50_59": 0,
+        "age_60_69": 2,
+        "age_70_79": 7,
+        "age_80_89": 2,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "토월동",
+      "single_households": 4
+    },
+    "4812310200": {
+      "population_total": 2632,
+      "population_male": 1333,
+      "population_female": 1299,
+      "children": [
+        "4812310200"
+      ],
+      "age": {
+        "age_0_9": 458,
+        "age_10_19": 154,
+        "age_20_29": 176,
+        "age_30_39": 788,
+        "age_40_49": 409,
+        "age_50_59": 341,
+        "age_60_69": 258,
+        "age_70_79": 37,
+        "age_80_89": 9,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "사파정동",
+      "single_households": 232
+    },
+    "4812310300": {
+      "population_total": 1488,
+      "population_male": 918,
+      "population_female": 570,
+      "children": [
+        "4812310300"
+      ],
+      "age": {
+        "age_0_9": 20,
+        "age_10_19": 48,
+        "age_20_29": 391,
+        "age_30_39": 400,
+        "age_40_49": 173,
+        "age_50_59": 183,
+        "age_60_69": 168,
+        "age_70_79": 81,
+        "age_80_89": 22,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "가음정동",
+      "single_households": 820
+    },
+    "4812310400": {
+      "population_total": 2330,
+      "population_male": 1219,
+      "population_female": 1111,
+      "children": [
+        "4812310400"
+      ],
+      "age": {
+        "age_0_9": 115,
+        "age_10_19": 216,
+        "age_20_29": 260,
+        "age_30_39": 379,
+        "age_40_49": 377,
+        "age_50_59": 431,
+        "age_60_69": 354,
+        "age_70_79": 143,
+        "age_80_89": 50,
+        "age_90_99": 5,
+        "age_100_plus": 0
+      },
+      "name": "외동",
+      "single_households": 343
+    },
+    "4812310500": {
+      "population_total": 21822,
+      "population_male": 10711,
+      "population_female": 11111,
+      "children": [
+        "4812310500"
+      ],
+      "age": {
+        "age_0_9": 1018,
+        "age_10_19": 2334,
+        "age_20_29": 2411,
+        "age_30_39": 2977,
+        "age_40_49": 3266,
+        "age_50_59": 4311,
+        "age_60_69": 3784,
+        "age_70_79": 1282,
+        "age_80_89": 365,
+        "age_90_99": 74,
+        "age_100_plus": 0
+      },
+      "name": "대방동",
+      "single_households": 3139
+    },
+    "4812310600": {
+      "population_total": 3256,
+      "population_male": 1818,
+      "population_female": 1438,
+      "children": [
+        "4812310600"
+      ],
+      "age": {
+        "age_0_9": 226,
+        "age_10_19": 189,
+        "age_20_29": 422,
+        "age_30_39": 626,
+        "age_40_49": 490,
+        "age_50_59": 724,
+        "age_60_69": 376,
+        "age_70_79": 152,
+        "age_80_89": 44,
+        "age_90_99": 7,
+        "age_100_plus": 0
+      },
+      "name": "남산동",
+      "single_households": 722
+    },
+    "4812310700": {
+      "population_total": 1,
+      "population_male": 1,
+      "population_female": 0,
+      "children": [
+        "4812310700"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 1,
+        "age_50_59": 0,
+        "age_60_69": 0,
+        "age_70_79": 0,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "삼정자동",
+      "single_households": 1
+    },
+    "4812310800": {
+      "population_total": 905,
+      "population_male": 472,
+      "population_female": 433,
+      "children": [
+        "4812310800"
+      ],
+      "age": {
+        "age_0_9": 25,
+        "age_10_19": 80,
+        "age_20_29": 95,
+        "age_30_39": 89,
+        "age_40_49": 91,
+        "age_50_59": 223,
+        "age_60_69": 213,
+        "age_70_79": 75,
+        "age_80_89": 12,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "천선동",
+      "single_households": 56
+    },
+    "4812310900": {
+      "population_total": 118,
+      "population_male": 61,
+      "population_female": 57,
+      "children": [
+        "4812310900"
+      ],
+      "age": {
+        "age_0_9": 2,
+        "age_10_19": 2,
+        "age_20_29": 9,
+        "age_30_39": 7,
+        "age_40_49": 6,
+        "age_50_59": 19,
+        "age_60_69": 42,
+        "age_70_79": 21,
+        "age_80_89": 8,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "불모산동",
+      "single_households": 42
+    },
+    "4812311000": {
+      "population_total": 8871,
+      "population_male": 4619,
+      "population_female": 4252,
+      "children": [
+        "4812311000"
+      ],
+      "age": {
+        "age_0_9": 713,
+        "age_10_19": 681,
+        "age_20_29": 923,
+        "age_30_39": 1759,
+        "age_40_49": 1119,
+        "age_50_59": 1709,
+        "age_60_69": 1430,
+        "age_70_79": 404,
+        "age_80_89": 111,
+        "age_90_99": 22,
+        "age_100_plus": 0
+      },
+      "name": "안민동",
+      "single_households": 887
+    },
+    "4812311100": {
+      "population_total": 3083,
+      "population_male": 1635,
+      "population_female": 1448,
+      "children": [
+        "4812311100"
+      ],
+      "age": {
+        "age_0_9": 121,
+        "age_10_19": 279,
+        "age_20_29": 290,
+        "age_30_39": 392,
+        "age_40_49": 430,
+        "age_50_59": 620,
+        "age_60_69": 593,
+        "age_70_79": 293,
+        "age_80_89": 59,
+        "age_90_99": 6,
+        "age_100_plus": 0
+      },
+      "name": "내동",
+      "single_households": 476
+    },
+    "4812311200": {
+      "population_total": 9,
+      "population_male": 3,
+      "population_female": 6,
+      "children": [
+        "4812311200"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 2,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 1,
+        "age_50_59": 1,
+        "age_60_69": 2,
+        "age_70_79": 3,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "남지동",
+      "single_households": 4
+    },
+    "4812311300": {
+      "population_total": 8,
+      "population_male": 5,
+      "population_female": 3,
+      "children": [
+        "4812311300"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 0,
+        "age_50_59": 1,
+        "age_60_69": 3,
+        "age_70_79": 1,
+        "age_80_89": 3,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "상복동",
+      "single_households": 2
+    },
+    "4812311400": {
+      "population_total": 1,
+      "population_male": 1,
+      "population_female": 0,
+      "children": [
+        "4812311400"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 0,
+        "age_50_59": 0,
+        "age_60_69": 1,
+        "age_70_79": 0,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "완암동",
+      "single_households": 1
+    },
+    "4812311500": {
+      "population_total": 3,
+      "population_male": 2,
+      "population_female": 1,
+      "children": [
+        "4812311500"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 0,
+        "age_50_59": 2,
+        "age_60_69": 0,
+        "age_70_79": 0,
+        "age_80_89": 1,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "창곡동",
+      "single_households": 1
+    },
+    "4812311700": {
+      "population_total": 1,
+      "population_male": 1,
+      "population_female": 0,
+      "children": [
+        "4812311700"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 0,
+        "age_50_59": 0,
+        "age_60_69": 1,
+        "age_70_79": 0,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "적현동",
+      "single_households": 1
+    },
+    "4812311800": {
+      "population_total": 151,
+      "population_male": 90,
+      "population_female": 61,
+      "children": [
+        "4812311800"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 8,
+        "age_30_39": 9,
+        "age_40_49": 10,
+        "age_50_59": 23,
+        "age_60_69": 47,
+        "age_70_79": 30,
+        "age_80_89": 17,
+        "age_90_99": 7,
+        "age_100_plus": 0
+      },
+      "name": "양곡동",
+      "single_households": 82
+    },
+    "4812311900": {
+      "population_total": 15,
+      "population_male": 6,
+      "population_female": 9,
+      "children": [
+        "4812311900"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 1,
+        "age_30_39": 1,
+        "age_40_49": 0,
+        "age_50_59": 1,
+        "age_60_69": 3,
+        "age_70_79": 6,
+        "age_80_89": 2,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "반송동",
+      "single_households": 2
+    },
+    "4812312000": {
+      "population_total": 280,
+      "population_male": 154,
+      "population_female": 126,
+      "children": [
+        "4812312000"
+      ],
+      "age": {
+        "age_0_9": 3,
+        "age_10_19": 5,
+        "age_20_29": 15,
+        "age_30_39": 20,
+        "age_40_49": 13,
+        "age_50_59": 44,
+        "age_60_69": 82,
+        "age_70_79": 53,
+        "age_80_89": 40,
+        "age_90_99": 4,
+        "age_100_plus": 1
+      },
+      "name": "귀산동",
+      "single_households": 105
+    },
+    "4812312100": {
+      "population_total": 56,
+      "population_male": 29,
+      "population_female": 27,
+      "children": [
+        "4812312100"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 1,
+        "age_20_29": 5,
+        "age_30_39": 2,
+        "age_40_49": 4,
+        "age_50_59": 9,
+        "age_60_69": 22,
+        "age_70_79": 6,
+        "age_80_89": 3,
+        "age_90_99": 4,
+        "age_100_plus": 0
+      },
+      "name": "귀곡동",
+      "single_households": 21
+    },
+    "4812312200": {
+      "population_total": 278,
+      "population_male": 252,
+      "population_female": 26,
+      "children": [
+        "4812312200"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 216,
+        "age_30_39": 47,
+        "age_40_49": 13,
+        "age_50_59": 2,
+        "age_60_69": 0,
+        "age_70_79": 0,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "귀현동",
+      "single_households": 278
+    },
+    "4812312300": {
+      "population_total": 5726,
+      "population_male": 2893,
+      "population_female": 2833,
+      "children": [
+        "4812312300"
+      ],
+      "age": {
+        "age_0_9": 186,
+        "age_10_19": 528,
+        "age_20_29": 490,
+        "age_30_39": 526,
+        "age_40_49": 799,
+        "age_50_59": 1139,
+        "age_60_69": 1196,
+        "age_70_79": 616,
+        "age_80_89": 216,
+        "age_90_99": 28,
+        "age_100_plus": 2
+      },
+      "name": "신촌동",
+      "single_households": 851
+    },
+    "4812312400": {
+      "population_total": 11643,
+      "population_male": 6064,
+      "population_female": 5579,
+      "children": [
+        "4812312400"
+      ],
+      "age": {
+        "age_0_9": 299,
+        "age_10_19": 739,
+        "age_20_29": 1287,
+        "age_30_39": 1340,
+        "age_40_49": 1439,
+        "age_50_59": 2215,
+        "age_60_69": 2559,
+        "age_70_79": 1351,
+        "age_80_89": 362,
+        "age_90_99": 51,
+        "age_100_plus": 1
+      },
+      "name": "반지동",
+      "single_households": 2826
+    },
+    "4812312500": {
+      "population_total": 15692,
+      "population_male": 8995,
+      "population_female": 6697,
+      "children": [
+        "4812312500"
+      ],
+      "age": {
+        "age_0_9": 1093,
+        "age_10_19": 1129,
+        "age_20_29": 2729,
+        "age_30_39": 3040,
+        "age_40_49": 2609,
+        "age_50_59": 2251,
+        "age_60_69": 1778,
+        "age_70_79": 779,
+        "age_80_89": 230,
+        "age_90_99": 53,
+        "age_100_plus": 1
+      },
+      "name": "중앙동",
+      "single_households": 6499
+    },
+    "4812312600": {
+      "population_total": 25858,
+      "population_male": 12750,
+      "population_female": 13108,
+      "children": [
+        "4812312600"
+      ],
+      "age": {
+        "age_0_9": 1905,
+        "age_10_19": 3752,
+        "age_20_29": 2328,
+        "age_30_39": 2818,
+        "age_40_49": 4403,
+        "age_50_59": 4980,
+        "age_60_69": 3845,
+        "age_70_79": 1388,
+        "age_80_89": 377,
+        "age_90_99": 61,
+        "age_100_plus": 1
+      },
+      "name": "반림동",
+      "single_households": 1415
+    },
+    "4812312700": {
+      "population_total": 31203,
+      "population_male": 15827,
+      "population_female": 15376,
+      "children": [
+        "4812312700"
+      ],
+      "age": {
+        "age_0_9": 1581,
+        "age_10_19": 3272,
+        "age_20_29": 3869,
+        "age_30_39": 4455,
+        "age_40_49": 4799,
+        "age_50_59": 5876,
+        "age_60_69": 5250,
+        "age_70_79": 1539,
+        "age_80_89": 470,
+        "age_90_99": 91,
+        "age_100_plus": 1
+      },
+      "name": "상남동",
+      "single_households": 5449
+    },
+    "4812312800": {
+      "population_total": 13241,
+      "population_male": 6774,
+      "population_female": 6467,
+      "children": [
+        "4812312800"
+      ],
+      "age": {
+        "age_0_9": 986,
+        "age_10_19": 1638,
+        "age_20_29": 1323,
+        "age_30_39": 1582,
+        "age_40_49": 2019,
+        "age_50_59": 2632,
+        "age_60_69": 2342,
+        "age_70_79": 597,
+        "age_80_89": 99,
+        "age_90_99": 23,
+        "age_100_plus": 0
+      },
+      "name": "성주동",
+      "single_households": 902
+    },
+    "4812312900": {
+      "population_total": 14,
+      "population_male": 13,
+      "population_female": 1,
+      "children": [
+        "4812312900"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 1,
+        "age_30_39": 2,
+        "age_40_49": 2,
+        "age_50_59": 4,
+        "age_60_69": 5,
+        "age_70_79": 0,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "웅남동",
+      "single_households": 12
+    },
+    "4812313000": {
+      "population_total": 17973,
+      "population_male": 8957,
+      "population_female": 9016,
+      "children": [
+        "4812313000"
+      ],
+      "age": {
+        "age_0_9": 549,
+        "age_10_19": 1428,
+        "age_20_29": 2067,
+        "age_30_39": 2451,
+        "age_40_49": 2340,
+        "age_50_59": 3611,
+        "age_60_69": 3705,
+        "age_70_79": 1340,
+        "age_80_89": 414,
+        "age_90_99": 65,
+        "age_100_plus": 3
+      },
+      "name": "사파동",
+      "single_households": 3718
+    },
+    "4812313100": {
+      "population_total": 15991,
+      "population_male": 8069,
+      "population_female": 7922,
+      "children": [
+        "4812313100"
+      ],
+      "age": {
+        "age_0_9": 1854,
+        "age_10_19": 1589,
+        "age_20_29": 1346,
+        "age_30_39": 2992,
+        "age_40_49": 2780,
+        "age_50_59": 2647,
+        "age_60_69": 2036,
+        "age_70_79": 562,
+        "age_80_89": 146,
+        "age_90_99": 39,
+        "age_100_plus": 0
+      },
+      "name": "가음동",
+      "single_households": 1569
+    },
+    "4812313200": {
+      "population_total": 14,
+      "population_male": 11,
+      "population_female": 3,
+      "children": [
+        "4812313200"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 1,
+        "age_30_39": 2,
+        "age_40_49": 5,
+        "age_50_59": 5,
+        "age_60_69": 1,
+        "age_70_79": 0,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "성산동",
+      "single_households": 12
+    },
+    "4812313300": {
+      "population_total": 20555,
+      "population_male": 10106,
+      "population_female": 10449,
+      "children": [
+        "4812313300"
+      ],
+      "age": {
+        "age_0_9": 912,
+        "age_10_19": 1913,
+        "age_20_29": 2091,
+        "age_30_39": 2618,
+        "age_40_49": 2699,
+        "age_50_59": 4057,
+        "age_60_69": 4290,
+        "age_70_79": 1478,
+        "age_80_89": 423,
+        "age_90_99": 73,
+        "age_100_plus": 1
+      },
+      "name": "남양동",
+      "single_households": 2541
+    },
+    "4812313500": {
+      "population_total": 14461,
+      "population_male": 7282,
+      "population_female": 7179,
+      "children": [
+        "4812313500"
+      ],
+      "age": {
+        "age_0_9": 1154,
+        "age_10_19": 1662,
+        "age_20_29": 1419,
+        "age_30_39": 2157,
+        "age_40_49": 2479,
+        "age_50_59": 2383,
+        "age_60_69": 2157,
+        "age_70_79": 790,
+        "age_80_89": 218,
+        "age_90_99": 42,
+        "age_100_plus": 0
+      },
+      "name": "용호동",
+      "single_households": 2206
+    },
+    "4812313600": {
+      "population_total": 10607,
+      "population_male": 5397,
+      "population_female": 5210,
+      "children": [
+        "4812313600"
+      ],
+      "age": {
+        "age_0_9": 343,
+        "age_10_19": 731,
+        "age_20_29": 1235,
+        "age_30_39": 1482,
+        "age_40_49": 1298,
+        "age_50_59": 2037,
+        "age_60_69": 2173,
+        "age_70_79": 927,
+        "age_80_89": 333,
+        "age_90_99": 47,
+        "age_100_plus": 1
+      },
+      "name": "신월동",
+      "single_households": 2608
+    },
+    "4812313700": {
+      "population_total": 16845,
+      "population_male": 8529,
+      "population_female": 8316,
+      "children": [
+        "4812313700"
+      ],
+      "age": {
+        "age_0_9": 2048,
+        "age_10_19": 1358,
+        "age_20_29": 1443,
+        "age_30_39": 3497,
+        "age_40_49": 2503,
+        "age_50_59": 2752,
+        "age_60_69": 2299,
+        "age_70_79": 707,
+        "age_80_89": 199,
+        "age_90_99": 37,
+        "age_100_plus": 2
+      },
+      "name": "대원동",
+      "single_households": 1461
+    },
+    "4812313800": {
+      "population_total": 5,
+      "population_male": 3,
+      "population_female": 2,
+      "children": [
+        "4812313800"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 3,
+        "age_30_39": 0,
+        "age_40_49": 0,
+        "age_50_59": 2,
+        "age_60_69": 0,
+        "age_70_79": 0,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "두대동",
+      "single_households": 1
+    },
+    "4812314100": {
+      "population_total": 5,
+      "population_male": 3,
+      "population_female": 2,
+      "children": [
+        "4812314100"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 0,
+        "age_50_59": 1,
+        "age_60_69": 0,
+        "age_70_79": 3,
+        "age_80_89": 1,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "퇴촌동",
+      "single_households": 0
+    },
+    "4812510100": {
+      "population_total": 5307,
+      "population_male": 2696,
+      "population_female": 2611,
+      "children": [
+        "4812510100"
+      ],
+      "age": {
+        "age_0_9": 442,
+        "age_10_19": 270,
+        "age_20_29": 502,
+        "age_30_39": 1206,
+        "age_40_49": 809,
+        "age_50_59": 767,
+        "age_60_69": 795,
+        "age_70_79": 404,
+        "age_80_89": 99,
+        "age_90_99": 13,
+        "age_100_plus": 0
+      },
+      "name": "가포동",
+      "single_households": 1229
+    },
+    "4812510200": {
+      "population_total": 13312,
+      "population_male": 6543,
+      "population_female": 6769,
+      "children": [
+        "4812510200"
+      ],
+      "age": {
+        "age_0_9": 1328,
+        "age_10_19": 1240,
+        "age_20_29": 937,
+        "age_30_39": 2207,
+        "age_40_49": 2249,
+        "age_50_59": 1821,
+        "age_60_69": 1807,
+        "age_70_79": 1209,
+        "age_80_89": 437,
+        "age_90_99": 76,
+        "age_100_plus": 1
+      },
+      "name": "교방동",
+      "single_households": 1871
+    },
+    "4812510300": {
+      "population_total": 2272,
+      "population_male": 1092,
+      "population_female": 1180,
+      "children": [
+        "4812510300"
+      ],
+      "age": {
+        "age_0_9": 101,
+        "age_10_19": 302,
+        "age_20_29": 154,
+        "age_30_39": 169,
+        "age_40_49": 370,
+        "age_50_59": 404,
+        "age_60_69": 337,
+        "age_70_79": 279,
+        "age_80_89": 142,
+        "age_90_99": 14,
+        "age_100_plus": 0
+      },
+      "name": "교원동",
+      "single_households": 272
+    },
+    "4812510400": {
+      "population_total": 728,
+      "population_male": 357,
+      "population_female": 371,
+      "children": [
+        "4812510400"
+      ],
+      "age": {
+        "age_0_9": 10,
+        "age_10_19": 22,
+        "age_20_29": 29,
+        "age_30_39": 46,
+        "age_40_49": 85,
+        "age_50_59": 120,
+        "age_60_69": 199,
+        "age_70_79": 157,
+        "age_80_89": 56,
+        "age_90_99": 4,
+        "age_100_plus": 0
+      },
+      "name": "남성동",
+      "single_households": 319
+    },
+    "4812510500": {
+      "population_total": 715,
+      "population_male": 320,
+      "population_female": 395,
+      "children": [
+        "4812510500"
+      ],
+      "age": {
+        "age_0_9": 19,
+        "age_10_19": 73,
+        "age_20_29": 96,
+        "age_30_39": 42,
+        "age_40_49": 79,
+        "age_50_59": 118,
+        "age_60_69": 97,
+        "age_70_79": 120,
+        "age_80_89": 64,
+        "age_90_99": 7,
+        "age_100_plus": 0
+      },
+      "name": "대내동",
+      "single_households": 229
+    },
+    "4812510600": {
+      "population_total": 237,
+      "population_male": 112,
+      "population_female": 125,
+      "children": [
+        "4812510600"
+      ],
+      "age": {
+        "age_0_9": 5,
+        "age_10_19": 15,
+        "age_20_29": 11,
+        "age_30_39": 21,
+        "age_40_49": 19,
+        "age_50_59": 42,
+        "age_60_69": 64,
+        "age_70_79": 38,
+        "age_80_89": 20,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "대성동1가",
+      "single_households": 66
+    },
+    "4812510700": {
+      "population_total": 234,
+      "population_male": 104,
+      "population_female": 130,
+      "children": [
+        "4812510700"
+      ],
+      "age": {
+        "age_0_9": 9,
+        "age_10_19": 18,
+        "age_20_29": 10,
+        "age_30_39": 14,
+        "age_40_49": 24,
+        "age_50_59": 42,
+        "age_60_69": 55,
+        "age_70_79": 38,
+        "age_80_89": 21,
+        "age_90_99": 3,
+        "age_100_plus": 0
+      },
+      "name": "대성동2가",
+      "single_households": 96
+    },
+    "4812510800": {
+      "population_total": 472,
+      "population_male": 247,
+      "population_female": 225,
+      "children": [
+        "4812510800"
+      ],
+      "age": {
+        "age_0_9": 12,
+        "age_10_19": 52,
+        "age_20_29": 81,
+        "age_30_39": 36,
+        "age_40_49": 47,
+        "age_50_59": 67,
+        "age_60_69": 63,
+        "age_70_79": 73,
+        "age_80_89": 36,
+        "age_90_99": 5,
+        "age_100_plus": 0
+      },
+      "name": "대외동",
+      "single_households": 173
+    },
+    "4812510900": {
+      "population_total": 673,
+      "population_male": 343,
+      "population_female": 330,
+      "children": [
+        "4812510900"
+      ],
+      "age": {
+        "age_0_9": 12,
+        "age_10_19": 42,
+        "age_20_29": 87,
+        "age_30_39": 53,
+        "age_40_49": 69,
+        "age_50_59": 107,
+        "age_60_69": 155,
+        "age_70_79": 104,
+        "age_80_89": 35,
+        "age_90_99": 8,
+        "age_100_plus": 1
+      },
+      "name": "대창동",
+      "single_households": 209
+    },
+    "4812511000": {
+      "population_total": 734,
+      "population_male": 395,
+      "population_female": 339,
+      "children": [
+        "4812511000"
+      ],
+      "age": {
+        "age_0_9": 13,
+        "age_10_19": 32,
+        "age_20_29": 29,
+        "age_30_39": 29,
+        "age_40_49": 81,
+        "age_50_59": 108,
+        "age_60_69": 174,
+        "age_70_79": 174,
+        "age_80_89": 80,
+        "age_90_99": 14,
+        "age_100_plus": 0
+      },
+      "name": "덕동동",
+      "single_households": 224
+    },
+    "4812511100": {
+      "population_total": 855,
+      "population_male": 483,
+      "population_female": 372,
+      "children": [
+        "4812511100"
+      ],
+      "age": {
+        "age_0_9": 10,
+        "age_10_19": 25,
+        "age_20_29": 71,
+        "age_30_39": 101,
+        "age_40_49": 132,
+        "age_50_59": 167,
+        "age_60_69": 179,
+        "age_70_79": 106,
+        "age_80_89": 57,
+        "age_90_99": 7,
+        "age_100_plus": 0
+      },
+      "name": "동성동",
+      "single_households": 401
+    },
+    "4812511200": {
+      "population_total": 103,
+      "population_male": 52,
+      "population_female": 51,
+      "children": [
+        "4812511200"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 6,
+        "age_20_29": 5,
+        "age_30_39": 10,
+        "age_40_49": 13,
+        "age_50_59": 18,
+        "age_60_69": 26,
+        "age_70_79": 20,
+        "age_80_89": 3,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "두월동1가",
+      "single_households": 45
+    },
+    "4812511300": {
+      "population_total": 367,
+      "population_male": 185,
+      "population_female": 182,
+      "children": [
+        "4812511300"
+      ],
+      "age": {
+        "age_0_9": 19,
+        "age_10_19": 31,
+        "age_20_29": 50,
+        "age_30_39": 36,
+        "age_40_49": 61,
+        "age_50_59": 60,
+        "age_60_69": 49,
+        "age_70_79": 44,
+        "age_80_89": 15,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "두월동2가",
+      "single_households": 62
+    },
+    "4812511400": {
+      "population_total": 67,
+      "population_male": 34,
+      "population_female": 33,
+      "children": [
+        "4812511400"
+      ],
+      "age": {
+        "age_0_9": 2,
+        "age_10_19": 4,
+        "age_20_29": 17,
+        "age_30_39": 8,
+        "age_40_49": 5,
+        "age_50_59": 9,
+        "age_60_69": 6,
+        "age_70_79": 9,
+        "age_80_89": 6,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "두월동3가",
+      "single_households": 38
+    },
+    "4812511500": {
+      "population_total": 807,
+      "population_male": 404,
+      "population_female": 403,
+      "children": [
+        "4812511500"
+      ],
+      "age": {
+        "age_0_9": 14,
+        "age_10_19": 66,
+        "age_20_29": 65,
+        "age_30_39": 46,
+        "age_40_49": 87,
+        "age_50_59": 142,
+        "age_60_69": 182,
+        "age_70_79": 123,
+        "age_80_89": 68,
+        "age_90_99": 13,
+        "age_100_plus": 1
+      },
+      "name": "문화동",
+      "single_households": 199
+    },
+    "4812511600": {
+      "population_total": 476,
+      "population_male": 233,
+      "population_female": 243,
+      "children": [
+        "4812511600"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 13,
+        "age_20_29": 30,
+        "age_30_39": 31,
+        "age_40_49": 35,
+        "age_50_59": 81,
+        "age_60_69": 117,
+        "age_70_79": 104,
+        "age_80_89": 57,
+        "age_90_99": 7,
+        "age_100_plus": 0
+      },
+      "name": "반월동",
+      "single_households": 167
+    },
+    "4812511700": {
+      "population_total": 428,
+      "population_male": 215,
+      "population_female": 213,
+      "children": [
+        "4812511700"
+      ],
+      "age": {
+        "age_0_9": 2,
+        "age_10_19": 20,
+        "age_20_29": 72,
+        "age_30_39": 39,
+        "age_40_49": 54,
+        "age_50_59": 74,
+        "age_60_69": 77,
+        "age_70_79": 56,
+        "age_80_89": 31,
+        "age_90_99": 3,
+        "age_100_plus": 0
+      },
+      "name": "부림동",
+      "single_households": 252
+    },
+    "4812511800": {
+      "population_total": 16111,
+      "population_male": 8049,
+      "population_female": 8062,
+      "children": [
+        "4812511800"
+      ],
+      "age": {
+        "age_0_9": 589,
+        "age_10_19": 1181,
+        "age_20_29": 1316,
+        "age_30_39": 1701,
+        "age_40_49": 2319,
+        "age_50_59": 2655,
+        "age_60_69": 3013,
+        "age_70_79": 2291,
+        "age_80_89": 919,
+        "age_90_99": 125,
+        "age_100_plus": 2
+      },
+      "name": "산호동",
+      "single_households": 4543
+    },
+    "4812511900": {
+      "population_total": 3827,
+      "population_male": 1868,
+      "population_female": 1959,
+      "children": [
+        "4812511900"
+      ],
+      "age": {
+        "age_0_9": 30,
+        "age_10_19": 166,
+        "age_20_29": 234,
+        "age_30_39": 278,
+        "age_40_49": 350,
+        "age_50_59": 668,
+        "age_60_69": 885,
+        "age_70_79": 791,
+        "age_80_89": 372,
+        "age_90_99": 52,
+        "age_100_plus": 1
+      },
+      "name": "상남동",
+      "single_households": 1468
+    },
+    "4812512000": {
+      "population_total": 819,
+      "population_male": 398,
+      "population_female": 421,
+      "children": [
+        "4812512000"
+      ],
+      "age": {
+        "age_0_9": 6,
+        "age_10_19": 34,
+        "age_20_29": 39,
+        "age_30_39": 52,
+        "age_40_49": 87,
+        "age_50_59": 146,
+        "age_60_69": 202,
+        "age_70_79": 156,
+        "age_80_89": 88,
+        "age_90_99": 8,
+        "age_100_plus": 1
+      },
+      "name": "서성동",
+      "single_households": 361
+    },
+    "4812512100": {
+      "population_total": 869,
+      "population_male": 420,
+      "population_female": 449,
+      "children": [
+        "4812512100"
+      ],
+      "age": {
+        "age_0_9": 12,
+        "age_10_19": 29,
+        "age_20_29": 35,
+        "age_30_39": 63,
+        "age_40_49": 93,
+        "age_50_59": 119,
+        "age_60_69": 191,
+        "age_70_79": 207,
+        "age_80_89": 100,
+        "age_90_99": 20,
+        "age_100_plus": 0
+      },
+      "name": "성호동",
+      "single_households": 302
+    },
+    "4812512200": {
+      "population_total": 272,
+      "population_male": 143,
+      "population_female": 129,
+      "children": [
+        "4812512200"
+      ],
+      "age": {
+        "age_0_9": 5,
+        "age_10_19": 13,
+        "age_20_29": 16,
+        "age_30_39": 22,
+        "age_40_49": 35,
+        "age_50_59": 51,
+        "age_60_69": 61,
+        "age_70_79": 46,
+        "age_80_89": 19,
+        "age_90_99": 4,
+        "age_100_plus": 0
+      },
+      "name": "수성동",
+      "single_households": 146
+    },
+    "4812512300": {
+      "population_total": 569,
+      "population_male": 290,
+      "population_female": 279,
+      "children": [
+        "4812512300"
+      ],
+      "age": {
+        "age_0_9": 7,
+        "age_10_19": 38,
+        "age_20_29": 43,
+        "age_30_39": 34,
+        "age_40_49": 68,
+        "age_50_59": 101,
+        "age_60_69": 119,
+        "age_70_79": 94,
+        "age_80_89": 48,
+        "age_90_99": 17,
+        "age_100_plus": 0
+      },
+      "name": "신월동",
+      "single_households": 207
+    },
+    "4812512400": {
+      "population_total": 480,
+      "population_male": 238,
+      "population_female": 242,
+      "children": [
+        "4812512400"
+      ],
+      "age": {
+        "age_0_9": 11,
+        "age_10_19": 34,
+        "age_20_29": 54,
+        "age_30_39": 31,
+        "age_40_49": 47,
+        "age_50_59": 83,
+        "age_60_69": 90,
+        "age_70_79": 82,
+        "age_80_89": 41,
+        "age_90_99": 7,
+        "age_100_plus": 0
+      },
+      "name": "신창동",
+      "single_households": 138
+    },
+    "4812512500": {
+      "population_total": 4170,
+      "population_male": 1949,
+      "population_female": 2221,
+      "children": [
+        "4812512500"
+      ],
+      "age": {
+        "age_0_9": 173,
+        "age_10_19": 432,
+        "age_20_29": 274,
+        "age_30_39": 364,
+        "age_40_49": 656,
+        "age_50_59": 685,
+        "age_60_69": 734,
+        "age_70_79": 577,
+        "age_80_89": 241,
+        "age_90_99": 34,
+        "age_100_plus": 0
+      },
+      "name": "신포동1가",
+      "single_households": 563
+    },
+    "4812512600": {
+      "population_total": 1813,
+      "population_male": 865,
+      "population_female": 948,
+      "children": [
+        "4812512600"
+      ],
+      "age": {
+        "age_0_9": 34,
+        "age_10_19": 74,
+        "age_20_29": 252,
+        "age_30_39": 251,
+        "age_40_49": 219,
+        "age_50_59": 297,
+        "age_60_69": 250,
+        "age_70_79": 259,
+        "age_80_89": 148,
+        "age_90_99": 29,
+        "age_100_plus": 0
+      },
+      "name": "신포동2가",
+      "single_households": 737
+    },
+    "4812512700": {
+      "population_total": 618,
+      "population_male": 298,
+      "population_female": 320,
+      "children": [
+        "4812512700"
+      ],
+      "age": {
+        "age_0_9": 15,
+        "age_10_19": 38,
+        "age_20_29": 57,
+        "age_30_39": 56,
+        "age_40_49": 62,
+        "age_50_59": 105,
+        "age_60_69": 122,
+        "age_70_79": 110,
+        "age_80_89": 49,
+        "age_90_99": 4,
+        "age_100_plus": 0
+      },
+      "name": "신흥동",
+      "single_households": 183
+    },
+    "4812512800": {
+      "population_total": 7349,
+      "population_male": 3554,
+      "population_female": 3795,
+      "children": [
+        "4812512800"
+      ],
+      "age": {
+        "age_0_9": 173,
+        "age_10_19": 581,
+        "age_20_29": 585,
+        "age_30_39": 606,
+        "age_40_49": 792,
+        "age_50_59": 1365,
+        "age_60_69": 1596,
+        "age_70_79": 1112,
+        "age_80_89": 457,
+        "age_90_99": 82,
+        "age_100_plus": 0
+      },
+      "name": "완월동",
+      "single_households": 1333
+    },
+    "4812512900": {
+      "population_total": 247,
+      "population_male": 117,
+      "population_female": 130,
+      "children": [
+        "4812512900"
+      ],
+      "age": {
+        "age_0_9": 2,
+        "age_10_19": 12,
+        "age_20_29": 22,
+        "age_30_39": 22,
+        "age_40_49": 22,
+        "age_50_59": 49,
+        "age_60_69": 62,
+        "age_70_79": 33,
+        "age_80_89": 20,
+        "age_90_99": 3,
+        "age_100_plus": 0
+      },
+      "name": "월남동1가",
+      "single_households": 83
+    },
+    "4812513000": {
+      "population_total": 167,
+      "population_male": 88,
+      "population_female": 79,
+      "children": [
+        "4812513000"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 4,
+        "age_20_29": 30,
+        "age_30_39": 16,
+        "age_40_49": 24,
+        "age_50_59": 22,
+        "age_60_69": 28,
+        "age_70_79": 29,
+        "age_80_89": 11,
+        "age_90_99": 3,
+        "age_100_plus": 0
+      },
+      "name": "월남동2가",
+      "single_households": 129
+    },
+    "4812513100": {
+      "population_total": 464,
+      "population_male": 242,
+      "population_female": 222,
+      "children": [
+        "4812513100"
+      ],
+      "age": {
+        "age_0_9": 12,
+        "age_10_19": 29,
+        "age_20_29": 169,
+        "age_30_39": 52,
+        "age_40_49": 54,
+        "age_50_59": 48,
+        "age_60_69": 42,
+        "age_70_79": 39,
+        "age_80_89": 19,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "월남동3가",
+      "single_households": 253
+    },
+    "4812513200": {
+      "population_total": 242,
+      "population_male": 119,
+      "population_female": 123,
+      "children": [
+        "4812513200"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 12,
+        "age_20_29": 79,
+        "age_30_39": 25,
+        "age_40_49": 21,
+        "age_50_59": 28,
+        "age_60_69": 41,
+        "age_70_79": 26,
+        "age_80_89": 8,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "월남동4가",
+      "single_households": 128
+    },
+    "4812513300": {
+      "population_total": 354,
+      "population_male": 179,
+      "population_female": 175,
+      "children": [
+        "4812513300"
+      ],
+      "age": {
+        "age_0_9": 26,
+        "age_10_19": 41,
+        "age_20_29": 33,
+        "age_30_39": 53,
+        "age_40_49": 76,
+        "age_50_59": 58,
+        "age_60_69": 34,
+        "age_70_79": 22,
+        "age_80_89": 10,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "월남동5가",
+      "single_households": 79
+    },
+    "4812513400": {
+      "population_total": 33304,
+      "population_male": 16431,
+      "population_female": 16873,
+      "children": [
+        "4812513400"
+      ],
+      "age": {
+        "age_0_9": 2939,
+        "age_10_19": 3960,
+        "age_20_29": 3051,
+        "age_30_39": 4040,
+        "age_40_49": 5773,
+        "age_50_59": 5335,
+        "age_60_69": 4670,
+        "age_70_79": 2584,
+        "age_80_89": 835,
+        "age_90_99": 113,
+        "age_100_plus": 4
+      },
+      "name": "월영동",
+      "single_households": 3734
+    },
+    "4812513500": {
+      "population_total": 4014,
+      "population_male": 1915,
+      "population_female": 2099,
+      "children": [
+        "4812513500"
+      ],
+      "age": {
+        "age_0_9": 189,
+        "age_10_19": 492,
+        "age_20_29": 333,
+        "age_30_39": 339,
+        "age_40_49": 620,
+        "age_50_59": 770,
+        "age_60_69": 633,
+        "age_70_79": 413,
+        "age_80_89": 189,
+        "age_90_99": 36,
+        "age_100_plus": 0
+      },
+      "name": "월포동",
+      "single_households": 396
+    },
+    "4812513600": {
+      "population_total": 477,
+      "population_male": 228,
+      "population_female": 249,
+      "children": [
+        "4812513600"
+      ],
+      "age": {
+        "age_0_9": 6,
+        "age_10_19": 9,
+        "age_20_29": 24,
+        "age_30_39": 27,
+        "age_40_49": 28,
+        "age_50_59": 68,
+        "age_60_69": 129,
+        "age_70_79": 115,
+        "age_80_89": 53,
+        "age_90_99": 18,
+        "age_100_plus": 0
+      },
+      "name": "예곡동",
+      "single_households": 165
+    },
+    "4812513700": {
+      "population_total": 4595,
+      "population_male": 2424,
+      "population_female": 2171,
+      "children": [
+        "4812513700"
+      ],
+      "age": {
+        "age_0_9": 183,
+        "age_10_19": 319,
+        "age_20_29": 329,
+        "age_30_39": 512,
+        "age_40_49": 766,
+        "age_50_59": 760,
+        "age_60_69": 916,
+        "age_70_79": 542,
+        "age_80_89": 236,
+        "age_90_99": 32,
+        "age_100_plus": 0
+      },
+      "name": "오동동",
+      "single_households": 1645
+    },
+    "4812513800": {
+      "population_total": 1782,
+      "population_male": 831,
+      "population_female": 951,
+      "children": [
+        "4812513800"
+      ],
+      "age": {
+        "age_0_9": 25,
+        "age_10_19": 51,
+        "age_20_29": 91,
+        "age_30_39": 94,
+        "age_40_49": 146,
+        "age_50_59": 260,
+        "age_60_69": 513,
+        "age_70_79": 451,
+        "age_80_89": 137,
+        "age_90_99": 13,
+        "age_100_plus": 1
+      },
+      "name": "우산동",
+      "single_households": 845
+    },
+    "4812513900": {
+      "population_total": 199,
+      "population_male": 101,
+      "population_female": 98,
+      "children": [
+        "4812513900"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 4,
+        "age_20_29": 30,
+        "age_30_39": 11,
+        "age_40_49": 16,
+        "age_50_59": 40,
+        "age_60_69": 40,
+        "age_70_79": 40,
+        "age_80_89": 15,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "유록동",
+      "single_households": 52
+    },
+    "4812514000": {
+      "population_total": 8482,
+      "population_male": 4070,
+      "population_female": 4412,
+      "children": [
+        "4812514000"
+      ],
+      "age": {
+        "age_0_9": 179,
+        "age_10_19": 674,
+        "age_20_29": 645,
+        "age_30_39": 607,
+        "age_40_49": 1009,
+        "age_50_59": 1469,
+        "age_60_69": 1818,
+        "age_70_79": 1436,
+        "age_80_89": 561,
+        "age_90_99": 82,
+        "age_100_plus": 2
+      },
+      "name": "자산동",
+      "single_households": 1780
+    },
+    "4812514100": {
+      "population_total": 196,
+      "population_male": 102,
+      "population_female": 94,
+      "children": [
+        "4812514100"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 7,
+        "age_20_29": 8,
+        "age_30_39": 11,
+        "age_40_49": 22,
+        "age_50_59": 30,
+        "age_60_69": 40,
+        "age_70_79": 47,
+        "age_80_89": 23,
+        "age_90_99": 7,
+        "age_100_plus": 0
+      },
+      "name": "장군동1가",
+      "single_households": 50
+    },
+    "4812514200": {
+      "population_total": 273,
+      "population_male": 136,
+      "population_female": 137,
+      "children": [
+        "4812514200"
+      ],
+      "age": {
+        "age_0_9": 3,
+        "age_10_19": 10,
+        "age_20_29": 15,
+        "age_30_39": 19,
+        "age_40_49": 24,
+        "age_50_59": 55,
+        "age_60_69": 39,
+        "age_70_79": 68,
+        "age_80_89": 39,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "장군동2가",
+      "single_households": 105
+    },
+    "4812514300": {
+      "population_total": 455,
+      "population_male": 235,
+      "population_female": 220,
+      "children": [
+        "4812514300"
+      ],
+      "age": {
+        "age_0_9": 4,
+        "age_10_19": 16,
+        "age_20_29": 60,
+        "age_30_39": 48,
+        "age_40_49": 42,
+        "age_50_59": 64,
+        "age_60_69": 89,
+        "age_70_79": 90,
+        "age_80_89": 33,
+        "age_90_99": 9,
+        "age_100_plus": 0
+      },
+      "name": "장군동3가",
+      "single_households": 190
+    },
+    "4812514400": {
+      "population_total": 611,
+      "population_male": 293,
+      "population_female": 318,
+      "children": [
+        "4812514400"
+      ],
+      "age": {
+        "age_0_9": 6,
+        "age_10_19": 28,
+        "age_20_29": 55,
+        "age_30_39": 57,
+        "age_40_49": 65,
+        "age_50_59": 94,
+        "age_60_69": 132,
+        "age_70_79": 118,
+        "age_80_89": 46,
+        "age_90_99": 10,
+        "age_100_plus": 0
+      },
+      "name": "장군동4가",
+      "single_households": 197
+    },
+    "4812514500": {
+      "population_total": 281,
+      "population_male": 137,
+      "population_female": 144,
+      "children": [
+        "4812514500"
+      ],
+      "age": {
+        "age_0_9": 5,
+        "age_10_19": 17,
+        "age_20_29": 34,
+        "age_30_39": 32,
+        "age_40_49": 37,
+        "age_50_59": 46,
+        "age_60_69": 53,
+        "age_70_79": 37,
+        "age_80_89": 18,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "장군동5가",
+      "single_households": 98
+    },
+    "4812514600": {
+      "population_total": 887,
+      "population_male": 455,
+      "population_female": 432,
+      "children": [
+        "4812514600"
+      ],
+      "age": {
+        "age_0_9": 12,
+        "age_10_19": 31,
+        "age_20_29": 57,
+        "age_30_39": 78,
+        "age_40_49": 126,
+        "age_50_59": 149,
+        "age_60_69": 200,
+        "age_70_79": 162,
+        "age_80_89": 63,
+        "age_90_99": 9,
+        "age_100_plus": 0
+      },
+      "name": "중성동",
+      "single_households": 450
+    },
+    "4812514700": {
+      "population_total": 506,
+      "population_male": 238,
+      "population_female": 268,
+      "children": [
+        "4812514700"
+      ],
+      "age": {
+        "age_0_9": 15,
+        "age_10_19": 42,
+        "age_20_29": 42,
+        "age_30_39": 44,
+        "age_40_49": 65,
+        "age_50_59": 89,
+        "age_60_69": 101,
+        "age_70_79": 62,
+        "age_80_89": 33,
+        "age_90_99": 12,
+        "age_100_plus": 1
+      },
+      "name": "중앙동1가",
+      "single_households": 186
+    },
+    "4812514800": {
+      "population_total": 2872,
+      "population_male": 1358,
+      "population_female": 1514,
+      "children": [
+        "4812514800"
+      ],
+      "age": {
+        "age_0_9": 74,
+        "age_10_19": 265,
+        "age_20_29": 237,
+        "age_30_39": 234,
+        "age_40_49": 367,
+        "age_50_59": 542,
+        "age_60_69": 568,
+        "age_70_79": 377,
+        "age_80_89": 173,
+        "age_90_99": 32,
+        "age_100_plus": 3
+      },
+      "name": "중앙동2가",
+      "single_households": 383
+    },
+    "4812514900": {
+      "population_total": 1861,
+      "population_male": 880,
+      "population_female": 981,
+      "children": [
+        "4812514900"
+      ],
+      "age": {
+        "age_0_9": 53,
+        "age_10_19": 151,
+        "age_20_29": 124,
+        "age_30_39": 174,
+        "age_40_49": 260,
+        "age_50_59": 288,
+        "age_60_69": 341,
+        "age_70_79": 281,
+        "age_80_89": 168,
+        "age_90_99": 20,
+        "age_100_plus": 1
+      },
+      "name": "중앙동3가",
+      "single_households": 420
+    },
+    "4812515000": {
+      "population_total": 294,
+      "population_male": 158,
+      "population_female": 136,
+      "children": [
+        "4812515000"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 11,
+        "age_20_29": 17,
+        "age_30_39": 23,
+        "age_40_49": 35,
+        "age_50_59": 52,
+        "age_60_69": 76,
+        "age_70_79": 59,
+        "age_80_89": 16,
+        "age_90_99": 4,
+        "age_100_plus": 0
+      },
+      "name": "창동",
+      "single_households": 141
+    },
+    "4812515100": {
+      "population_total": 1050,
+      "population_male": 482,
+      "population_female": 568,
+      "children": [
+        "4812515100"
+      ],
+      "age": {
+        "age_0_9": 18,
+        "age_10_19": 85,
+        "age_20_29": 71,
+        "age_30_39": 67,
+        "age_40_49": 112,
+        "age_50_59": 182,
+        "age_60_69": 202,
+        "age_70_79": 223,
+        "age_80_89": 79,
+        "age_90_99": 11,
+        "age_100_plus": 0
+      },
+      "name": "창포동1가",
+      "single_households": 136
+    },
+    "4812515200": {
+      "population_total": 894,
+      "population_male": 414,
+      "population_female": 480,
+      "children": [
+        "4812515200"
+      ],
+      "age": {
+        "age_0_9": 13,
+        "age_10_19": 72,
+        "age_20_29": 73,
+        "age_30_39": 57,
+        "age_40_49": 97,
+        "age_50_59": 124,
+        "age_60_69": 203,
+        "age_70_79": 176,
+        "age_80_89": 68,
+        "age_90_99": 11,
+        "age_100_plus": 0
+      },
+      "name": "창포동2가",
+      "single_households": 171
+    },
+    "4812515300": {
+      "population_total": 1055,
+      "population_male": 531,
+      "population_female": 524,
+      "children": [
+        "4812515300"
+      ],
+      "age": {
+        "age_0_9": 12,
+        "age_10_19": 80,
+        "age_20_29": 354,
+        "age_30_39": 60,
+        "age_40_49": 94,
+        "age_50_59": 131,
+        "age_60_69": 147,
+        "age_70_79": 109,
+        "age_80_89": 59,
+        "age_90_99": 8,
+        "age_100_plus": 1
+      },
+      "name": "창포동3가",
+      "single_households": 576
+    },
+    "4812515400": {
+      "population_total": 299,
+      "population_male": 159,
+      "population_female": 140,
+      "children": [
+        "4812515400"
+      ],
+      "age": {
+        "age_0_9": 6,
+        "age_10_19": 17,
+        "age_20_29": 63,
+        "age_30_39": 22,
+        "age_40_49": 33,
+        "age_50_59": 38,
+        "age_60_69": 42,
+        "age_70_79": 50,
+        "age_80_89": 22,
+        "age_90_99": 6,
+        "age_100_plus": 0
+      },
+      "name": "청계동",
+      "single_households": 168
+    },
+    "4812515500": {
+      "population_total": 1690,
+      "population_male": 784,
+      "population_female": 906,
+      "children": [
+        "4812515500"
+      ],
+      "age": {
+        "age_0_9": 25,
+        "age_10_19": 98,
+        "age_20_29": 124,
+        "age_30_39": 106,
+        "age_40_49": 176,
+        "age_50_59": 295,
+        "age_60_69": 373,
+        "age_70_79": 321,
+        "age_80_89": 152,
+        "age_90_99": 20,
+        "age_100_plus": 0
+      },
+      "name": "추산동",
+      "single_households": 534
+    },
+    "4812515600": {
+      "population_total": 387,
+      "population_male": 193,
+      "population_female": 194,
+      "children": [
+        "4812515600"
+      ],
+      "age": {
+        "age_0_9": 4,
+        "age_10_19": 14,
+        "age_20_29": 57,
+        "age_30_39": 38,
+        "age_40_49": 29,
+        "age_50_59": 54,
+        "age_60_69": 82,
+        "age_70_79": 83,
+        "age_80_89": 23,
+        "age_90_99": 3,
+        "age_100_plus": 0
+      },
+      "name": "평화동",
+      "single_households": 143
+    },
+    "4812515700": {
+      "population_total": 236,
+      "population_male": 131,
+      "population_female": 105,
+      "children": [
+        "4812515700"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 15,
+        "age_20_29": 107,
+        "age_30_39": 16,
+        "age_40_49": 10,
+        "age_50_59": 22,
+        "age_60_69": 23,
+        "age_70_79": 28,
+        "age_80_89": 13,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "화영동",
+      "single_households": 141
+    },
+    "4812515800": {
+      "population_total": 7510,
+      "population_male": 3628,
+      "population_female": 3882,
+      "children": [
+        "4812515800"
+      ],
+      "age": {
+        "age_0_9": 223,
+        "age_10_19": 581,
+        "age_20_29": 817,
+        "age_30_39": 704,
+        "age_40_49": 939,
+        "age_50_59": 1306,
+        "age_60_69": 1480,
+        "age_70_79": 1012,
+        "age_80_89": 399,
+        "age_90_99": 49,
+        "age_100_plus": 0
+      },
+      "name": "해운동",
+      "single_households": 1741
+    },
+    "4812515900": {
+      "population_total": 11742,
+      "population_male": 5850,
+      "population_female": 5892,
+      "children": [
+        "4812515900"
+      ],
+      "age": {
+        "age_0_9": 1195,
+        "age_10_19": 1814,
+        "age_20_29": 745,
+        "age_30_39": 1600,
+        "age_40_49": 2810,
+        "age_50_59": 1688,
+        "age_60_69": 1181,
+        "age_70_79": 560,
+        "age_80_89": 127,
+        "age_90_99": 21,
+        "age_100_plus": 1
+      },
+      "name": "현동",
+      "single_households": 1102
+    },
+    "4812516000": {
+      "population_total": 413,
+      "population_male": 227,
+      "population_female": 186,
+      "children": [
+        "4812516000"
+      ],
+      "age": {
+        "age_0_9": 8,
+        "age_10_19": 28,
+        "age_20_29": 88,
+        "age_30_39": 31,
+        "age_40_49": 57,
+        "age_50_59": 55,
+        "age_60_69": 69,
+        "age_70_79": 52,
+        "age_80_89": 24,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "홍문동",
+      "single_households": 163
+    },
+    "4812531000": {
+      "population_total": 3710,
+      "population_male": 1891,
+      "population_female": 1819,
+      "children": [
+        "4812531021",
+        "4812531022",
+        "4812531023",
+        "4812531024",
+        "4812531025",
+        "4812531026",
+        "4812531027",
+        "4812531028",
+        "4812531029",
+        "4812531030"
+      ],
+      "age": {
+        "age_0_9": 56,
+        "age_10_19": 108,
+        "age_20_29": 136,
+        "age_30_39": 195,
+        "age_40_49": 304,
+        "age_50_59": 481,
+        "age_60_69": 1072,
+        "age_70_79": 872,
+        "age_80_89": 418,
+        "age_90_99": 68,
+        "age_100_plus": 0
+      },
+      "name": "구산면",
+      "single_households": 1277
+    },
+    "4812532000": {
+      "population_total": 11177,
+      "population_male": 5745,
+      "population_female": 5432,
+      "children": [
+        "4812532021",
+        "4812532022",
+        "4812532023",
+        "4812532024",
+        "4812532025",
+        "4812532026",
+        "4812532027",
+        "4812532028",
+        "4812532029",
+        "4812532030"
+      ],
+      "age": {
+        "age_0_9": 527,
+        "age_10_19": 1131,
+        "age_20_29": 703,
+        "age_30_39": 882,
+        "age_40_49": 1776,
+        "age_50_59": 1785,
+        "age_60_69": 2151,
+        "age_70_79": 1541,
+        "age_80_89": 572,
+        "age_90_99": 108,
+        "age_100_plus": 1
+      },
+      "name": "진동면",
+      "single_households": 2383
+    },
+    "4812533000": {
+      "population_total": 2980,
+      "population_male": 1580,
+      "population_female": 1400,
+      "children": [
+        "4812533021",
+        "4812533022",
+        "4812533023",
+        "4812533024",
+        "4812533025",
+        "4812533026",
+        "4812533027",
+        "4812533028",
+        "4812533029",
+        "4812533030",
+        "4812533031",
+        "4812533032",
+        "4812533033",
+        "4812533034",
+        "4812533035"
+      ],
+      "age": {
+        "age_0_9": 28,
+        "age_10_19": 91,
+        "age_20_29": 143,
+        "age_30_39": 133,
+        "age_40_49": 213,
+        "age_50_59": 465,
+        "age_60_69": 845,
+        "age_70_79": 669,
+        "age_80_89": 319,
+        "age_90_99": 74,
+        "age_100_plus": 0
+      },
+      "name": "진북면",
+      "single_households": 990
+    },
+    "4812534000": {
+      "population_total": 3524,
+      "population_male": 1761,
+      "population_female": 1763,
+      "children": [
+        "4812534021",
+        "4812534022",
+        "4812534023",
+        "4812534024",
+        "4812534025",
+        "4812534026",
+        "4812534027",
+        "4812534028",
+        "4812534029",
+        "4812534030",
+        "4812534031",
+        "4812534032",
+        "4812534033",
+        "4812534034",
+        "4812534035",
+        "4812534036",
+        "4812534037"
+      ],
+      "age": {
+        "age_0_9": 31,
+        "age_10_19": 85,
+        "age_20_29": 115,
+        "age_30_39": 141,
+        "age_40_49": 190,
+        "age_50_59": 492,
+        "age_60_69": 1018,
+        "age_70_79": 830,
+        "age_80_89": 485,
+        "age_90_99": 135,
+        "age_100_plus": 2
+      },
+      "name": "진전면",
+      "single_households": 1188
+    },
+    "4812710100": {
+      "population_total": 16005,
+      "population_male": 7945,
+      "population_female": 8060,
+      "children": [
+        "4812710100"
+      ],
+      "age": {
+        "age_0_9": 388,
+        "age_10_19": 1089,
+        "age_20_29": 1439,
+        "age_30_39": 1461,
+        "age_40_49": 1902,
+        "age_50_59": 2838,
+        "age_60_69": 3468,
+        "age_70_79": 2510,
+        "age_80_89": 805,
+        "age_90_99": 104,
+        "age_100_plus": 1
+      },
+      "name": "구암동",
+      "single_households": 3897
+    },
+    "4812710200": {
+      "population_total": 388,
+      "population_male": 200,
+      "population_female": 188,
+      "children": [
+        "4812710200"
+      ],
+      "age": {
+        "age_0_9": 3,
+        "age_10_19": 9,
+        "age_20_29": 15,
+        "age_30_39": 22,
+        "age_40_49": 28,
+        "age_50_59": 42,
+        "age_60_69": 104,
+        "age_70_79": 107,
+        "age_80_89": 50,
+        "age_90_99": 8,
+        "age_100_plus": 0
+      },
+      "name": "두척동",
+      "single_households": 125
+    },
+    "4812710300": {
+      "population_total": 2601,
+      "population_male": 1431,
+      "population_female": 1170,
+      "children": [
+        "4812710300"
+      ],
+      "age": {
+        "age_0_9": 62,
+        "age_10_19": 142,
+        "age_20_29": 183,
+        "age_30_39": 237,
+        "age_40_49": 361,
+        "age_50_59": 499,
+        "age_60_69": 539,
+        "age_70_79": 413,
+        "age_80_89": 143,
+        "age_90_99": 21,
+        "age_100_plus": 1
+      },
+      "name": "봉암동",
+      "single_households": 969
+    },
+    "4812710400": {
+      "population_total": 15138,
+      "population_male": 7493,
+      "population_female": 7645,
+      "children": [
+        "4812710400"
+      ],
+      "age": {
+        "age_0_9": 702,
+        "age_10_19": 1089,
+        "age_20_29": 1086,
+        "age_30_39": 1747,
+        "age_40_49": 2090,
+        "age_50_59": 2401,
+        "age_60_69": 2931,
+        "age_70_79": 2215,
+        "age_80_89": 794,
+        "age_90_99": 83,
+        "age_100_plus": 0
+      },
+      "name": "석전동",
+      "single_households": 3306
+    },
+    "4812710500": {
+      "population_total": 43559,
+      "population_male": 21428,
+      "population_female": 22131,
+      "children": [
+        "4812710500"
+      ],
+      "age": {
+        "age_0_9": 3118,
+        "age_10_19": 4538,
+        "age_20_29": 3561,
+        "age_30_39": 5386,
+        "age_40_49": 7142,
+        "age_50_59": 7100,
+        "age_60_69": 6864,
+        "age_70_79": 4281,
+        "age_80_89": 1401,
+        "age_90_99": 166,
+        "age_100_plus": 2
+      },
+      "name": "양덕동",
+      "single_households": 5995
+    },
+    "4812710600": {
+      "population_total": 16491,
+      "population_male": 8233,
+      "population_female": 8258,
+      "children": [
+        "4812710600"
+      ],
+      "age": {
+        "age_0_9": 800,
+        "age_10_19": 1032,
+        "age_20_29": 1518,
+        "age_30_39": 1926,
+        "age_40_49": 2171,
+        "age_50_59": 2760,
+        "age_60_69": 3020,
+        "age_70_79": 2337,
+        "age_80_89": 818,
+        "age_90_99": 107,
+        "age_100_plus": 2
+      },
+      "name": "합성동",
+      "single_households": 4645
+    },
+    "4812710700": {
+      "population_total": 4477,
+      "population_male": 2256,
+      "population_female": 2221,
+      "children": [
+        "4812710700"
+      ],
+      "age": {
+        "age_0_9": 77,
+        "age_10_19": 198,
+        "age_20_29": 280,
+        "age_30_39": 354,
+        "age_40_49": 458,
+        "age_50_59": 714,
+        "age_60_69": 1139,
+        "age_70_79": 873,
+        "age_80_89": 342,
+        "age_90_99": 40,
+        "age_100_plus": 2
+      },
+      "name": "회성동",
+      "single_households": 1219
+    },
+    "4812710800": {
+      "population_total": 18108,
+      "population_male": 8846,
+      "population_female": 9262,
+      "children": [
+        "4812710800"
+      ],
+      "age": {
+        "age_0_9": 674,
+        "age_10_19": 1246,
+        "age_20_29": 1199,
+        "age_30_39": 1864,
+        "age_40_49": 2217,
+        "age_50_59": 2772,
+        "age_60_69": 3662,
+        "age_70_79": 3017,
+        "age_80_89": 1270,
+        "age_90_99": 183,
+        "age_100_plus": 4
+      },
+      "name": "회원동",
+      "single_households": 4238
+    },
+    "4812725000": {
+      "population_total": 56718,
+      "population_male": 28432,
+      "population_female": 28286,
+      "children": [
+        "4812725021",
+        "4812725022",
+        "4812725023",
+        "4812725024",
+        "4812725025",
+        "4812725026",
+        "4812725027",
+        "4812725028",
+        "4812725029",
+        "4812725030"
+      ],
+      "age": {
+        "age_0_9": 2147,
+        "age_10_19": 6426,
+        "age_20_29": 5826,
+        "age_30_39": 4819,
+        "age_40_49": 8132,
+        "age_50_59": 12160,
+        "age_60_69": 10011,
+        "age_70_79": 5008,
+        "age_80_89": 1872,
+        "age_90_99": 315,
+        "age_100_plus": 2
+      },
+      "name": "내서읍",
+      "single_households": 8415
+    },
+    "4812910100": {
+      "population_total": 1420,
+      "population_male": 740,
+      "population_female": 680,
+      "children": [
+        "4812910100"
+      ],
+      "age": {
+        "age_0_9": 273,
+        "age_10_19": 180,
+        "age_20_29": 189,
+        "age_30_39": 419,
+        "age_40_49": 260,
+        "age_50_59": 70,
+        "age_60_69": 24,
+        "age_70_79": 3,
+        "age_80_89": 2,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "동상동",
+      "single_households": 34
+    },
+    "4812910200": {
+      "population_total": 41,
+      "population_male": 18,
+      "population_female": 23,
+      "children": [
+        "4812910200"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 3,
+        "age_20_29": 4,
+        "age_30_39": 2,
+        "age_40_49": 3,
+        "age_50_59": 16,
+        "age_60_69": 4,
+        "age_70_79": 7,
+        "age_80_89": 2,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "도천동",
+      "single_households": 8
+    },
+    "4812910300": {
+      "population_total": 607,
+      "population_male": 540,
+      "population_female": 67,
+      "children": [
+        "4812910300"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 3,
+        "age_20_29": 401,
+        "age_30_39": 166,
+        "age_40_49": 31,
+        "age_50_59": 5,
+        "age_60_69": 1,
+        "age_70_79": 0,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "도만동",
+      "single_households": 595
+    },
+    "4812910400": {
+      "population_total": 2189,
+      "population_male": 1107,
+      "population_female": 1082,
+      "children": [
+        "4812910400"
+      ],
+      "age": {
+        "age_0_9": 249,
+        "age_10_19": 477,
+        "age_20_29": 227,
+        "age_30_39": 351,
+        "age_40_49": 561,
+        "age_50_59": 274,
+        "age_60_69": 18,
+        "age_70_79": 21,
+        "age_80_89": 11,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "신흥동",
+      "single_households": 7
+    },
+    "4812910500": {
+      "population_total": 154,
+      "population_male": 46,
+      "population_female": 108,
+      "children": [
+        "4812910500"
+      ],
+      "age": {
+        "age_0_9": 4,
+        "age_10_19": 5,
+        "age_20_29": 50,
+        "age_30_39": 25,
+        "age_40_49": 11,
+        "age_50_59": 15,
+        "age_60_69": 19,
+        "age_70_79": 12,
+        "age_80_89": 13,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "현동",
+      "single_households": 74
+    },
+    "4812910700": {
+      "population_total": 844,
+      "population_male": 419,
+      "population_female": 425,
+      "children": [
+        "4812910700"
+      ],
+      "age": {
+        "age_0_9": 14,
+        "age_10_19": 61,
+        "age_20_29": 87,
+        "age_30_39": 103,
+        "age_40_49": 99,
+        "age_50_59": 149,
+        "age_60_69": 140,
+        "age_70_79": 119,
+        "age_80_89": 62,
+        "age_90_99": 10,
+        "age_100_plus": 0
+      },
+      "name": "태평동",
+      "single_households": 260
+    },
+    "4812910800": {
+      "population_total": 606,
+      "population_male": 305,
+      "population_female": 301,
+      "children": [
+        "4812910800"
+      ],
+      "age": {
+        "age_0_9": 10,
+        "age_10_19": 41,
+        "age_20_29": 57,
+        "age_30_39": 45,
+        "age_40_49": 73,
+        "age_50_59": 111,
+        "age_60_69": 113,
+        "age_70_79": 94,
+        "age_80_89": 51,
+        "age_90_99": 11,
+        "age_100_plus": 0
+      },
+      "name": "충의동",
+      "single_households": 174
+    },
+    "4812910900": {
+      "population_total": 50,
+      "population_male": 20,
+      "population_female": 30,
+      "children": [
+        "4812910900"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 1,
+        "age_20_29": 1,
+        "age_30_39": 1,
+        "age_40_49": 2,
+        "age_50_59": 8,
+        "age_60_69": 10,
+        "age_70_79": 20,
+        "age_80_89": 7,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "무송동",
+      "single_households": 16
+    },
+    "4812911000": {
+      "population_total": 246,
+      "population_male": 116,
+      "population_female": 130,
+      "children": [
+        "4812911000"
+      ],
+      "age": {
+        "age_0_9": 5,
+        "age_10_19": 10,
+        "age_20_29": 20,
+        "age_30_39": 20,
+        "age_40_49": 22,
+        "age_50_59": 37,
+        "age_60_69": 65,
+        "age_70_79": 51,
+        "age_80_89": 13,
+        "age_90_99": 3,
+        "age_100_plus": 0
+      },
+      "name": "인의동",
+      "single_households": 34
+    },
+    "4812911100": {
+      "population_total": 255,
+      "population_male": 131,
+      "population_female": 124,
+      "children": [
+        "4812911100"
+      ],
+      "age": {
+        "age_0_9": 13,
+        "age_10_19": 20,
+        "age_20_29": 20,
+        "age_30_39": 20,
+        "age_40_49": 29,
+        "age_50_59": 45,
+        "age_60_69": 55,
+        "age_70_79": 37,
+        "age_80_89": 14,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "숭인동",
+      "single_households": 57
+    },
+    "4812911200": {
+      "population_total": 77,
+      "population_male": 39,
+      "population_female": 38,
+      "children": [
+        "4812911200"
+      ],
+      "age": {
+        "age_0_9": 4,
+        "age_10_19": 5,
+        "age_20_29": 9,
+        "age_30_39": 3,
+        "age_40_49": 10,
+        "age_50_59": 6,
+        "age_60_69": 18,
+        "age_70_79": 12,
+        "age_80_89": 7,
+        "age_90_99": 3,
+        "age_100_plus": 0
+      },
+      "name": "대영동",
+      "single_households": 18
+    },
+    "4812911500": {
+      "population_total": 1764,
+      "population_male": 894,
+      "population_female": 870,
+      "children": [
+        "4812911500"
+      ],
+      "age": {
+        "age_0_9": 48,
+        "age_10_19": 159,
+        "age_20_29": 186,
+        "age_30_39": 117,
+        "age_40_49": 194,
+        "age_50_59": 282,
+        "age_60_69": 322,
+        "age_70_79": 301,
+        "age_80_89": 133,
+        "age_90_99": 22,
+        "age_100_plus": 0
+      },
+      "name": "제황산동",
+      "single_households": 387
+    },
+    "4812911600": {
+      "population_total": 717,
+      "population_male": 371,
+      "population_female": 346,
+      "children": [
+        "4812911600"
+      ],
+      "age": {
+        "age_0_9": 16,
+        "age_10_19": 66,
+        "age_20_29": 67,
+        "age_30_39": 71,
+        "age_40_49": 135,
+        "age_50_59": 149,
+        "age_60_69": 115,
+        "age_70_79": 71,
+        "age_80_89": 26,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "속천동",
+      "single_households": 142
+    },
+    "4812911700": {
+      "population_total": 685,
+      "population_male": 394,
+      "population_female": 291,
+      "children": [
+        "4812911700"
+      ],
+      "age": {
+        "age_0_9": 22,
+        "age_10_19": 24,
+        "age_20_29": 93,
+        "age_30_39": 73,
+        "age_40_49": 66,
+        "age_50_59": 103,
+        "age_60_69": 135,
+        "age_70_79": 116,
+        "age_80_89": 48,
+        "age_90_99": 4,
+        "age_100_plus": 1
+      },
+      "name": "대죽동",
+      "single_households": 235
+    },
+    "4812911800": {
+      "population_total": 147,
+      "population_male": 72,
+      "population_female": 75,
+      "children": [
+        "4812911800"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 5,
+        "age_20_29": 7,
+        "age_30_39": 2,
+        "age_40_49": 14,
+        "age_50_59": 24,
+        "age_60_69": 43,
+        "age_70_79": 37,
+        "age_80_89": 13,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "안곡동",
+      "single_households": 46
+    },
+    "4812911900": {
+      "population_total": 205,
+      "population_male": 99,
+      "population_female": 106,
+      "children": [
+        "4812911900"
+      ],
+      "age": {
+        "age_0_9": 4,
+        "age_10_19": 10,
+        "age_20_29": 19,
+        "age_30_39": 18,
+        "age_40_49": 26,
+        "age_50_59": 27,
+        "age_60_69": 46,
+        "age_70_79": 31,
+        "age_80_89": 23,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "수송동",
+      "single_households": 67
+    },
+    "4812912000": {
+      "population_total": 237,
+      "population_male": 130,
+      "population_female": 107,
+      "children": [
+        "4812912000"
+      ],
+      "age": {
+        "age_0_9": 2,
+        "age_10_19": 21,
+        "age_20_29": 47,
+        "age_30_39": 26,
+        "age_40_49": 35,
+        "age_50_59": 25,
+        "age_60_69": 37,
+        "age_70_79": 31,
+        "age_80_89": 10,
+        "age_90_99": 3,
+        "age_100_plus": 0
+      },
+      "name": "회현동",
+      "single_households": 109
+    },
+    "4812912100": {
+      "population_total": 253,
+      "population_male": 121,
+      "population_female": 132,
+      "children": [
+        "4812912100"
+      ],
+      "age": {
+        "age_0_9": 8,
+        "age_10_19": 18,
+        "age_20_29": 17,
+        "age_30_39": 16,
+        "age_40_49": 27,
+        "age_50_59": 38,
+        "age_60_69": 59,
+        "age_70_79": 45,
+        "age_80_89": 21,
+        "age_90_99": 4,
+        "age_100_plus": 0
+      },
+      "name": "익선동",
+      "single_households": 60
+    },
+    "4812912200": {
+      "population_total": 180,
+      "population_male": 88,
+      "population_female": 92,
+      "children": [
+        "4812912200"
+      ],
+      "age": {
+        "age_0_9": 10,
+        "age_10_19": 15,
+        "age_20_29": 15,
+        "age_30_39": 19,
+        "age_40_49": 29,
+        "age_50_59": 29,
+        "age_60_69": 36,
+        "age_70_79": 12,
+        "age_80_89": 14,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "창선동",
+      "single_households": 50
+    },
+    "4812912300": {
+      "population_total": 20,
+      "population_male": 11,
+      "population_female": 9,
+      "children": [
+        "4812912300"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 1,
+        "age_20_29": 1,
+        "age_30_39": 1,
+        "age_40_49": 4,
+        "age_50_59": 4,
+        "age_60_69": 4,
+        "age_70_79": 3,
+        "age_80_89": 2,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "대천동",
+      "single_households": 8
+    },
+    "4812912400": {
+      "population_total": 712,
+      "population_male": 356,
+      "population_female": 356,
+      "children": [
+        "4812912400"
+      ],
+      "age": {
+        "age_0_9": 13,
+        "age_10_19": 83,
+        "age_20_29": 92,
+        "age_30_39": 63,
+        "age_40_49": 118,
+        "age_50_59": 130,
+        "age_60_69": 96,
+        "age_70_79": 83,
+        "age_80_89": 32,
+        "age_90_99": 1,
+        "age_100_plus": 1
+      },
+      "name": "광화동",
+      "single_households": 143
+    },
+    "4812912500": {
+      "population_total": 1,
+      "population_male": 1,
+      "population_female": 0,
+      "children": [
+        "4812912500"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 0,
+        "age_50_59": 0,
+        "age_60_69": 1,
+        "age_70_79": 0,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "통신동",
+      "single_households": 1
+    },
+    "4812912600": {
+      "population_total": 70,
+      "population_male": 32,
+      "population_female": 38,
+      "children": [
+        "4812912600"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 0,
+        "age_20_29": 5,
+        "age_30_39": 10,
+        "age_40_49": 1,
+        "age_50_59": 11,
+        "age_60_69": 17,
+        "age_70_79": 12,
+        "age_80_89": 9,
+        "age_90_99": 4,
+        "age_100_plus": 0
+      },
+      "name": "중앙동",
+      "single_households": 33
+    },
+    "4812912700": {
+      "population_total": 723,
+      "population_male": 346,
+      "population_female": 377,
+      "children": [
+        "4812912700"
+      ],
+      "age": {
+        "age_0_9": 23,
+        "age_10_19": 92,
+        "age_20_29": 70,
+        "age_30_39": 37,
+        "age_40_49": 116,
+        "age_50_59": 129,
+        "age_60_69": 126,
+        "age_70_79": 90,
+        "age_80_89": 33,
+        "age_90_99": 7,
+        "age_100_plus": 0
+      },
+      "name": "부흥동",
+      "single_households": 64
+    },
+    "4812912800": {
+      "population_total": 116,
+      "population_male": 60,
+      "population_female": 56,
+      "children": [
+        "4812912800"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 6,
+        "age_20_29": 12,
+        "age_30_39": 7,
+        "age_40_49": 10,
+        "age_50_59": 18,
+        "age_60_69": 27,
+        "age_70_79": 20,
+        "age_80_89": 12,
+        "age_90_99": 4,
+        "age_100_plus": 0
+      },
+      "name": "중평동",
+      "single_households": 39
+    },
+    "4812912900": {
+      "population_total": 308,
+      "population_male": 158,
+      "population_female": 150,
+      "children": [
+        "4812912900"
+      ],
+      "age": {
+        "age_0_9": 15,
+        "age_10_19": 16,
+        "age_20_29": 40,
+        "age_30_39": 50,
+        "age_40_49": 43,
+        "age_50_59": 36,
+        "age_60_69": 50,
+        "age_70_79": 35,
+        "age_80_89": 19,
+        "age_90_99": 3,
+        "age_100_plus": 1
+      },
+      "name": "근화동",
+      "single_households": 65
+    },
+    "4812913100": {
+      "population_total": 613,
+      "population_male": 301,
+      "population_female": 312,
+      "children": [
+        "4812913100"
+      ],
+      "age": {
+        "age_0_9": 14,
+        "age_10_19": 47,
+        "age_20_29": 61,
+        "age_30_39": 43,
+        "age_40_49": 86,
+        "age_50_59": 114,
+        "age_60_69": 105,
+        "age_70_79": 83,
+        "age_80_89": 51,
+        "age_90_99": 9,
+        "age_100_plus": 0
+      },
+      "name": "화천동",
+      "single_households": 170
+    },
+    "4812913200": {
+      "population_total": 311,
+      "population_male": 148,
+      "population_female": 163,
+      "children": [
+        "4812913200"
+      ],
+      "age": {
+        "age_0_9": 7,
+        "age_10_19": 19,
+        "age_20_29": 15,
+        "age_30_39": 15,
+        "age_40_49": 21,
+        "age_50_59": 54,
+        "age_60_69": 58,
+        "age_70_79": 65,
+        "age_80_89": 45,
+        "age_90_99": 12,
+        "age_100_plus": 0
+      },
+      "name": "송학동",
+      "single_households": 106
+    },
+    "4812913300": {
+      "population_total": 181,
+      "population_male": 104,
+      "population_female": 77,
+      "children": [
+        "4812913300"
+      ],
+      "age": {
+        "age_0_9": 7,
+        "age_10_19": 8,
+        "age_20_29": 19,
+        "age_30_39": 22,
+        "age_40_49": 24,
+        "age_50_59": 26,
+        "age_60_69": 37,
+        "age_70_79": 28,
+        "age_80_89": 10,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "대흥동",
+      "single_households": 79
+    },
+    "4812913400": {
+      "population_total": 22,
+      "population_male": 9,
+      "population_female": 13,
+      "children": [
+        "4812913400"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 2,
+        "age_30_39": 1,
+        "age_40_49": 0,
+        "age_50_59": 5,
+        "age_60_69": 5,
+        "age_70_79": 5,
+        "age_80_89": 3,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "평안동",
+      "single_households": 8
+    },
+    "4812913500": {
+      "population_total": 852,
+      "population_male": 439,
+      "population_female": 413,
+      "children": [
+        "4812913500"
+      ],
+      "age": {
+        "age_0_9": 14,
+        "age_10_19": 43,
+        "age_20_29": 51,
+        "age_30_39": 76,
+        "age_40_49": 97,
+        "age_50_59": 118,
+        "age_60_69": 179,
+        "age_70_79": 160,
+        "age_80_89": 94,
+        "age_90_99": 20,
+        "age_100_plus": 0
+      },
+      "name": "충무동",
+      "single_households": 365
+    },
+    "4812913600": {
+      "population_total": 420,
+      "population_male": 216,
+      "population_female": 204,
+      "children": [
+        "4812913600"
+      ],
+      "age": {
+        "age_0_9": 8,
+        "age_10_19": 14,
+        "age_20_29": 24,
+        "age_30_39": 25,
+        "age_40_49": 57,
+        "age_50_59": 72,
+        "age_60_69": 82,
+        "age_70_79": 69,
+        "age_80_89": 60,
+        "age_90_99": 9,
+        "age_100_plus": 0
+      },
+      "name": "인사동",
+      "single_households": 162
+    },
+    "4812913700": {
+      "population_total": 7389,
+      "population_male": 3640,
+      "population_female": 3749,
+      "children": [
+        "4812913700"
+      ],
+      "age": {
+        "age_0_9": 138,
+        "age_10_19": 463,
+        "age_20_29": 640,
+        "age_30_39": 563,
+        "age_40_49": 731,
+        "age_50_59": 1241,
+        "age_60_69": 1403,
+        "age_70_79": 1250,
+        "age_80_89": 818,
+        "age_90_99": 141,
+        "age_100_plus": 1
+      },
+      "name": "여좌동",
+      "single_households": 2147
+    },
+    "4812913800": {
+      "population_total": 1101,
+      "population_male": 578,
+      "population_female": 523,
+      "children": [
+        "4812913800"
+      ],
+      "age": {
+        "age_0_9": 34,
+        "age_10_19": 62,
+        "age_20_29": 85,
+        "age_30_39": 93,
+        "age_40_49": 112,
+        "age_50_59": 172,
+        "age_60_69": 245,
+        "age_70_79": 198,
+        "age_80_89": 83,
+        "age_90_99": 17,
+        "age_100_plus": 0
+      },
+      "name": "태백동",
+      "single_households": 284
+    },
+    "4812913900": {
+      "population_total": 15389,
+      "population_male": 7641,
+      "population_female": 7748,
+      "children": [
+        "4812913900"
+      ],
+      "age": {
+        "age_0_9": 613,
+        "age_10_19": 1281,
+        "age_20_29": 1241,
+        "age_30_39": 1356,
+        "age_40_49": 2103,
+        "age_50_59": 2782,
+        "age_60_69": 2833,
+        "age_70_79": 2101,
+        "age_80_89": 925,
+        "age_90_99": 151,
+        "age_100_plus": 3
+      },
+      "name": "경화동",
+      "single_households": 2989
+    },
+    "4812914000": {
+      "population_total": 18247,
+      "population_male": 9420,
+      "population_female": 8827,
+      "children": [
+        "4812914000"
+      ],
+      "age": {
+        "age_0_9": 773,
+        "age_10_19": 2102,
+        "age_20_29": 2221,
+        "age_30_39": 1971,
+        "age_40_49": 2815,
+        "age_50_59": 3519,
+        "age_60_69": 2735,
+        "age_70_79": 1524,
+        "age_80_89": 505,
+        "age_90_99": 80,
+        "age_100_plus": 2
+      },
+      "name": "석동",
+      "single_households": 3690
+    },
+    "4812914100": {
+      "population_total": 9159,
+      "population_male": 4801,
+      "population_female": 4358,
+      "children": [
+        "4812914100"
+      ],
+      "age": {
+        "age_0_9": 252,
+        "age_10_19": 804,
+        "age_20_29": 939,
+        "age_30_39": 844,
+        "age_40_49": 1283,
+        "age_50_59": 1585,
+        "age_60_69": 1689,
+        "age_70_79": 1223,
+        "age_80_89": 473,
+        "age_90_99": 66,
+        "age_100_plus": 1
+      },
+      "name": "이동",
+      "single_households": 2387
+    },
+    "4812914200": {
+      "population_total": 25258,
+      "population_male": 12565,
+      "population_female": 12693,
+      "children": [
+        "4812914200"
+      ],
+      "age": {
+        "age_0_9": 1471,
+        "age_10_19": 3112,
+        "age_20_29": 2223,
+        "age_30_39": 2752,
+        "age_40_49": 4350,
+        "age_50_59": 4397,
+        "age_60_69": 3907,
+        "age_70_79": 2176,
+        "age_80_89": 741,
+        "age_90_99": 126,
+        "age_100_plus": 3
+      },
+      "name": "자은동",
+      "single_households": 4011
+    },
+    "4812914300": {
+      "population_total": 1043,
+      "population_male": 531,
+      "population_female": 512,
+      "children": [
+        "4812914300"
+      ],
+      "age": {
+        "age_0_9": 24,
+        "age_10_19": 95,
+        "age_20_29": 97,
+        "age_30_39": 89,
+        "age_40_49": 119,
+        "age_50_59": 188,
+        "age_60_69": 193,
+        "age_70_79": 155,
+        "age_80_89": 74,
+        "age_90_99": 9,
+        "age_100_plus": 0
+      },
+      "name": "덕산동",
+      "single_households": 268
+    },
+    "4812914400": {
+      "population_total": 18757,
+      "population_male": 9261,
+      "population_female": 9496,
+      "children": [
+        "4812914400"
+      ],
+      "age": {
+        "age_0_9": 1298,
+        "age_10_19": 2563,
+        "age_20_29": 1520,
+        "age_30_39": 1910,
+        "age_40_49": 3464,
+        "age_50_59": 3128,
+        "age_60_69": 2665,
+        "age_70_79": 1527,
+        "age_80_89": 572,
+        "age_90_99": 110,
+        "age_100_plus": 0
+      },
+      "name": "풍호동",
+      "single_households": 1891
+    },
+    "4812914500": {
+      "population_total": 6831,
+      "population_male": 3409,
+      "population_female": 3422,
+      "children": [
+        "4812914500"
+      ],
+      "age": {
+        "age_0_9": 552,
+        "age_10_19": 1214,
+        "age_20_29": 459,
+        "age_30_39": 623,
+        "age_40_49": 1501,
+        "age_50_59": 1054,
+        "age_60_69": 843,
+        "age_70_79": 443,
+        "age_80_89": 121,
+        "age_90_99": 21,
+        "age_100_plus": 0
+      },
+      "name": "장천동",
+      "single_households": 402
+    },
+    "4812914600": {
+      "population_total": 214,
+      "population_male": 106,
+      "population_female": 108,
+      "children": [
+        "4812914600"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 7,
+        "age_20_29": 6,
+        "age_30_39": 21,
+        "age_40_49": 14,
+        "age_50_59": 29,
+        "age_60_69": 62,
+        "age_70_79": 41,
+        "age_80_89": 29,
+        "age_90_99": 4,
+        "age_100_plus": 0
+      },
+      "name": "행암동",
+      "single_households": 49
+    },
+    "4812914700": {
+      "population_total": 691,
+      "population_male": 361,
+      "population_female": 330,
+      "children": [
+        "4812914700"
+      ],
+      "age": {
+        "age_0_9": 9,
+        "age_10_19": 26,
+        "age_20_29": 35,
+        "age_30_39": 45,
+        "age_40_49": 70,
+        "age_50_59": 108,
+        "age_60_69": 189,
+        "age_70_79": 136,
+        "age_80_89": 63,
+        "age_90_99": 10,
+        "age_100_plus": 0
+      },
+      "name": "북부동",
+      "single_households": 230
+    },
+    "4812914800": {
+      "population_total": 218,
+      "population_male": 110,
+      "population_female": 108,
+      "children": [
+        "4812914800"
+      ],
+      "age": {
+        "age_0_9": 7,
+        "age_10_19": 14,
+        "age_20_29": 20,
+        "age_30_39": 9,
+        "age_40_49": 25,
+        "age_50_59": 35,
+        "age_60_69": 43,
+        "age_70_79": 35,
+        "age_80_89": 28,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "성내동",
+      "single_households": 62
+    },
+    "4812914900": {
+      "population_total": 185,
+      "population_male": 91,
+      "population_female": 94,
+      "children": [
+        "4812914900"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 7,
+        "age_20_29": 9,
+        "age_30_39": 12,
+        "age_40_49": 12,
+        "age_50_59": 31,
+        "age_60_69": 35,
+        "age_70_79": 51,
+        "age_80_89": 21,
+        "age_90_99": 7,
+        "age_100_plus": 0
+      },
+      "name": "서중동",
+      "single_households": 62
+    },
+    "4812915000": {
+      "population_total": 11169,
+      "population_male": 5575,
+      "population_female": 5594,
+      "children": [
+        "4812915000"
+      ],
+      "age": {
+        "age_0_9": 1353,
+        "age_10_19": 1425,
+        "age_20_29": 810,
+        "age_30_39": 1855,
+        "age_40_49": 2326,
+        "age_50_59": 1689,
+        "age_60_69": 1112,
+        "age_70_79": 435,
+        "age_80_89": 134,
+        "age_90_99": 29,
+        "age_100_plus": 1
+      },
+      "name": "남문동",
+      "single_households": 902
+    },
+    "4812915100": {
+      "population_total": 927,
+      "population_male": 492,
+      "population_female": 435,
+      "children": [
+        "4812915100"
+      ],
+      "age": {
+        "age_0_9": 25,
+        "age_10_19": 31,
+        "age_20_29": 96,
+        "age_30_39": 133,
+        "age_40_49": 103,
+        "age_50_59": 220,
+        "age_60_69": 185,
+        "age_70_79": 89,
+        "age_80_89": 35,
+        "age_90_99": 10,
+        "age_100_plus": 0
+      },
+      "name": "제덕동",
+      "single_households": 275
+    },
+    "4812915200": {
+      "population_total": 188,
+      "population_male": 100,
+      "population_female": 88,
+      "children": [
+        "4812915200"
+      ],
+      "age": {
+        "age_0_9": 4,
+        "age_10_19": 3,
+        "age_20_29": 3,
+        "age_30_39": 6,
+        "age_40_49": 15,
+        "age_50_59": 28,
+        "age_60_69": 57,
+        "age_70_79": 48,
+        "age_80_89": 22,
+        "age_90_99": 2,
+        "age_100_plus": 0
+      },
+      "name": "수도동",
+      "single_households": 69
+    },
+    "4812915300": {
+      "population_total": 1,
+      "population_male": 1,
+      "population_female": 0,
+      "children": [
+        "4812915300"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 0,
+        "age_20_29": 0,
+        "age_30_39": 0,
+        "age_40_49": 0,
+        "age_50_59": 0,
+        "age_60_69": 1,
+        "age_70_79": 0,
+        "age_80_89": 0,
+        "age_90_99": 0,
+        "age_100_plus": 0
+      },
+      "name": "연도동",
+      "single_households": 1
+    },
+    "4812915400": {
+      "population_total": 555,
+      "population_male": 306,
+      "population_female": 249,
+      "children": [
+        "4812915400"
+      ],
+      "age": {
+        "age_0_9": 3,
+        "age_10_19": 15,
+        "age_20_29": 16,
+        "age_30_39": 14,
+        "age_40_49": 69,
+        "age_50_59": 88,
+        "age_60_69": 156,
+        "age_70_79": 118,
+        "age_80_89": 61,
+        "age_90_99": 14,
+        "age_100_plus": 1
+      },
+      "name": "명동",
+      "single_households": 188
+    },
+    "4812915500": {
+      "population_total": 263,
+      "population_male": 138,
+      "population_female": 125,
+      "children": [
+        "4812915500"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 5,
+        "age_20_29": 26,
+        "age_30_39": 19,
+        "age_40_49": 15,
+        "age_50_59": 42,
+        "age_60_69": 77,
+        "age_70_79": 47,
+        "age_80_89": 22,
+        "age_90_99": 9,
+        "age_100_plus": 0
+      },
+      "name": "죽곡동",
+      "single_households": 81
+    },
+    "4812915600": {
+      "population_total": 100,
+      "population_male": 51,
+      "population_female": 49,
+      "children": [
+        "4812915600"
+      ],
+      "age": {
+        "age_0_9": 0,
+        "age_10_19": 3,
+        "age_20_29": 3,
+        "age_30_39": 6,
+        "age_40_49": 5,
+        "age_50_59": 20,
+        "age_60_69": 29,
+        "age_70_79": 26,
+        "age_80_89": 7,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "원포동",
+      "single_households": 30
+    },
+    "4812915700": {
+      "population_total": 2319,
+      "population_male": 1201,
+      "population_female": 1118,
+      "children": [
+        "4812915700"
+      ],
+      "age": {
+        "age_0_9": 141,
+        "age_10_19": 97,
+        "age_20_29": 225,
+        "age_30_39": 332,
+        "age_40_49": 319,
+        "age_50_59": 469,
+        "age_60_69": 430,
+        "age_70_79": 172,
+        "age_80_89": 89,
+        "age_90_99": 45,
+        "age_100_plus": 0
+      },
+      "name": "남양동",
+      "single_households": 449
+    },
+    "4812915800": {
+      "population_total": 3390,
+      "population_male": 1746,
+      "population_female": 1644,
+      "children": [
+        "4812915800"
+      ],
+      "age": {
+        "age_0_9": 156,
+        "age_10_19": 385,
+        "age_20_29": 306,
+        "age_30_39": 334,
+        "age_40_49": 503,
+        "age_50_59": 660,
+        "age_60_69": 585,
+        "age_70_79": 325,
+        "age_80_89": 115,
+        "age_90_99": 21,
+        "age_100_plus": 0
+      },
+      "name": "마천동",
+      "single_households": 518
+    },
+    "4812915900": {
+      "population_total": 453,
+      "population_male": 235,
+      "population_female": 218,
+      "children": [
+        "4812915900"
+      ],
+      "age": {
+        "age_0_9": 8,
+        "age_10_19": 11,
+        "age_20_29": 21,
+        "age_30_39": 27,
+        "age_40_49": 43,
+        "age_50_59": 74,
+        "age_60_69": 123,
+        "age_70_79": 96,
+        "age_80_89": 43,
+        "age_90_99": 7,
+        "age_100_plus": 0
+      },
+      "name": "소사동",
+      "single_households": 136
+    },
+    "4812916000": {
+      "population_total": 120,
+      "population_male": 66,
+      "population_female": 54,
+      "children": [
+        "4812916000"
+      ],
+      "age": {
+        "age_0_9": 1,
+        "age_10_19": 0,
+        "age_20_29": 5,
+        "age_30_39": 9,
+        "age_40_49": 4,
+        "age_50_59": 21,
+        "age_60_69": 36,
+        "age_70_79": 31,
+        "age_80_89": 12,
+        "age_90_99": 1,
+        "age_100_plus": 0
+      },
+      "name": "대장동",
+      "single_households": 37
+    },
+    "4812916100": {
+      "population_total": 1128,
+      "population_male": 569,
+      "population_female": 559,
+      "children": [
+        "4812916100"
+      ],
+      "age": {
+        "age_0_9": 27,
+        "age_10_19": 86,
+        "age_20_29": 98,
+        "age_30_39": 83,
+        "age_40_49": 146,
+        "age_50_59": 245,
+        "age_60_69": 254,
+        "age_70_79": 128,
+        "age_80_89": 51,
+        "age_90_99": 10,
+        "age_100_plus": 0
+      },
+      "name": "두동",
+      "single_households": 217
+    },
+    "4812916200": {
+      "population_total": 10548,
+      "population_male": 5289,
+      "population_female": 5259,
+      "children": [
+        "4812916200"
+      ],
+      "age": {
+        "age_0_9": 483,
+        "age_10_19": 1430,
+        "age_20_29": 1008,
+        "age_30_39": 906,
+        "age_40_49": 1912,
+        "age_50_59": 2325,
+        "age_60_69": 1247,
+        "age_70_79": 852,
+        "age_80_89": 352,
+        "age_90_99": 32,
+        "age_100_plus": 1
+      },
+      "name": "청안동",
+      "single_households": 1684
+    },
+    "4812916300": {
+      "population_total": 3663,
+      "population_male": 2127,
+      "population_female": 1536,
+      "children": [
+        "4812916300"
+      ],
+      "age": {
+        "age_0_9": 199,
+        "age_10_19": 423,
+        "age_20_29": 294,
+        "age_30_39": 401,
+        "age_40_49": 804,
+        "age_50_59": 722,
+        "age_60_69": 473,
+        "age_70_79": 246,
+        "age_80_89": 88,
+        "age_90_99": 13,
+        "age_100_plus": 0
+      },
+      "name": "안골동",
+      "single_households": 1178
+    },
+    "4812916400": {
+      "population_total": 27787,
+      "population_male": 15683,
+      "population_female": 12104,
+      "children": [
+        "4812916400"
+      ],
+      "age": {
+        "age_0_9": 2050,
+        "age_10_19": 3444,
+        "age_20_29": 2562,
+        "age_30_39": 3952,
+        "age_40_49": 6095,
+        "age_50_59": 5263,
+        "age_60_69": 2755,
+        "age_70_79": 1234,
+        "age_80_89": 382,
+        "age_90_99": 49,
+        "age_100_plus": 1
+      },
+      "name": "용원동",
+      "single_households": 6447
+    },
+    "4812916500": {
+      "population_total": 255,
+      "population_male": 145,
+      "population_female": 110,
+      "children": [
+        "4812916500"
+      ],
+      "age": {
+        "age_0_9": 4,
+        "age_10_19": 6,
+        "age_20_29": 4,
+        "age_30_39": 4,
+        "age_40_49": 13,
+        "age_50_59": 37,
+        "age_60_69": 97,
+        "age_70_79": 65,
+        "age_80_89": 19,
+        "age_90_99": 6,
+        "age_100_plus": 0
+      },
+      "name": "가주동",
+      "single_households": 87
+    }
+  },
+  "totals": {
+    "48120": {
+      "population_total": 984721,
+      "households": 464666
+    },
+    "48121": {
+      "population_total": 209795,
+      "households": 99768
+    },
+    "48123": {
+      "population_total": 245153,
+      "households": 109970
+    },
+    "48125": {
+      "population_total": 173914,
+      "households": 86617
+    },
+    "48127": {
+      "population_total": 173485,
+      "households": 82755
+    },
+    "48129": {
+      "population_total": 182374,
+      "households": 85556
+    }
+  },
+  "single_household_source": "https://www.data.go.kr/data/15099160/fileData.do",
+  "single_household_raw_sha256": "20ecf1b5c0429ff361e941f2d36bed1b28771514174001ac450586f82c4bd288"
+}

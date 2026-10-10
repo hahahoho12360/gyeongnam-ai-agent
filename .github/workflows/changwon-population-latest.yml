@@ -1,0 +1,49 @@
+name: Changwon population latest repair v3.7
+on:
+  push:
+    branches: [main]
+    paths: [scripts/repair_population_latest.py]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: changwon-population-repair
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      USE_MEMORY_DB: 'false'
+      DEMO_SEED_ON_START: 'false'
+      DEFER_INDEX_RECOMPUTE: 'true'
+      POPULATION_API_URL: https://apis.data.go.kr/1741000/stdgPpltnHhStus/selectStdgPpltnHhStus
+      AGE_POPULATION_API_URL: https://apis.data.go.kr/1741000/stdgSexdAgePpltn/selectStdgSexdAgePpltn
+      SINGLE_HOUSEHOLD_API_URL: https://apis.data.go.kr/1741000/stdgSexdAgeOneHh/selectStdgSexdAgeOneHh
+      POPULATION_QUERY_JSON: '{"stdgCd":"{bjd_code}","srchFrYm":"{yyyymm}","srchToYm":"{yyyymm}","lv":"7","regSeCd":"1","type":"JSON"}'
+      AGE_POPULATION_QUERY_JSON: '{"stdgCd":"{bjd_code}","srchFrYm":"{yyyymm}","srchToYm":"{yyyymm}","lv":"7","regSeCd":"1","type":"JSON"}'
+      SINGLE_HOUSEHOLD_QUERY_JSON: '{"stdgCd":"{bjd_code}","srchFrYm":"{yyyymm}","srchToYm":"{yyyymm}","lv":"7","regSeCd":"1","type":"JSON"}'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - run: python -m pytest -q
+      - name: Stage original API data, validate and atomically repair latest month
+        run: python scripts/repair_population_latest.py --apply
+      - name: Recompute indexes after population reconciliation passes
+        run: python scripts/finalize_changwon.py --month 2026-09
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: changwon-population-latest-${{ github.run_id }}
+          path: |
+            artifacts/population_repair/
+            artifacts/changwon_population_completeness.json
+            artifacts/changwon_v32_final_report.json
+          retention-days: 30
