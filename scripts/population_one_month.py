@@ -173,6 +173,10 @@ def run(month,max_minutes=60):
             with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:f.write('### One-month verified repair\n```json\n'+summary+'\n```\n')
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--month',default='2024-08');p.add_argument('--max-minutes',type=int,default=60);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--month',default='2024-08');p.add_argument('--max-minutes',type=int,default=60);p.add_argument('--probe-only',action='store_true');a=p.parse_args()
+    if a.probe_only:
+        configure();BoundedClient.budget=Budget(a.max_minutes*60)
+        ok=probe(a.month)
+        sys.exit(0 if ok else 2)
     result=run(a.month,a.max_minutes)
     sys.exit(0 if result['status'] in ('complete','already_verified') else 2)
