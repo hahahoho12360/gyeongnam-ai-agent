@@ -5,6 +5,7 @@ import time
 import requests
 import xml.etree.ElementTree as ET
 from typing import Any, Iterable
+from scripts.collect.redaction import redact_text
 
 
 class DataGoKrClient:
@@ -82,7 +83,11 @@ class DataGoKrClient:
                     continue
                 response.raise_for_status()
                 break
+            except requests.exceptions.HTTPError as exc:
+                exc.args=(redact_text(str(exc),secrets=(self.key,)),)
+                raise exc from None
             except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as exc:
+                exc.args=(redact_text(str(exc),secrets=(self.key,)),)
                 last_exc = exc
                 if attempt >= self.max_retries:
                     raise
@@ -109,7 +114,7 @@ class DataGoKrClient:
             # data.go.kr의 NODATA_ERROR는 인증/서버 실패가 아니라 '조회 결과 0건'이다.
             # 수집 파이프라인이 빈 rows를 정상적으로 처리하도록 예외를 발생시키지 않는다.
             if not self.is_no_data_error(error):
-                raise RuntimeError(error)
+                raise RuntimeError(redact_text(error,secrets=(self.key,)))
         return payload
 
     @staticmethod
@@ -244,3 +249,4 @@ class DataGoKrClient:
         for rows in self.iter_pages(url, params, page_size=page_size, max_pages=max_pages, json_hint=json_hint):
             out.extend(rows)
         return out
+

@@ -27,6 +27,7 @@ from scripts.collect.adapters import (
     yyyymm,
 )
 from scripts.collect.data_go_kr import DataGoKrClient
+from scripts.collect.redaction import redact, redact_text
 
 NO_DATA_STATUS_KEY = '__source_status__'
 NO_DATA_REASON_KEY = '__source_reason__'
@@ -653,7 +654,8 @@ def run_source(source: str, month: str) -> dict[str, Any]:
             'started_at': started, 'finished_at': utcnow_iso(),
         }
     except Exception as exc:
-        result = {'source': source, 'month': month, 'status': 'error', 'error': f'{type(exc).__name__}: {exc}', 'started_at': started, 'finished_at': utcnow_iso()}
+        result = {'source': source, 'month': month, 'status': 'error', 'error': redact_text(f'{type(exc).__name__}: {exc}'), 'started_at': started, 'finished_at': utcnow_iso()}
+    result=redact(result)
     get_store().set('source_status', f'{source}_{month}', result, merge=False)
     return result
 

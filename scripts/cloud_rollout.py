@@ -39,6 +39,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.collect.redaction import redact
 from backend.config import settings
 from backend.data_quality import quality_report
 from backend.db import get_store, utcnow_iso
@@ -161,7 +162,7 @@ def initial_state(
 
 def save_state(state: dict[str, Any]) -> None:
     state['updated_at'] = utcnow_iso()
-    get_store().set(JOB_COLLECTION, job_id(str(state['scope'])), state, merge=False)
+    get_store().set(JOB_COLLECTION, job_id(str(state['scope'])), redact(state), merge=False)
 
 
 def load_or_init_state(
@@ -213,7 +214,7 @@ def is_retryable(error: str) -> bool:
 
 def write_status(payload: dict[str, Any]) -> None:
     STATUS_PATH.parent.mkdir(exist_ok=True)
-    STATUS_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
+    STATUS_PATH.write_text(json.dumps(redact(payload), ensure_ascii=False, indent=2), encoding='utf-8')
 
 
 def status_payload(state: dict[str, Any], **extra: Any) -> dict[str, Any]:
@@ -236,7 +237,7 @@ def status_payload(state: dict[str, Any], **extra: Any) -> dict[str, Any]:
         'updated_at': state.get('updated_at'),
         **extra,
     }
-    return payload
+    return redact(payload)
 
 
 def finalize_quality(state: dict[str, Any]) -> None:
@@ -344,7 +345,7 @@ def main() -> int:
 
     if a.status_only:
         payload = status_payload(state)
-        write_status(payload); print(json.dumps(payload, ensure_ascii=False, indent=2)); return 0
+        write_status(payload); print(json.dumps(redact(payload), ensure_ascii=False, indent=2)); return 0
 
     # 기존 상태가 가진 설정을 사용해 task order를 절대 바꾸지 않는다.
     batch_size = int(state['batch_size'])
@@ -423,7 +424,7 @@ def main() -> int:
             save_state(state)
             payload = status_payload(state, retry_after_seconds=60 if state['status'] == 'needs_continue' else 0)
             write_status(payload)
-            print(json.dumps(payload, ensure_ascii=False, indent=2))
+            print(json.dumps(redact(payload), ensure_ascii=False, indent=2))
             return 0
 
         if stage == 'indexes':
@@ -449,13 +450,13 @@ def main() -> int:
             save_state(state)
             payload = status_payload(state, retry_after_seconds=0)
             write_status(payload)
-            print(json.dumps(payload, ensure_ascii=False, indent=2))
+            print(json.dumps(redact(payload), ensure_ascii=False, indent=2))
             return 0
 
         state['status'] = 'blocked'; state['last_error'] = f'unknown stage: {stage}'
         save_state(state)
         payload = status_payload(state, retry_after_seconds=0)
-        write_status(payload); print(json.dumps(payload, ensure_ascii=False, indent=2)); return 0
+        write_status(payload); print(json.dumps(redact(payload), ensure_ascii=False, indent=2)); return 0
 
     # 시간예산 종료는 정상 동작이다. GitHub Actions가 다음 workflow_dispatch를 이어서 만든다.
     state['status'] = 'needs_continue'
@@ -465,9 +466,10 @@ def main() -> int:
     payload = status_payload(state, retry_after_seconds=20)
     write_status(payload)
     print('[CLOUD] 자체 시간예산 도달. 진행상태를 Firestore에 저장하고 다음 Actions 실행으로 넘깁니다.')
-    print(json.dumps(payload, ensure_ascii=False, indent=2))
+    print(json.dumps(redact(payload), ensure_ascii=False, indent=2))
     return 0
 
 
 if __name__ == '__main__':
     raise SystemExit(main())
+
