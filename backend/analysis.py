@@ -1,5 +1,4 @@
 from __future__ import annotations
-import hashlib, random
 from datetime import datetime, timezone
 from typing import Any
 from .db import get_store
@@ -88,39 +87,19 @@ def summary(region_id: str, months: int=12) -> dict:
       'freshness':last.get('freshness',{}),
     }
 
-def _feature_vector(row: dict) -> list[float]:
-    d=row.get('derived',{}); m=row.get('metrics',{})
-    return [float(m.get('population_total') or 0),float(d.get('young_population_share') or 0),float(d.get('older_population_share') or 0),float(d.get('single_household_share') or 0),float(d.get('apartment_supply_proxy') or 0),float(m.get('sale_price_per_m2') or 0),float(d.get('businesses_per_1000_people') or 0)]
+def peer_regions(region_id: str, k: int=2, question: str='') -> list[dict]:
+    return comparison_regions(region_id, question=question)['peers'][:k]
 
-def _dist(a,b):
-    # 서로 다른 단위가 섞이므로 로그/스케일 간단 보정. 실제 제출 데이터 생성 시 StandardScaler 결과를 저장하는 방식을 권장.
-    scales=[100000,50,50,50,100,10_000_000,100]
-    return sum(((x-y)/s)**2 for x,y,s in zip(a,b,scales))**0.5
-
-def peer_regions(region_id: str, k: int=2) -> list[dict]:
-    base=latest(region_id); reg=get_store().get('regions',region_id)
-    if not base or not reg: return []
-    target=_feature_vector(base); candidates=[]
-    # One Firestore stream replaces hundreds of sequential document round trips.
-    snapshots={r['id']:r for r in get_store().list('region_latest')}
-    for r in list_regions():
-        if r['id']==region_id: continue
-        if r.get('peer_group')!=reg.get('peer_group'): continue
-        row=snapshots.get(r['id']) or latest(r['id'])
-        if row: candidates.append((_dist(target,_feature_vector(row)),r))
-    return [r for _,r in sorted(candidates,key=lambda x:x[0])[:k]]
-
-def comparison_regions(region_id: str, seed_month: str | None=None) -> dict:
-    reg=get_store().get('regions',region_id) or {}
-    neighbors=[get_store().get('regions',x) for x in reg.get('neighbors',[])]
-    neighbors=[x for x in neighbors if x and _in_scope(x)][:2]
-    peers=peer_regions(region_id,2)
-    excluded={region_id,*[x['id'] for x in neighbors],*[x['id'] for x in peers]}
-    pool=[r for r in list_regions() if r['id'] not in excluded]
-    seed=f"{region_id}:{seed_month or datetime.now().strftime('%Y-%m')}"
-    rng=random.Random(int(hashlib.sha256(seed.encode()).hexdigest()[:16],16))
-    random_pick=rng.sample(pool,1) if pool else []
-    return {'neighbors':neighbors,'peers':peers,'seeded_random':random_pick,'seed':seed}
+def comparison_regions(region_id: str, seed_month: str | None=None, question: str='') -> dict:
+    from .topic_comparison import select_comparisons
+    base=latest(region_id) or {}
+    month=seed_month or base.get('month')
+    regions=list_regions()
+    rows={r['region_id']:r for r in get_store().filter_eq('monthly_data','month',month)} if month else {}
+    # Latest-only fixtures/older installations can use snapshots, but never a different month.
+    if month and not rows:
+        rows={r.get('region_id') or r['id']:r for r in get_store().list('region_latest') if r.get('month')==month}
+    return select_comparisons(region_id,regions,rows,month,question)
 
 def chart_metric(region_ids: list[str], metric_key: str, months: int=36, title: str | None=None) -> dict:
     all_months=sorted({x['month'] for rid in region_ids for x in series(rid,months)})
@@ -138,12 +117,13 @@ def chart_metric(region_ids: list[str], metric_key: str, months: int=36, title: 
 def chart_population(region_ids: list[str], months: int=36) -> dict:
     return chart_metric(region_ids,'population_total',months,f'최근 {months}개월 인구 추세')
 
-def proactive_bundle(region_id: str, answer_mode='basic') -> dict:
+def proactive_bundle(region_id: str, answer_mode='basic', question='') -> dict:
     reg=resolve_region(region_id)
     if not reg: return region_resolution_error(region_id)
     months=12 if answer_mode=='simple' else 36
-    comps=comparison_regions(reg['id'])
-    raw_ids=[reg['id']]+[r['id'] for group in ('neighbors','peers','seeded_random') for r in comps[group]]
+    comps=comparison_regions(reg['id'],None,question) if question else comparison_regions(reg['id'])
+    comps={key:value for key,value in comps.items() if key!='neighbors'}
+    raw_ids=[reg['id']]+[r['id'] for group in ('peers','seeded_random') for r in comps[group]]
     compare_ids=list(dict.fromkeys(raw_ids))
     comp_summaries={rid:summary(rid,12) for rid in compare_ids}
     charts=[]

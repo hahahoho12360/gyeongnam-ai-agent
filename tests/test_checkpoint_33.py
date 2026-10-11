@@ -56,7 +56,7 @@ def test_comparison_summaries_include_seeded_random(monkeypatch):
         'neighbors':regs[1:3], 'peers':regs[3:5], 'seeded_random':regs[5:6], 'seed':'fixed'})
     bundle=analysis.proactive_bundle('0')
     assert '5' in bundle['comparison_summaries']
-    assert len(bundle['charts'][0]['datasets'])==6
+    assert len(bundle['charts'][0]['datasets'])==4
 
 
 def test_service_verifier_read_only_contract(monkeypatch):

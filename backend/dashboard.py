@@ -69,12 +69,12 @@ def validate_period(start_month=None,end_month=None):
         y,m=map(int,start_month.split('-')); ey,em=map(int,end_month.split('-'))
         if (ey-y)*12+em-m>=120: raise ValueError('한 번에 최대 120개월을 조회할 수 있어요.')
 
-def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None):
+def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,question=''):
     validate_period(start_month,end_month)
     region=analysis.resolve_region(region_id)
     if not region or not str(region.get('bjd_code') or region['id']).startswith('4812'):
         return {'error':'region_not_found','message':'창원 법정읍·면·동을 선택하세요.'}
-    comparisons=analysis.comparison_regions(region['id'])
+    comparisons=analysis.comparison_regions(region['id'],end_month,question) if (end_month or question) else analysis.comparison_regions(region['id'])
     bundle={'comparison':comparisons,'answer_mode':answer_mode,'summary':{'region':region,'count':0}}
     store=get_store()
     master={r['id']:r for r in analysis.list_regions() if str(r.get('bjd_code') or r['id']).startswith('4812') and not r.get('is_demo')}
@@ -102,7 +102,7 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None):
         benchmarks.append({'key':key,'label':label,'unit':unit,'selected':value(current.get(region['id']),key,previous.get(region['id'])),
                            'minimum':extreme(low),'maximum':extreme(high),'mean':sum(v for _,v in vals)/len(vals) if vals else None,
                            'valid_count':len(vals),'region_count':len(master),'month':month,'mean_method':'unweighted_region_mean'})
-        ids=list(dict.fromkeys([region['id']]+[r['id'] for group in ('neighbors','peers','seeded_random') for r in comparisons.get(group,[]) if r['id'] in master]))
+        ids=list(dict.fromkeys([region['id']]+[r['id'] for group in ('peers','seeded_random') for r in comparisons.get(group,[]) if r['id'] in master]))
     histories={rid:target if rid==region['id'] else analysis.series(rid,120) for rid in ids}
     labels=[]
     cursor=start_month

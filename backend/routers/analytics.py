@@ -11,7 +11,7 @@ def region_summary(region_id: str, months: int=12): return analysis.summary(regi
 @router.get('/regions/{region_id}/trend')
 def region_trend(region_id: str, months: int=36): return {'rows':analysis.series(region_id,months),'chart':analysis.chart_population([region_id],months)}
 @router.get('/regions/{region_id}/compare')
-def compare(region_id: str, answer_mode: str='basic'): return analysis.proactive_bundle(region_id,answer_mode)
+def compare(region_id: str, answer_mode: str='basic', question: str=''): return analysis.proactive_bundle(region_id,answer_mode,question)
 @router.get('/regions/{region_id}/indexes')
 def indexes(region_id: str):
     row=analysis.latest(region_id)
@@ -49,9 +49,9 @@ def export(region_id: str, format: str='csv', months: int=120, start_month: str|
 
 
 @router.get('/regions/{region_id}/dashboard')
-def region_dashboard(region_id: str, answer_mode: str='basic', start_month: str|None=None, end_month: str|None=None):
+def region_dashboard(region_id: str, answer_mode: str='basic', start_month: str|None=None, end_month: str|None=None, question: str=''):
     from ..dashboard import dashboard
-    try: result=dashboard(region_id,answer_mode,start_month,end_month)
+    try: result=dashboard(region_id,answer_mode,start_month,end_month,question)
     except ValueError as exc: raise HTTPException(400,str(exc))
     if result.get('error'): raise HTTPException(404,result.get('message','지역을 찾을 수 없습니다.'))
     return result
@@ -62,3 +62,10 @@ def region_news(region_id: str):
     region=analysis.resolve_region(region_id)
     if not region: raise HTTPException(404,'지역을 찾을 수 없습니다.')
     return recent_news(region)
+
+@router.get('/regions/{region_id}/introduction')
+def region_introduction(region_id: str, answer_mode: str='basic'):
+    from ..region_knowledge import introduction_context
+    region=analysis.resolve_region(region_id)
+    if not region: raise HTTPException(404,'지역을 찾을 수 없습니다.')
+    return introduction_context(region,answer_mode)

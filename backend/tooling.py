@@ -8,7 +8,7 @@ TOOLS=[
  {"type":"function","name":"get_rental_market","description":"특정 지역의 전세가격·전월세 거래량·월세화 비율과 추세를 조회합니다.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"months":{"type":"integer","minimum":3,"maximum":120}},"required":["region","months"],"additionalProperties":False}},
  {"type":"function","name":"get_commerce_trend","description":"특정 지역의 상가 수·인구천명당 상가·순증감·업종다양성 추세를 조회합니다.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"months":{"type":"integer","minimum":3,"maximum":120}},"required":["region","months"],"additionalProperties":False}},
  {"type":"function","name":"get_auction_market","description":"특정 지역의 온비드 공매물건·낙찰/유찰·낙찰가율 등 저장된 공매 지표를 조회합니다.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"months":{"type":"integer","minimum":1,"maximum":120}},"required":["region","months"],"additionalProperties":False}},
- {"type":"function","name":"compare_regions","description":"대상 지역과 실제 인접지역·유사 Peer·재현 가능한 seeded random 비교군을 선정하고 비교합니다.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"months":{"type":"integer","minimum":3,"maximum":120}},"required":["region","months"],"additionalProperties":False}},
+ {"type":"function","name":"compare_regions","description":"질문 주제에 맞는 유사 지역과 무작위 비교 지역을 선정하고 비교합니다.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"months":{"type":"integer","minimum":3,"maximum":120}},"required":["region","months"],"additionalProperties":False}},
  {"type":"function","name":"get_region_indexes","description":"지역활력·주거시장압력·생활편의·상권변화 Composite Index를 조회합니다.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"}},"required":["region"],"additionalProperties":False}},
  {"type":"function","name":"get_live_area_snapshot","description":"저장된 최신 스냅샷과 데이터 기준시점/갱신시점을 조회합니다. 허용된 경우 TTL 초과 최신 실거래를 다시 조회합니다.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"}},"required":["region"],"additionalProperties":False}}
 ]
@@ -27,7 +27,7 @@ def _market_bundle(rid: str, months: int, metric: str, title: str) -> dict:
     }
 
 
-def dispatch(name: str, args: dict):
+def dispatch(name: str, args: dict, question: str=''):
     region=str(args.get('region','')).strip()
     months=int(args.get('months',12))
     reg,error=_resolve_or_error(region)
@@ -51,7 +51,7 @@ def dispatch(name: str, args: dict):
             'live': live_auction_snapshot(rid),
         }
     if name=='compare_regions':
-        bundle=analysis.proactive_bundle(rid,'detail' if months>=36 else 'basic')
+        bundle=analysis.proactive_bundle(rid,'detail' if months>=36 else 'basic',question)
         bundle['requested_months']=months
         return bundle
     if name=='get_region_indexes':

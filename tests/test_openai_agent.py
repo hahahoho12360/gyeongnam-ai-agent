@@ -61,6 +61,6 @@ def test_comparison_context_preserves_actual_data_and_missing_neighbors():
         'summary': {}, 'comparison': {'neighbors': [], 'peers': [{'id':'peer','name':'유사지역'}]},
         'comparison_summaries': {'peer': {'period':'2025-10 ~ 2026-09','metrics':{'population_total':100}}},
         'answer_mode':'simple'})
-    assert compact['comparison_reasoning']['neighbors']==[]
+    assert 'neighbors' not in compact['comparison_reasoning']
     assert compact['comparison_reasoning']['peers'][0]['id']=='peer'
     assert compact['comparison_summaries']['peer']['metrics']['population_total']==100

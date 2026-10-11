@@ -7,14 +7,12 @@ def append_comparison(answer, context):
     if not context.get('summary',{}).get('region') or '[응답 미완료]' in answer:return answer
     comps=context.get('comparison',{});summaries=context.get('comparison_summaries',{})
     lines=[]
-    roles={'neighbors':'인접지역','peers':'유사 지역','seeded_random':'무작위 비교 지역'}
+    roles={'peers':'유사 지역','seeded_random':'무작위 비교 지역'}
     base=context['summary']; base_id=base['region']['id']
     base=summaries.get(base_id,base)
     for group,label in roles.items():
         rows=comps.get(group,[])
-        if not rows:
-            if group=='neighbors': continue
-            continue
+        if not rows: continue
         for r in rows:
             if (r.get('name') or r['id']) in answer: continue
             s=summaries.get(r['id'],{});name=r.get('full_name') or r.get('name') or r['id'];value=s.get('metrics',{}).get('population_total');b=base.get('metrics',{}).get('population_total')
