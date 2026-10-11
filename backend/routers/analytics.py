@@ -55,3 +55,10 @@ def region_dashboard(region_id: str, answer_mode: str='basic', start_month: str|
     except ValueError as exc: raise HTTPException(400,str(exc))
     if result.get('error'): raise HTTPException(404,result.get('message','지역을 찾을 수 없습니다.'))
     return result
+
+@router.get('/regions/{region_id}/news')
+def region_news(region_id: str):
+    from ..local_news import recent_news
+    region=analysis.resolve_region(region_id)
+    if not region: raise HTTPException(404,'지역을 찾을 수 없습니다.')
+    return recent_news(region)
