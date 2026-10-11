@@ -22,10 +22,13 @@ async function loadSourceStatus(){
   card.hidden=false; summary.textContent='확인 중…'; list.innerHTML='';
   try{
     const [ready,status]=await Promise.all([api('/api/meta/readiness'),api('/api/meta/source-status')]);
-    const configured=(ready.sources||[]).filter(x=>x.configured).length,total=(ready.sources||[]).length;
+    // Show only the approved API sources used for the Changwon submission.
+    const excludedSources=new Set(['household_birth_death','other_real_estate','onbid','kosis']);
+    const visibleSources=(ready.sources||[]).filter(src=>!excludedSources.has(src.key));
+    const configured=visibleSources.filter(x=>x.configured).length,total=visibleSources.length;
     summary.textContent=`DB ${ready.db_mode} · OpenAI ${ready.openai_configured?'설정됨':'미설정'} · 공공데이터 ${ready.public_data_key_configured?'키 설정됨':'키 미설정'} · 소스 ${configured}/${total} 준비`;
     const latest={}; (status||[]).forEach(x=>{if(x.source&&!latest[x.source])latest[x.source]=x});
-    list.innerHTML=(ready.sources||[]).map(src=>{const st=latest[src.key];const state=st?(st.status||'기록됨'):(src.configured?'설정됨·아직 실행기록 없음':'설정 필요');const when=st&&(st.finished_at||st.started_at)?` · ${esc(st.finished_at||st.started_at)}`:'';return `<div class="row"><span><b>${esc(src.label)}</b><br><small>${esc(src.cadence)} · ${esc(state)}${when}</small></span></div>`}).join('');
+    list.innerHTML=visibleSources.map(src=>{const st=latest[src.key];const state=st?(st.status||'기록됨'):(src.configured?'설정됨·아직 실행기록 없음':'설정 필요');const when=st&&(st.finished_at||st.started_at)?` · ${esc(st.finished_at||st.started_at)}`:'';return `<div class="row"><span><b>${esc(src.label)}</b><br><small>${esc(src.cadence)} · ${esc(state)}${when}</small></span></div>`}).join('');
     setStatus('#sourceOperationStatus',`확인 완료 · ${configured}/${total}개 소스 설정과 최근 수집 기록을 확인했어요. 설정 완료가 전체 수집 완료를 뜻하지는 않아요.`,'success');
   }catch(err){summary.textContent='소스 상태 확인 오류: '+err.message;setStatus('#sourceOperationStatus','확인 오류 · '+err.message,'error')}finally{clearTimeout(timer);$('#sourceStatusBtn').disabled=false}
 }
