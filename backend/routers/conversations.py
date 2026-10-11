@@ -14,8 +14,24 @@ def list_conversations():
 def get_conversation(doc_id: str):
     row=get_store().get('conversations',doc_id)
     if not row: raise HTTPException(404,'대화를 찾을 수 없습니다.')
+    if not row.get('region_id') and row.get('analysis_target')!='personal':
+        from ..chat_selection import select_region
+        from .. import analysis
+        region=row.get('resolved_region') or {}
+        rid=region.get('id')
+        if not rid:
+            for tool in reversed(row.get('last_tools_used',[])):
+                candidate=tool.get('arguments',{}).get('region_id')
+                if candidate and analysis.resolve_region(candidate): rid=candidate; break
+        if not rid:
+            for message in reversed(row.get('messages',[])):
+                if message.get('role')=='user':
+                    candidate,candidates=select_region(message.get('content',''),None)
+                    if candidate and not candidates: rid=candidate; break
+        if rid: row={**row,'region_id':rid}
     return row
 @router.delete('/{doc_id}')
 def delete_conversation(doc_id: str):
     if not get_store().delete('conversations',doc_id): raise HTTPException(404,'대화를 찾을 수 없습니다.')
     return {'deleted':True,'id':doc_id}
+

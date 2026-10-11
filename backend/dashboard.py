@@ -1,5 +1,6 @@
 """Read-only Changwon dashboard: same-month comparisons and gap-safe trends."""
 import math
+import re
 from datetime import date
 from . import analysis
 from .db import get_store
@@ -47,7 +48,18 @@ def value(row,key,year_ago=None):
     v=row.get('indexes',{}).get(key)
     return v if numeric(v) else None
 
-def dashboard(region_id,answer_mode='basic'):
+def validate_period(start_month=None,end_month=None):
+    for month in (start_month,end_month):
+        if month and not re.fullmatch(r"[0-9]{4}-(0[1-9]|1[0-2])",month):
+            raise ValueError('기준월은 YYYY-MM 형식으로 입력하세요.')
+    if start_month and end_month and start_month>end_month:
+        raise ValueError('시작월은 종료월보다 늦을 수 없어요.')
+    if start_month and end_month:
+        y,m=map(int,start_month.split('-')); ey,em=map(int,end_month.split('-'))
+        if (ey-y)*12+em-m>=120: raise ValueError('한 번에 최대 120개월을 조회할 수 있어요.')
+
+def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None):
+    validate_period(start_month,end_month)
     region=analysis.resolve_region(region_id)
     if not region or not str(region.get('bjd_code') or region['id']).startswith('4812'):
         return {'error':'region_not_found','message':'창원 법정읍·면·동을 선택하세요.'}
@@ -56,7 +68,10 @@ def dashboard(region_id,answer_mode='basic'):
     store=get_store()
     master={r['id']:r for r in analysis.list_regions() if str(r.get('bjd_code') or r['id']).startswith('4812') and not r.get('is_demo')}
     target=analysis.series(region['id'],120)
-    month=target[-1]['month'] if target else None
+    month=end_month or (target[-1]['month'] if target else None)
+    if month:
+        start_month=start_month or shift(month,-11)
+        validate_period(start_month,month)
     if not month: return {**bundle,'benchmarks':[],'metric_charts':{},'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in METRICS]}
     current={r['region_id']:r for r in store.filter_eq('monthly_data','month',month) if r.get('region_id') in master}
     previous={r['region_id']:r for r in store.filter_eq('monthly_data','month',shift(month,-12)) if r.get('region_id') in master}
@@ -76,8 +91,10 @@ def dashboard(region_id,answer_mode='basic'):
                            'valid_count':len(vals),'region_count':len(master),'month':month,'mean_method':'unweighted_region_mean'})
         ids=list(dict.fromkeys([region['id']]+[r['id'] for group in ('neighbors','peers','seeded_random') for r in comparisons.get(group,[]) if r['id'] in master]))
     histories={rid:target if rid==region['id'] else analysis.series(rid,120) for rid in ids}
-    months=12 if answer_mode=='simple' else 36
-    labels=[shift(month,i) for i in range(-months+1,1)]
+    labels=[]
+    cursor=start_month
+    while cursor<=month:
+        labels.append(cursor); cursor=shift(cursor,1)
     charts={}
     for key,label,tab,unit in METRICS:
         datasets=[]
@@ -85,10 +102,10 @@ def dashboard(region_id,answer_mode='basic'):
             lookup={r['month']:r for r in rows}
             datasets.append({'label':master[rid]['name'],'data':[value(lookup.get(m),key,lookup.get(shift(m,-12))) for m in labels]})
         charts[key]={'title':tab+' 비교 추세','unit':unit,'metric':key,'labels':labels,'datasets':datasets}
-    last=target[-1]; recent=target[-12:]
-    bundle['summary']={'region':region,'count':len(recent),'period':f"{recent[0]['month']} ~ {last['month']}",
+    last=current.get(region['id'],{}); recent=[r for r in target if start_month<=r['month']<=month]
+    bundle['summary']={'region':region,'count':len(recent),'period':f"{start_month} ~ {month}",
                        'metrics':last.get('metrics',{}),'derived':last.get('derived',{}),'indexes':last.get('indexes',{}),
                        'freshness':last.get('freshness',{}),'index_meta':last.get('index_meta',{})}
     bundle['charts']=[charts['population_total']]
-    return {**bundle,'benchmark_month':month,'benchmarks':benchmarks,'metric_charts':charts,
+    return {**bundle,'start_month':start_month,'end_month':month,'available_start':target[0]['month'] if target else None,'available_end':target[-1]['month'] if target else None,'benchmark_month':month,'benchmarks':benchmarks,'metric_charts':charts,
             'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in METRICS]}

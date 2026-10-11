@@ -33,8 +33,11 @@ def benchmarks(region_id: str):
 @router.get('/statistics/{region_id}')
 def stats(region_id: str, months: int=36): return analysis.statistics(region_id,months)
 @router.get('/export/{region_id}')
-def export(region_id: str, format: str='csv', months: int=120):
-    rows=analysis.series(region_id,months)
+def export(region_id: str, format: str='csv', months: int=120, start_month: str|None=None, end_month: str|None=None):
+    from ..dashboard import validate_period
+    try: validate_period(start_month,end_month)
+    except ValueError as exc: raise HTTPException(400,str(exc))
+    rows=[r for r in analysis.series(region_id,months) if (not start_month or r['month']>=start_month) and (not end_month or r['month']<=end_month)]
     if format.lower()=='json':
         return Response(json.dumps(rows,ensure_ascii=False,default=str),media_type='application/json',headers={'Content-Disposition':f'attachment; filename={region_id}.json'})
     buf=io.StringIO(); fields=['region_id','month','population_total','young_population_share','older_population_share','single_household_share','sale_price_per_m2','sale_price_yoy_pct','businesses_per_1000_people','vitality_index','housing_pressure_index','living_convenience_index','commerce_change_index']
@@ -46,8 +49,9 @@ def export(region_id: str, format: str='csv', months: int=120):
 
 
 @router.get('/regions/{region_id}/dashboard')
-def region_dashboard(region_id: str, answer_mode: str='basic'):
+def region_dashboard(region_id: str, answer_mode: str='basic', start_month: str|None=None, end_month: str|None=None):
     from ..dashboard import dashboard
-    result=dashboard(region_id,answer_mode)
+    try: result=dashboard(region_id,answer_mode,start_month,end_month)
+    except ValueError as exc: raise HTTPException(400,str(exc))
     if result.get('error'): raise HTTPException(404,result.get('message','지역을 찾을 수 없습니다.'))
     return result
