@@ -12,12 +12,19 @@ def summary_text(out=OUT):
            f"- 검증 정책: {status.get('validation_policy',os.getenv('VALIDATION_POLICY','unknown'))}",
            '- totals_first: 시 전체·5개 구 인구, 성별, 세대 총계 대조를 유지합니다. 개별 인구 결측은 null로 보존합니다.',
            '- 수집 진행 완료와 모든 지역의 자료 완전성은 별도로 판단합니다.',
+           f"- 이번 실행 저장·검증 완료: {status.get('applied_this_run', 0)}개월",
+           f"- 남은 월: {status.get('remaining_months', '—')}",
+           '- complete만 전체 완료입니다. partial은 정상 월 저장 완료·문제 월 보류이며 액션의 초록색과 구분합니다.',
            '', '| 기준월 | 총계 검증 | 알려진 인구 / 지역 수 | 미확정 결측 경고 |', '|---|---|---|---|']
     for file in sorted(out.glob('staged_validation_*.json')):
+        if status.get('method_version')=='3.7.1-final' and file.stem.removeprefix('staged_validation_') not in status.get('examined_months',[]):
+            continue
         data=json.loads(file.read_text());check=data['reconciliation'];coverage=check.get('population_coverage',{})
         lines.append(f"| {file.stem.removeprefix('staged_validation_')} | {check['status']} | {coverage.get('known','—')} / {coverage.get('master','—')} | {len(check.get('warnings',[]))} |")
         if check['status']=='failed':
             lines.append(f"\n실패 상세는 `{file.name}`의 `problems`에서 확인하세요.\n")
+    for issue in status.get('issues', []):
+        lines.append(f"- 보류: {issue.get('month')} / {issue.get('reason')} / {issue.get('safe_detail', issue.get('exception_type',''))}")
     lines.extend(['','개별 지역의 0명 확정·최신월 값을 과거로 복사·API 실패 무시는 수행하지 않습니다.'])
     return '\n'.join(lines)+'\n'
 

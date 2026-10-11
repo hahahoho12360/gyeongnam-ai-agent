@@ -40,10 +40,10 @@ def save(name, value):
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT/name).write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding='utf-8')
 
-def query(client, source, code, month):
+def query(client, source, code, month, *, template_override=None):
     ue, qe = SPECS[source]
     url = os.environ[ue]
-    template = json.loads(os.environ[qe])
+    template = template_override if template_override is not None else json.loads(os.environ[qe])
     if any('key' in k.lower() or 'token' in k.lower() for k in template):
         raise ValueError('Credentials must come from the client, not query templates')
     params = render(template, month, code)
@@ -51,15 +51,26 @@ def query(client, source, code, month):
     rows, pages, totals = [], 0, []
     for page in range(1, 101):
         payload = client.get(url, {**params, 'pageNo': page, 'numOfRows': 1000})
+        if not isinstance(payload, dict) or '_raw' in payload:
+            raise RuntimeError('Malformed original API response')
         items = client.items(payload)
         total = client.total_count(payload)
         pages += 1
         totals.append(total)
         rows.extend(items)
+        if not items and total is None and not client.is_no_data_error(client.error_message(payload) or ''):
+            raise RuntimeError('Empty response without explicit no-data evidence')
+        if total is not None and len(rows) > total:
+            raise RuntimeError('API row count exceeds advertised total')
+        if not items and total is not None and len(rows) < total:
+            raise RuntimeError('API ended before all advertised rows were received')
         if not items or (total is not None and len(rows) >= total) or (total is None and len(items) < 1000):
             break
     else:
         raise RuntimeError('Pagination incomplete')
+    known_totals = [t for t in totals if t is not None]
+    if len(set(known_totals)) > 1 or (known_totals and len(rows) != known_totals[-1]):
+        raise RuntimeError('Original API pagination counts are inconsistent')
     evidence = {'source': source, 'requested_code': code, 'month': month, 'url': url,
                 'params': params, 'pages': pages, 'total_counts': totals,
                 'row_count': len(rows), 'elapsed_seconds': round(time.monotonic()-start, 2),

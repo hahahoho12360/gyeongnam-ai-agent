@@ -1,4 +1,4 @@
-name: Changwon population history repair v3.7
+name: Changwon population history repair v3.7.1 final
 on:
   workflow_run:
     workflows: ['Changwon population latest repair v3.7']
@@ -11,6 +11,10 @@ on:
         type: choice
         options: [totals_first, strict]
         default: totals_first
+      continuation_attempt:
+        description: '자동 후속 실행 횟수 (직접 실행할 때 0 유지)'
+        type: string
+        default: '0'
 permissions:
   contents: read
   actions: write
@@ -44,8 +48,20 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements.txt -r requirements-dev.txt
       - run: python -m pytest -q
-      - name: Repair historical months using original APIs and Firebase checkpoints
-        run: python scripts/repair_population_history.py --max-months 6 --max-minutes 180 --validation-policy "$VALIDATION_POLICY"
+      - name: Restore successful original API captures for resumable preflight
+        uses: actions/cache/restore@v4
+        with:
+          path: artifacts/population_repair/
+          key: changwon-population-final-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: changwon-population-final-v1-
+      - name: Audit every remaining month before applying verified population repairs
+        run: python scripts/repair_population_history.py --max-months 48 --max-minutes 260 --workers 6 --validation-policy "$VALIDATION_POLICY"
+      - name: Preserve successful public API captures even if later verification fails
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: artifacts/population_repair/
+          key: changwon-population-final-v1-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -59,8 +75,16 @@ jobs:
       - name: Continue unfinished successful batches
         env:
           GH_TOKEN: ${{ github.token }}
+          CONTINUATION_ATTEMPT: ${{ inputs.continuation_attempt || '0' }}
         run: |
           STATUS=$(python -c "import json; print(json.load(open('artifacts/population_repair/history_status.json'))['status'])")
           if [ "$STATUS" = "needs_continue" ]; then
-            gh workflow run changwon-population-history.yml --ref main -f validation_policy="$VALIDATION_POLICY"
+            NEXT=$(python -c "import os; print(int(os.environ['CONTINUATION_ATTEMPT'])+1)")
+            if [ "$NEXT" -le 3 ]; then
+              gh workflow run changwon-population-history.yml --ref main -f validation_policy="$VALIDATION_POLICY" -f continuation_attempt="$NEXT"
+            else
+              echo "::warning::시간 제한으로 미처리 월이 남았습니다. 자동 후속 실행 3회에 도달했습니다."
+            fi
+          elif [ "$STATUS" != "complete" ]; then
+            echo "::warning::검증되지 않은 월은 저장하지 않았습니다. 정상 월 처리는 완료했고 Artifacts와 Summary에 남은 문제를 기록했습니다."
           fi
