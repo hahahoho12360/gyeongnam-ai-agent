@@ -104,3 +104,15 @@ def test_default_period_stops_at_last_closed_month_and_collection_start(monkeypa
     result=module.dashboard(rid)
     assert result['end_month']=='2026-09' and result['period_max']=='2026-09'
     assert module.dashboard(rid,end_month='2022-10')['start_month']=='2022-10'
+
+
+def test_comparison_uses_dashboard_end_month_even_when_snapshot_is_stale(monkeypatch):
+    store=db.MemoryStore();monkeypatch.setattr(db,'_store',store)
+    rid='4812110100';store.set('regions',rid,{'bjd_code':rid,'name':'시험동'})
+    store.set('monthly_data',rid+'_2026-08',{'region_id':rid,'month':'2026-08','metrics':{'population_total':10}})
+    store.set('region_latest',rid,{'region_id':rid,'month':'2026-07','metrics':{'population_total':9}})
+    calls=[]
+    monkeypatch.setattr(analysis,'comparison_regions',lambda *args:(calls.append(args) or {}))
+    result=dashboard(rid,question='인구 비교')
+    assert result['end_month']=='2026-08'
+    assert calls==[(rid,'2026-08','인구 비교')]

@@ -74,8 +74,7 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
     region=analysis.resolve_region(region_id)
     if not region or not str(region.get('bjd_code') or region['id']).startswith('4812'):
         return {'error':'region_not_found','message':'창원 법정읍·면·동을 선택하세요.'}
-    comparisons=analysis.comparison_regions(region['id'],end_month,question) if (end_month or question) else analysis.comparison_regions(region['id'])
-    bundle={'comparison':comparisons,'answer_mode':answer_mode,'summary':{'region':region,'count':0}}
+    bundle={'comparison':{},'answer_mode':answer_mode,'summary':{'region':region,'count':0}}
     store=get_store()
     master={r['id']:r for r in analysis.list_regions() if str(r.get('bjd_code') or r['id']).startswith('4812') and not r.get('is_demo')}
     minimum,maximum=period_bounds()
@@ -86,6 +85,8 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
         start_month=start_month or max(minimum,shift(month,-11))
         validate_period(start_month,month)
     if not month: return {**bundle,'benchmarks':[],'metric_charts':{},'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in METRICS]}
+    comparisons=analysis.comparison_regions(region['id'],month,question)
+    bundle['comparison']=comparisons
     current={r['region_id']:r for r in store.filter_eq('monthly_data','month',month) if r.get('region_id') in master}
     previous={r['region_id']:r for r in store.filter_eq('monthly_data','month',shift(month,-12)) if r.get('region_id') in master}
     benchmarks=[]
