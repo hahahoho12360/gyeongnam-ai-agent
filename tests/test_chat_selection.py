@@ -17,7 +17,7 @@ def test_personal_summary_is_used_and_saved(monkeypatch):
     from backend.main import app
     module=importlib.import_module('backend.routers.chat')
     seen={}
-    monkeypatch.setattr(module,'data_summary',lambda:{'count':2,'metrics':{'average':15}})
+    monkeypatch.setattr(module,'data_summary',lambda uid:{'count':2,'metrics':{'average':15}})
     def agent(message,context):
         seen.update(context)
         return '기록 분석',[]

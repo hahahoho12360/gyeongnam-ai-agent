@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from ..models import ChatRequest, ChatResponse
 from ..db import get_store
+from ..auth import required_user, owned
 from .. import analysis
 from ..openai_agent import run_agent
 from ..comparison_evidence import append_comparison
@@ -14,13 +15,14 @@ router=APIRouter(prefix='/api/chat',tags=['chat'])
 def now(): return datetime.now(timezone.utc).isoformat()
 
 @router.post('',response_model=ChatResponse)
-def chat(req: ChatRequest):
+def chat(req: ChatRequest,uid: str=Depends(required_user)):
     store=get_store(); context={}; charts=[]
+    existing=owned('conversations',req.conversation_id,uid) if req.conversation_id else None
     selected,candidates=select_region(req.message,req.region_id) if req.analysis_target=='region' else (None,[])
     if candidates:
         return ChatResponse(answer='지역을 하나로 확정할 수 없습니다. 기준으로 볼 지역을 선택해주세요: '+', '.join(r.get('full_name') or r['name'] for r in candidates),conversation_id=req.conversation_id or '',region_candidates=candidates)
     if req.analysis_target=='personal':
-        context={'personal_data_summary':data_summary(),'answer_mode':req.answer_mode}
+        context={'personal_data_summary':data_summary(uid),'answer_mode':req.answer_mode}
     elif selected:
         bundle=analysis.proactive_bundle(selected,req.answer_mode,req.message)
         context=bundle
@@ -38,11 +40,11 @@ def chat(req: ChatRequest):
     if selected:
         region=analysis.resolve_region(selected)
         if region: answer=append_news(answer,recent_news(region))
-    if req.conversation_id and store.get('conversations',req.conversation_id):
-        conv=store.get('conversations',req.conversation_id); messages=conv.get('messages',[])
+    if existing:
+        conv=existing; messages=conv.get('messages',[])
         cid=req.conversation_id
     else:
-        cid=store.create('conversations',{'title':req.message[:60],'messages':[],'created_at':now(),'updated_at':now()})['id']; messages=[]
+        cid=store.create('conversations',{'owner_uid':uid,'title':req.message[:60],'messages':[],'created_at':now(),'updated_at':now()})['id']; messages=[]
     messages += [{'role':'user','content':req.message,'created_at':now()},{'role':'assistant','content':answer,'created_at':now()}]
     store.update('conversations',cid,{'messages':messages,'updated_at':now(),'last_tools_used':tools,'analysis_target':req.analysis_target,'comparison_question':req.message if req.analysis_target=='region' else '', 'region_id':selected,'resolved_region':analysis.resolve_region(selected) if selected else None})
     freshness=(context.get('summary',{}).get('freshness',{}) if isinstance(context,dict) else {})

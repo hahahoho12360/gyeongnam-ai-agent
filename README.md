@@ -410,3 +410,8 @@ python scripts/auto_rollout.py --scope gyeongnam
 - `blocked` 상태는 GitHub Actions도 실패(빨간 X)로 표시한다.
 
 자세한 실행 절차: `docs/GITHUB_ACTIONS_V31.md`
+
+
+## 개인 지역 기록과 익명 인증
+
+개인 데이터·대화·채팅 API는 Firebase ID 토큰과 소유자 검사를 요구합니다. 공개 창원 통계는 인증 없이 조회할 수 있습니다. 날짜·지역·CSV 자료 항목·값·메모를 입력하고 별도 저장/수정/삭제 버튼을 사용합니다. 설정·기존 기록 처리·두 사용자 검증은 [개인 기록 인증 안내](docs/PERSONAL_RECORDS_AUTH.md)를 참조하세요. Render에 `FIREBASE_WEB_API_KEY`와 동일 프로젝트의 `FIREBASE_PROJECT_ID`를 설정하고 Firebase에서 익명 로그인을 활성화해야 개인 기능이 작동합니다. 웹 API 키와 서비스 계정 개인키는 서로 다릅니다.

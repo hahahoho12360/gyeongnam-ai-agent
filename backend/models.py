@@ -4,11 +4,17 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field, ConfigDict
 
 class DataPointCreate(BaseModel):
+    model_config = ConfigDict(extra='forbid',allow_inf_nan=False)
+    region_id: str | None = Field(default=None,pattern=r'^4812\d{6}$')
+    metric_type: str = Field(default='custom',max_length=80)
     date: DateType
     value: float
     memo: str = Field(default='', max_length=500)
 
 class DataPointUpdate(BaseModel):
+    model_config = ConfigDict(extra='forbid',allow_inf_nan=False)
+    region_id: str | None = Field(default=None,pattern=r'^4812\d{6}$')
+    metric_type: str | None = Field(default=None,max_length=80)
     date: DateType | None = None
     value: float | None = None
     memo: str | None = Field(default=None, max_length=500)
@@ -22,6 +28,7 @@ class Message(BaseModel):
     created_at: datetime | None = None
 
 class ConversationCreate(BaseModel):
+    model_config = ConfigDict(extra='forbid')
     title: str = Field(default='새 대화', max_length=120)
     messages: list[Message] = Field(default_factory=list)
 

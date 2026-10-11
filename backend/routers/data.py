@@ -1,26 +1,35 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends
 from ..db import get_store
 from ..models import DataPointCreate, DataPointUpdate
+from ..auth import required_user, owned
+from ..personal_records import validate_record, summarize, METRICS
 router=APIRouter(prefix='/api/data',tags=['data'])
 
+@router.get('/metrics')
+def metric_options():
+    return [{'key':key,'label':label,'unit':unit} for key,(label,unit) in METRICS.items() if key!='custom']
+
 @router.post('')
-def create_data(item: DataPointCreate): return get_store().create('data', item.model_dump(mode='json'))
+def create_data(item: DataPointCreate, uid: str=Depends(required_user)):
+    row=validate_record(item.model_dump(mode='json'))
+    return get_store().create('data',{**row,'owner_uid':uid})
+
 @router.get('')
-def list_data(): return sorted(get_store().list('data'),key=lambda x:x.get('date',''))
+def list_data(uid: str=Depends(required_user)):
+    return sorted(get_store().filter_eq('data','owner_uid',uid),key=lambda x:x.get('date',''))
+
 @router.put('/{doc_id}')
-def update_data(doc_id: str, item: DataPointUpdate):
-    row=get_store().update('data',doc_id,{k:v for k,v in item.model_dump(mode='json').items() if v is not None})
-    if not row: raise HTTPException(404,'데이터를 찾을 수 없습니다.')
-    return row
+def update_data(doc_id: str,item: DataPointUpdate,uid: str=Depends(required_user)):
+    old=owned('data',doc_id,uid)
+    fields=item.model_dump(mode='json',exclude_unset=True)
+    updated=validate_record({**old,**fields})
+    return get_store().update('data',doc_id,{k:v for k,v in updated.items() if k not in ('id','owner_uid')})
+
 @router.delete('/{doc_id}')
-def delete_data(doc_id: str):
-    if not get_store().delete('data',doc_id): raise HTTPException(404,'데이터를 찾을 수 없습니다.')
+def delete_data(doc_id: str,uid: str=Depends(required_user)):
+    owned('data',doc_id,uid);get_store().delete('data',doc_id)
     return {'deleted':True,'id':doc_id}
+
 @router.get('/summary')
-def data_summary():
-    rows=list_data(); vals=[float(r['value']) for r in rows if r.get('value') is not None]
-    if not rows: return {'period':None,'count':0,'metrics':{},'trend':'데이터 없음'}
-    trend='유지'
-    if len(vals)>=2:
-        diff=vals[-1]-vals[0]; trend='상승' if diff>0 else ('감소' if diff<0 else '유지')
-    return {'period':f"{rows[0]['date']} ~ {rows[-1]['date']}",'count':len(rows),'metrics':{'average':sum(vals)/len(vals) if vals else None,'max':max(vals) if vals else None,'min':min(vals) if vals else None},'trend':trend}
+def data_summary(uid: str=Depends(required_user)):
+    return summarize(list_data(uid))

@@ -1,0 +1,8 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // This application uses verified FastAPI requests, not direct browser Firestore access.
+    // Admin SDK access remains governed by server credentials/IAM.
+    match /{document=**} { allow read, write: if false; }
+  }
+}

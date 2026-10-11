@@ -21,3 +21,8 @@ def root(): return {'service':'gyeongnam-ai-agent','status':'ok','docs':'/docs',
 def health(): return {'status':'ok'}
 
 
+
+@app.get('/api/auth/config',tags=['authentication'])
+def auth_config():
+    from .auth import public_config
+    return public_config()
