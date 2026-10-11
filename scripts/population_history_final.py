@@ -303,6 +303,20 @@ def apply_plan(store, plan):
     commit_batch(batch)
 
 
+def compact_status(status):
+    """Keep the Firestore progress document bounded during a provider outage.
+
+    Complete diagnostics remain in Actions artifacts, never in one huge DB doc.
+    """
+    summary={**status,'issues':[]}
+    for issue in status.get('issues',[]):
+        item={k:v for k,v in issue.items() if k!='errors'}
+        if 'errors' in issue:
+            item.update(error_count=len(issue['errors']),errors=issue['errors'][:10])
+        summary['issues'].append(item)
+    return summary
+
+
 def run(max_months=48,max_minutes=260,validation_policy='totals_first',workers=6):
     save('history_status.json',{'status':'initializing','method_version':VERSION,'validation_policy':validation_policy})
     store=get_store()
@@ -373,7 +387,7 @@ def run(max_months=48,max_minutes=260,validation_policy='totals_first',workers=6
             'updated_at':utcnow_iso(),'status':'needs_continue' if pending and not issues else 'partial' if left else 'verifying'}
     save('history_status.json',status)
     if left:
-        store.set('rollout_reports','changwon_population_history_v37',status,merge=False)
+        store.set('rollout_reports','changwon_population_history_v37',compact_status(status),merge=False)
         print('Repair finished with retained unresolved months; see history_status.json',flush=True)
         return status
     # Read the actual persisted records again before recomputing indexes.
@@ -393,5 +407,5 @@ def run(max_months=48,max_minutes=260,validation_policy='totals_first',workers=6
             status.update(status='needs_continue',population_totals_verified_months=48,pending_reindex=True,
                           issues=[{'reason':'reindex_pending','exception_type':type(exc).__name__}])
     save('history_status.json',status)
-    store.set('rollout_reports','changwon_population_history_v37',status,merge=False)
+    store.set('rollout_reports','changwon_population_history_v37',compact_status(status),merge=False)
     return status

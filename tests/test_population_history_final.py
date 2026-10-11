@@ -153,3 +153,14 @@ def test_failed_range_falls_back_to_single_months_without_shared_env_changes(mon
     for source in SOURCES:
         for month in ['2024-08','2024-09']:
             assert json.loads((tmp_path/f'{source}_4812132021_{month}.json').read_text())['successful_request']
+
+
+def test_provider_outage_diagnostics_do_not_exceed_firestore_document_limit():
+    from scripts.population_history_final import compact_status
+    errors=[{'source':'population','code':f'48121{i:05d}','months':['2024-08'],'exception_type':'RuntimeError'} for i in range(951)]
+    status={'status':'partial','issues':[{'month':f'2024-{i+1:02d}','errors':errors} for i in range(25)]}
+    compact=compact_status(status)
+    assert len(json.dumps(compact).encode()) < 100_000
+    assert compact['issues'][0]['error_count']==951
+    assert len(compact['issues'][0]['errors'])==10
+    assert len(status['issues'][0]['errors'])==951
