@@ -70,3 +70,37 @@ def test_export_uses_exact_applied_period(monkeypatch):
         res=client.get(f'/api/analytics/export/{rid}?format=json&start_month=2026-02&end_month=2026-02')
         assert res.status_code==200 and [r['month'] for r in res.json()]==['2026-02']
         assert client.get(f'/api/analytics/regions/{rid}/dashboard?start_month=2026-03&end_month=2026-01').status_code==400
+
+def test_month_bounds_use_korean_calendar_and_january_rollover():
+    from datetime import datetime,timezone
+    from backend.dashboard import period_bounds
+    assert period_bounds(datetime(2026,10,11,tzinfo=timezone.utc))==('2022-10','2026-09')
+    assert period_bounds(datetime(2027,1,1,tzinfo=timezone.utc))==('2022-10','2026-12')
+    # UTC is still September, but Korea is already October.
+    assert period_bounds(datetime(2026,9,30,15,0,tzinfo=timezone.utc))[1]=='2026-09'
+
+def test_bounds_reject_older_current_and_future_months(monkeypatch):
+    import pytest
+    import backend.dashboard as module
+    monkeypatch.setattr(module,'period_bounds',lambda:('2022-10','2026-09'))
+    for start,end in [('2022-09','2026-09'),('2022-10','2026-10'),('2026-10','2026-11')]:
+        with pytest.raises(ValueError): module.validate_period(start,end)
+    module.validate_period('2022-10','2026-09')
+    from fastapi.testclient import TestClient
+    from backend.main import app
+    with TestClient(app) as client:
+        for path in ('/api/analytics/regions/4812112400/dashboard','/api/analytics/export/4812112400'):
+            assert client.get(path+'?start_month=2022-09&end_month=2026-09').status_code==400
+            assert client.get(path+'?start_month=2022-10&end_month=2026-10').status_code==400
+
+def test_default_period_stops_at_last_closed_month_and_collection_start(monkeypatch):
+    import backend.dashboard as module
+    store=db.MemoryStore();monkeypatch.setattr(db,'_store',store)
+    monkeypatch.setattr(module,'period_bounds',lambda:('2022-10','2026-09'))
+    rid='4812110100';store.set('regions',rid,{'id':rid,'bjd_code':rid,'name':'A'})
+    for month in ('2022-10','2026-09','2026-10'):
+        store.set('monthly_data',rid+'_'+month,{'region_id':rid,'month':month,'metrics':{'population_total':10}})
+    monkeypatch.setattr(analysis,'comparison_regions',lambda *args:{})
+    result=module.dashboard(rid)
+    assert result['end_month']=='2026-09' and result['period_max']=='2026-09'
+    assert module.dashboard(rid,end_month='2022-10')['start_month']=='2022-10'

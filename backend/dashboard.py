@@ -1,7 +1,8 @@
 """Read-only Changwon dashboard: same-month comparisons and gap-safe trends."""
 import math
 import re
-from datetime import date
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from . import analysis
 from .db import get_store
 
@@ -48,10 +49,20 @@ def value(row,key,year_ago=None):
     v=row.get('indexes',{}).get(key)
     return v if numeric(v) else None
 
+PERIOD_MIN='2022-10'
+
+def period_bounds(now=None):
+    current=now or datetime.now(ZoneInfo('Asia/Seoul'))
+    if current.tzinfo is not None: current=current.astimezone(ZoneInfo('Asia/Seoul'))
+    return PERIOD_MIN,shift(current.strftime('%Y-%m'),-1)
+
 def validate_period(start_month=None,end_month=None):
+    minimum,maximum=period_bounds()
     for month in (start_month,end_month):
         if month and not re.fullmatch(r"[0-9]{4}-(0[1-9]|1[0-2])",month):
             raise ValueError('기준월은 YYYY-MM 형식으로 입력하세요.')
+        if month and not minimum<=month<=maximum:
+            raise ValueError(f'조회 기간은 {minimum}부터 {maximum}(한국 시간 기준 직전 월)까지 선택할 수 있어요.')
     if start_month and end_month and start_month>end_month:
         raise ValueError('시작월은 종료월보다 늦을 수 없어요.')
     if start_month and end_month:
@@ -67,10 +78,12 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None):
     bundle={'comparison':comparisons,'answer_mode':answer_mode,'summary':{'region':region,'count':0}}
     store=get_store()
     master={r['id']:r for r in analysis.list_regions() if str(r.get('bjd_code') or r['id']).startswith('4812') and not r.get('is_demo')}
-    target=analysis.series(region['id'],120)
+    minimum,maximum=period_bounds()
+    bundle.update(period_min=minimum,period_max=maximum)
+    target=[r for r in analysis.series(region['id'],120) if minimum<=r['month']<=maximum]
     month=end_month or (target[-1]['month'] if target else None)
     if month:
-        start_month=start_month or shift(month,-11)
+        start_month=start_month or max(minimum,shift(month,-11))
         validate_period(start_month,month)
     if not month: return {**bundle,'benchmarks':[],'metric_charts':{},'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in METRICS]}
     current={r['region_id']:r for r in store.filter_eq('monthly_data','month',month) if r.get('region_id') in master}
