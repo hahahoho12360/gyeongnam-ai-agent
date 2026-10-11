@@ -1,0 +1,59 @@
+name: Changwon population one-month verified repair v3.7.2
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/changwon-population-one-month.yml']
+  workflow_dispatch:
+    inputs:
+      month:
+        description: '공식 총계가 준비된 보완 대상 월'
+        default: '2024-08'
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: changwon-population-repair
+  cancel-in-progress: false
+jobs:
+  probe-and-repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    env:
+      PYTHONUNBUFFERED: '1'
+      DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      USE_MEMORY_DB: 'false'
+      DEMO_SEED_ON_START: 'false'
+      DEFER_INDEX_RECOMPUTE: 'true'
+      POPULATION_API_URL: https://apis.data.go.kr/1741000/stdgPpltnHhStus/selectStdgPpltnHhStus
+      AGE_POPULATION_API_URL: https://apis.data.go.kr/1741000/stdgSexdAgePpltn/selectStdgSexdAgePpltn
+      SINGLE_HOUSEHOLD_API_URL: https://apis.data.go.kr/1741000/stdgSexdAgeOneHh/selectStdgSexdAgeOneHh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - run: python -m pytest -q
+      - uses: actions/cache/restore@v4
+        with:
+          path: artifacts/population_repair/
+          key: changwon-one-month-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: changwon-one-month-v2-
+      - name: Probe Samgye single and range; repair and read back one month
+        env:
+          TARGET_MONTH: ${{ inputs.month || '2024-08' }}
+        run: timeout --signal=TERM --kill-after=30s 70m python scripts/population_one_month.py --month "$TARGET_MONTH" --max-minutes 60
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: artifacts/population_repair/
+          key: changwon-one-month-v2-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: changwon-one-month-${{ github.run_id }}
+          path: artifacts/population_repair/
+          retention-days: 14
