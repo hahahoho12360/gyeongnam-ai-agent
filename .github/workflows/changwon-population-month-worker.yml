@@ -1,0 +1,65 @@
+name: Changwon population monthly worker v3.7.3
+on:
+  workflow_call:
+    inputs:
+      month:
+        required: true
+        type: string
+    secrets:
+      DATA_GO_KR_SERVICE_KEY:
+        required: true
+      FIREBASE_SERVICE_ACCOUNT_JSON:
+        required: true
+      FIREBASE_PROJECT_ID:
+        required: false
+    outputs:
+      continue_processing:
+        value: ${{ jobs.month.outputs.continue_processing }}
+permissions:
+  contents: read
+jobs:
+  month:
+    name: ${{ inputs.month }} verified population repair
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    outputs:
+      continue_processing: ${{ steps.process.outputs.continue_processing }}
+    env:
+      PYTHONUNBUFFERED: '1'
+      DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      USE_MEMORY_DB: 'false'
+      DEMO_SEED_ON_START: 'false'
+      DEFER_INDEX_RECOMPUTE: 'true'
+      POPULATION_API_URL: https://apis.data.go.kr/1741000/stdgPpltnHhStus/selectStdgPpltnHhStus
+      AGE_POPULATION_API_URL: https://apis.data.go.kr/1741000/stdgSexdAgePpltn/selectStdgSexdAgePpltn
+      SINGLE_HOUSEHOLD_API_URL: https://apis.data.go.kr/1741000/stdgSexdAgeOneHh/selectStdgSexdAgeOneHh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - uses: actions/cache/restore@v4
+        with:
+          path: artifacts/population_repair/
+          key: changwon-month-v373-${{ inputs.month }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: changwon-month-v373-${{ inputs.month }}-
+      - name: Repair, verify and recalculate population-only fields
+        id: process
+        env:
+          TARGET_MONTH: ${{ inputs.month }}
+        run: python scripts/population_followup_step.py --month "$TARGET_MONTH"
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: artifacts/population_repair/
+          key: changwon-month-v373-${{ inputs.month }}-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: changwon-population-${{ inputs.month }}-${{ github.run_id }}
+          path: artifacts/population_repair/
+          retention-days: 14

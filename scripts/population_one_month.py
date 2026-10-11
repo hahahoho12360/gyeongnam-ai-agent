@@ -124,20 +124,29 @@ def probe(month):
     return all(r['status']=='success' for r in results if r['mode']=='single')
 
 
-def run(month,max_minutes=60):
+def original_sources_verified(rows, master):
+    return len(rows)==len(master) and {r["region_id"] for r in rows}==set(master) and all(
+        all((r.get("freshness",{}).get("sources",{}).get(source,{}) or {}).get("collection_method")==core.VERSION
+            and (r.get("freshness",{}).get("sources",{}).get(source,{}) or {}).get("status") in ("ok","no_data")
+            and str((r.get("freshness",{}).get("sources",{}).get(source,{}) or {}).get("source_as_of", ""))[:7]==r.get("month")
+            for source in core.SOURCES) for r in rows)
+
+
+def run(month,max_minutes=60,skip_probe=False):
     configure();BoundedClient.budget=Budget(max_minutes*60)
     status={'month':month,'status':'probing','applied_this_run':0,'updated_at':utcnow_iso()}
     save('one_month_status.json',status)
     try:
-        if not probe(month):raise StopCollection('samgye_probe_failed')
         store=get_store()
         if not isinstance(store,FirestoreStore):raise ValueError('Actual Firestore required')
         master,children,codes=core.inventory(json.loads((ROOT/'data/current_changwon_codes_verified20261010.json').read_text()))
         totals=json.loads((ROOT/'data/population_official_history_totals.json').read_text())['months'][month]
-        before=core.check_totals([r for r in store.filter_eq('monthly_data','month',month) if r.get('region_id') in master],totals)
+        before_rows=[r for r in store.filter_eq('monthly_data','month',month) if r.get('region_id') in master]
+        before=core.check_totals(before_rows,totals)
         save('before_totals.json',before)
-        if before['status']=='passed':
+        if before['status']=='passed' and original_sources_verified(before_rows,master):
             status.update(status='already_verified',firestore_verified=True);return status
+        if not skip_probe and not probe(month):raise StopCollection('samgye_probe_failed')
         status['status']='collecting';save('one_month_status.json',status)
         core.DataGoKrClient=BoundedClient
         errors=core.prefetch_window([month],codes,workers=2)
@@ -173,10 +182,10 @@ def run(month,max_minutes=60):
             with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:f.write('### One-month verified repair\n```json\n'+summary+'\n```\n')
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--month',default='2024-08');p.add_argument('--max-minutes',type=int,default=60);p.add_argument('--probe-only',action='store_true');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--month',default='2024-08');p.add_argument('--max-minutes',type=int,default=60);p.add_argument('--probe-only',action='store_true');p.add_argument('--skip-probe',action='store_true');a=p.parse_args()
     if a.probe_only:
         configure();BoundedClient.budget=Budget(a.max_minutes*60)
         ok=probe(a.month)
         sys.exit(0 if ok else 2)
-    result=run(a.month,a.max_minutes)
+    result=run(a.month,a.max_minutes,a.skip_probe)
     sys.exit(0 if result['status'] in ('complete','already_verified') else 2)
