@@ -1,5 +1,8 @@
-name: Changwon non-population audit and repair v3.9
+name: Changwon non-population audit and repair v3.9.1 final
 on:
+  push:
+    branches: [main]
+    paths: [docs/NONPOPULATION_V391_RUN.txt]
   workflow_dispatch:
     inputs:
       mode:
@@ -19,8 +22,12 @@ on:
       max_months:
         description: '소스당 한 번에 보완할 최대 월수; 재실행하면 남은 월부터 계속'
         default: '6'
+      continuation_attempt:
+        description: '자동 이어서 처리 횟수; 직접 시작할 때 0'
+        default: '0'
 permissions:
   contents: read
+  actions: write
 jobs:
   audit:
     runs-on: ubuntu-latest
@@ -31,10 +38,10 @@ jobs:
       FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
       FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
       DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
-      START_MONTH: ${{ inputs.start }}
-      END_MONTH: ${{ inputs.end }}
-      SNAPSHOT_MONTH: ${{ inputs.snapshot }}
-      MAX_MONTHS: ${{ inputs.max_months }}
+      START_MONTH: ${{ inputs.start || '2022-10' }}
+      END_MONTH: ${{ inputs.end || '2026-09' }}
+      SNAPSHOT_MONTH: ${{ inputs.snapshot || '2026-09' }}
+      MAX_MONTHS: ${{ inputs.max_months || '6' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -52,7 +59,7 @@ jobs:
           path: artifacts/nonpopulation/
           retention-days: 30
   fill:
-    if: inputs.mode == 'fill'
+    if: github.event_name == 'push' || inputs.mode == 'fill'
     needs: audit
     runs-on: ubuntu-latest
     timeout-minutes: 330
@@ -65,10 +72,10 @@ jobs:
       FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
       FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
       DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
-      START_MONTH: ${{ inputs.start }}
-      END_MONTH: ${{ inputs.end }}
-      SNAPSHOT_MONTH: ${{ inputs.snapshot }}
-      MAX_MONTHS: ${{ inputs.max_months }}
+      START_MONTH: ${{ inputs.start || '2022-10' }}
+      END_MONTH: ${{ inputs.end || '2026-09' }}
+      SNAPSHOT_MONTH: ${{ inputs.snapshot || '2026-09' }}
+      MAX_MONTHS: ${{ inputs.max_months || '6' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -76,6 +83,7 @@ jobs:
           python-version: '3.11'
           cache: pip
       - run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - run: python -m pytest -q tests/test_nonpopulation_repair.py tests/test_nonpopulation_final.py
       - name: Fill only unqueried non-population source-region-month combinations
         run: python scripts/repair_nonpopulation.py --mode fill --start "$START_MONTH" --end "$END_MONTH" --snapshot "$SNAPSHOT_MONTH" --max-months "$MAX_MONTHS"
       - uses: actions/upload-artifact@v4
@@ -84,3 +92,28 @@ jobs:
           name: changwon-nonpopulation-repair-${{ github.run_id }}
           path: artifacts/nonpopulation/
           retention-days: 30
+      - name: Explain actual result
+        if: always()
+        run: |
+          python - <<'PYCODE'
+          import json, os
+          from pathlib import Path
+          path=Path('artifacts/nonpopulation/result.json')
+          result=json.loads(path.read_text()) if path.exists() else {'status':'interrupted'}
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('## Changwon non-population v3.9.1\n')
+              f.write('```json\n'+json.dumps(result,ensure_ascii=False,indent=2)+'\n```\n')
+              f.write('complete만 전체 수집 완료입니다. needs_continue/partial은 남은 작업이 있습니다.\n')
+          PYCODE
+      - name: Automatically continue remaining items
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CONTINUATION_ATTEMPT: ${{ inputs.continuation_attempt || '0' }}
+        run: |
+          NEXT=$(python -c "import os; print(int(os.environ['CONTINUATION_ATTEMPT'])+1)")
+          CONTINUE=$(python -c "import json; r=json.load(open('artifacts/nonpopulation/result.json')); print('yes' if r['status']=='needs_continue' or (r['status']=='partial' and r['applied']>0) else 'no')")
+          if [ "$CONTINUE" = "yes" ] && [ "$NEXT" -le 12 ]; then
+            gh workflow run changwon-nonpopulation-repair.yml --ref "$GITHUB_SHA" -f mode=fill -f start="$START_MONTH" -f end="$END_MONTH" -f snapshot="$SNAPSHOT_MONTH" -f max_months="$MAX_MONTHS" -f continuation_attempt="$NEXT"
+          elif [ "$CONTINUE" = "yes" ]; then
+            echo "::warning::자동 후속 실행 한도입니다. result.json에서 남은 항목을 확인하세요."
+          fi

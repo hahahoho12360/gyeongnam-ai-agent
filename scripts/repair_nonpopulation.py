@@ -5,6 +5,8 @@ import hashlib
 import json
 import os
 import sys
+import time
+from functools import lru_cache
 from collections import Counter
 from datetime import date
 from pathlib import Path
@@ -35,6 +37,32 @@ CATALOG = [
  ('인구·세대','population','audit only'),
 ]
 
+VERSION = '3.9.1'
+
+class DiagnosticError(ValueError):
+    def __init__(self, category, **details):
+        self.category = category
+        self.details = details
+        super().__init__(category)
+
+def diagnostic(exc):
+    # Never include arbitrary exception strings, URLs, addresses or credentials.
+    if isinstance(exc, DiagnosticError):
+        return {'category': exc.category, **exc.details}
+    return {'category': 'API 또는 저장 처리 실패', 'error_type': type(exc).__name__}
+
+@lru_cache(maxsize=1)
+def official_inventory():
+    return {str(r['region_cd']): r for r in json.loads((ROOT/'data/current_changwon_codes_verified20261010.json').read_text())}
+
+def safe_fields(row):
+    result = {}
+    for key in ('sggCd','umdCd','stdgCd','bjdCode','bjdongCd','umdNm','dealYear','dealMonth'):
+        value = str(row.get(key, ''))
+        if value and len(value) <= 80 and all(c.isalnum() or c in ' -·' for c in value):
+            result[key] = value
+    return result
+
 class CheckedClient(DataGoKrClient):
     def get(self, *args, **kwargs):
         payload = super().get(*args, **kwargs)
@@ -44,7 +72,7 @@ class CheckedClient(DataGoKrClient):
         root = payload.get('response', payload.get('Response', payload)) if isinstance(payload, dict) else {}
         body = root.get('body', root) if isinstance(root, dict) else {}
         if not isinstance(body, dict) or not any(k in body for k in ('items','item','totalCount')):
-            raise ValueError('Unrecognized API envelope; not confirmed no_data')
+            raise DiagnosticError('응답 형식 오류')
         return payload
     def get_all(self, url, params=None, *, page_size=1000, max_pages=1000, json_hint=True):
         out=[]; fingerprints=set(); expected=None
@@ -53,20 +81,20 @@ class CheckedClient(DataGoKrClient):
             rows=self.items(payload); total=self.total_count(payload)
             if total is not None:
                 if total < 0 or (expected is not None and total != expected):
-                    raise ValueError('Pagination total changed')
+                    raise DiagnosticError('페이지 총건수 변경', page=page)
                 expected=total
             if rows:
                 digest=hashlib.sha256(json.dumps(rows,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
-                if digest in fingerprints: raise ValueError('Repeated API page')
+                if digest in fingerprints: raise DiagnosticError('페이지 반복', page=page)
                 fingerprints.add(digest)
             out.extend(rows)
-            if expected is not None and len(out)>expected: raise ValueError('Pagination exceeds total')
+            if expected is not None and len(out)>expected: raise DiagnosticError('페이지 건수 초과', page=page)
             if expected is not None and len(out)==expected: return out
             if not rows:
-                if expected is not None and len(out)!=expected: raise ValueError('Incomplete API pages')
+                if expected is not None and len(out)!=expected: raise DiagnosticError('페이지 누락', page=page, expected=expected, received=len(out))
                 return out
             if expected is None and len(rows)<page_size: return out
-        raise ValueError('Pagination limit reached')
+        raise DiagnosticError('페이지 상한 초과')
 
 def state(row, source):
     meta=((row or {}).get('freshness',{}).get('sources',{})).get(source) or {}
@@ -99,23 +127,63 @@ def scope(store):
 
 def normalized(row):
     row=dict(row)
-    code=row.get('bjdongCd') or row.get('bjdCode')
-    if code and len(str(code))==10: row['stdgCd']=str(code)
+    code=row.get('stdgCd') or row.get('bjdCd') or row.get('bjd_code') or row.get('bjdongCd') or row.get('bjdCode')
+    if code and len(str(code).strip())==10:
+        row['stdgCd']=str(code).strip()
+    elif row.get('sggCd') and row.get('umdCd'):
+        sig=str(row['sggCd']).strip(); suffix=str(row['umdCd']).strip()
+        if sig.isdigit() and len(sig)==5 and suffix.isdigit() and len(suffix)<=5:
+            row['stdgCd']=sig+suffix.zfill(5)
     return row
+
+def resolve_region(row, regions, gu):
+    inventory=official_inventory(); targets={r['id']:r for r in regions if r['id'].startswith(gu)}
+    code=row.get('stdgCd')
+    if code:
+        if code not in inventory or not code.startswith(gu):
+            raise DiagnosticError('지역 코드 불일치', **safe_fields(row))
+        parent=code if code in targets else code[:8]+'00'
+        if parent not in targets:
+            raise DiagnosticError('지역 연결 실패', **safe_fields(row))
+        return parent
+    sig=str(row.get('sggCd') or row.get('signguCd') or gu)
+    if sig != gu:
+        raise DiagnosticError('지역 코드 불일치', **safe_fields(row))
+    name=' '.join(str(row.get('umdNm') or row.get('stdgNm') or row.get('dongNm') or '').split())
+    if name:
+        matches=set()
+        for legal, entry in inventory.items():
+            if not legal.startswith(gu): continue
+            full=entry['locatadd_nm']; local=full.split(gu_name(entry),1)[-1].strip()
+            if name in (full, local):
+                parent=legal if legal in targets else legal[:8]+'00'
+                if parent in targets: matches.add(parent)
+        if len(matches)==1: return matches.pop()
+        raise DiagnosticError('지역 연결 실패', **safe_fields(row))
+    # Commerce supplies legal codes or official address fields instead of umdNm.
+    rid=a.map_region_id(row,regions,sigungu_code=gu)
+    if rid in targets: return rid
+    raise DiagnosticError('지역 연결 실패', **safe_fields(row))
+
+def gu_name(entry):
+    return next((part for part in entry['locatadd_nm'].split() if part.endswith('구')), '')
 
 def mapped(rows, regions, gu, month=None):
     out=[]
     for raw in rows:
         row=normalized(raw)
         if month:
-            y=row.get('dealYear'); m=row.get('dealMonth')
-            if y and m and f'{int(y):04d}-{int(m):02d}'!=month: raise ValueError('Trade month mismatch')
-            if str(row.get('cdealType','')).strip().upper()=='O': continue
-        rid=a.map_region_id(row, regions, sigungu_code=gu)
-        if not rid or not rid.startswith(gu): raise ValueError('API row cannot be mapped to requested Changwon district')
+            try:
+                actual=f"{int(row['dealYear']):04d}-{int(row['dealMonth']):02d}"
+            except (KeyError, ValueError, TypeError):
+                raise DiagnosticError('기준월 누락', **safe_fields(row)) from None
+            if actual!=month: raise DiagnosticError('기준월 불일치', requested_month=month, **safe_fields(row))
+        rid=resolve_region(row,regions,gu)
+        if month and str(row.get('cdealType','')).strip().upper()=='O': continue
         row['stdgCd']=rid
         out.append(row)
     return out
+
 
 def unique(rows, field):
     seen={}
@@ -213,21 +281,50 @@ def audit(store, regions, months, snapshot):
 def reindex(store, regions, month):
     ids={r['id'] for r in regions}
     rows=[r for r in store.filter_eq('monthly_data','month',month) if r.get('region_id') in ids]
+    marker=f'changwon_nonpopulation_index_{month}'
+    checkpoint=store.get('rollout_reports',marker) or {}
+    if checkpoint.get('version')==VERSION and not any(r.get('indexes_need_recompute') for r in rows):
+        return False
     previous={r['region_id']:r for r in store.filter_eq('monthly_data','month',p.month_shift(month,-1))}
     yearly={r['region_id']:r for r in store.filter_eq('monthly_data','month',p.month_shift(month,-12))}
+    latest={r['id']:r for r in store.list('region_latest') if r.get('id') in ids}
     for row in rows: row['derived']=compute_derived(row.get('metrics',{}),previous.get(row['region_id'],{}).get('metrics'),yearly.get(row['region_id'],{}).get('metrics'))
     indexes=compute_index_rows(rows)
+    batch=store.client.batch()
     for row in rows:
-        changes={'derived':row['derived'],'indexes':indexes.get(row['region_id'],{}),'indexes_need_recompute':False}
-        store.update('monthly_data',row['id'],changes)
-        latest=store.get('region_latest',row['region_id'])
-        if latest and latest.get('month')==month: store.update('region_latest',row['region_id'],changes)
+        changes={'derived':row['derived'],'indexes':indexes.get(row['region_id'],{}),'indexes_need_recompute':False,
+                 'index_meta.nonpopulation_version':VERSION, 'index_meta.requires_recompute':False}
+        batch.update(store.client.collection('monthly_data').document(row['id']),changes)
+        if latest.get(row['region_id'],{}).get('month')==month:
+            batch.update(store.client.collection('region_latest').document(row['region_id']),changes)
+    batch.set(store.client.collection('rollout_reports').document(marker),{'version':VERSION,'month':month,'region_count':len(rows),'completed_at':utcnow_iso()})
+    # At most 204 monthly + 204 latest + one checkpoint, below Firestore 500.
+    from scripts.population_history_final import commit_batch
+    commit_batch(batch)
+    return True
+
+def preflight(client, regions, children, month, out):
+    checks=[]; cached={}; errors=[]
+    for source in ('apt_sale','apt_rent'):
+        for gu in sorted({r['id'][:5] for r in regions}):
+            try:
+                group=[r for r in regions if r['id'].startswith(gu)]
+                cached[(source,month,gu)]=collect(source,month,group,regions,children,client)
+                checks.append({'source':source,'month':month,'group':gu,'status':'passed',
+                               'mapped_rows':sum(cached[(source,month,gu)][1].values())})
+            except Exception as exc:
+                item={'source':source,'month':month,'group':gu,**diagnostic(exc)}
+                errors.append(item); checks.append({**item,'status':'failed'})
+    (out/'preflight.json').write_text(json.dumps({'version':VERSION,'checks':checks,'errors':errors},ensure_ascii=False,indent=2))
+    return cached,errors
+
 
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--mode',choices=['audit','fill'],default='audit')
     parser.add_argument('--start',default='2022-10'); parser.add_argument('--end',default='2026-09')
     parser.add_argument('--snapshot',default='2026-09'); parser.add_argument('--max-months',type=int,default=6)
+    parser.add_argument('--max-minutes',type=int,default=250)
     args=parser.parse_args()
     for value in (args.start,args.end,args.snapshot):
         if date.fromisoformat(value+'-01').strftime('%Y-%m')!=value: raise ValueError('Invalid month')
@@ -241,30 +338,48 @@ def main():
         (out/f'{name}.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
         return result
     before=report('before'); errors=[]; changed=set(); applied=0
+    started=time.monotonic(); deadline=started+args.max_minutes*60; timed_out=False; blocked=False
     if args.mode=='fill':
-        client=CheckedClient()
-        for source in FIELDS:
+        client=CheckedClient(timeout=45,max_retries=2)
+        pending_months=sorted({r['month'] for r in before['matrix'] if r['source'] in ('apt_sale','apt_rent') and r['status']=='unqueried'})
+        cached,errors=preflight(client,regions,children,pending_months[0] if pending_months else args.end,out)
+        blocked=bool(errors)
+        for source in ([] if blocked else FIELDS):
             pending=[r for r in before['matrix'] if r['source']==source and r['status']=='unqueried']
             target_months=sorted({r['month'] for r in pending})[:args.max_months]
             for month in target_months:
                 ids={r['region_id'] for r in pending if r['month']==month}
                 group_ids=sorted({rid[:5] if source in ('apt_sale','apt_rent','commerce') else rid for rid in ids})
                 for group_id in group_ids:
+                    if time.monotonic()>deadline-20*60:
+                        timed_out=True; break
                     group=[r for r in regions if r['id'].startswith(group_id)]
                     try:
-                        patches,counts=collect(source,month,group,regions,children,client)
+                        key=(source,month,group_id)
+                        patches,counts=cached.pop(key) if key in cached else collect(source,month,group,regions,children,client)
                         staged={'source':source,'month':month,'group':group_id,'patches':{rid:patches.get(rid,{}) for rid in ids if rid.startswith(group_id)},'counts':dict(counts)}
                         # Aggregate-only artifact; API keys and raw responses are never persisted.
                         (out/f'stage_{source}_{month}_{group_id}.json').write_text(json.dumps(staged,ensure_ascii=False,indent=2))
                         for rid,patch in staged['patches'].items():
                             if apply_patch(store,source,patch,month,rid,counts.get(rid,0)): applied+=1; changed.add(month)
                     except Exception as exc:
-                        errors.append({'source':source,'month':month,'group':group_id,'error_type':type(exc).__name__})
+                        errors.append({'source':source,'month':month,'group':group_id,**diagnostic(exc)})
                         print(json.dumps(errors[-1])) # Exceptions can contain serviceKey URLs; never print them.
-        # Also repairs indexes if a prior interrupted run committed records before reindexing.
-        for month in sorted(({m for m in months+[args.snapshot] if changed and m>=min(changed)})|{r['month'] for r in store.list('monthly_data') if r.get('region_id') in {x['id'] for x in regions} and r.get('indexes_need_recompute')}): reindex(store,regions,month)
+        # Source edits affect following month and same month next year too.
+        index_months=set(months+[args.snapshot])
+        dirty={r['month'] for r in store.list('monthly_data') if r.get('region_id') in {x['id'] for x in regions} and r.get('indexes_need_recompute')}
+        changed |= dirty
+        invalidated=changed | {p.month_shift(m,1) for m in changed} | {p.month_shift(m,12) for m in changed}
+        if not blocked:
+            for month in sorted(index_months & invalidated):
+                store.set('rollout_reports',f'changwon_nonpopulation_index_{month}',{'version':'invalidated'},merge=True)
+        for month in sorted(index_months):
+            if time.monotonic()>deadline: timed_out=True; break
+            if blocked: break
+            reindex(store,regions,month)
     after=report('after')
-    final={'mode':args.mode,'applied':applied,'errors':errors,'remaining':after['summary'],'needs_rerun':bool(after['summary'].get('unqueried')),'manual_review':bool(errors or after['summary'].get('conflict') or after['summary'].get('legacy_unverified'))}
+    status='blocked' if blocked else 'partial' if errors else 'needs_continue' if after['summary'].get('unqueried') or timed_out else 'complete'
+    final={'version':VERSION,'status':status,'elapsed_seconds':round(time.monotonic()-started),'mode':args.mode,'applied':applied,'errors':errors,'remaining':after['summary'],'needs_rerun':bool(after['summary'].get('unqueried')),'manual_review':bool(errors or after['summary'].get('conflict') or after['summary'].get('legacy_unverified'))}
     (out/'result.json').write_text(json.dumps(final,ensure_ascii=False,indent=2)); print(json.dumps(final,ensure_ascii=False))
-    if errors: raise SystemExit(1)
+    if blocked: raise SystemExit(2)
 if __name__=='__main__': main()
