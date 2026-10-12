@@ -90,15 +90,15 @@ def test_readback_preserves_other_derived_and_indexes():
         assert row['indexes_need_recompute'] is True
 
 
-def test_followup_is_manual_serial_24_months_and_no_nested_writer_lock():
+def test_followup_remaining_12_months_and_no_nested_writer_lock():
     import yaml
     root=Path(__file__).resolve().parents[1]
     w=yaml.safe_load((root/'.github/workflows/changwon-population-followup.yml').read_text())
     trigger=w.get('on',w.get(True))
-    assert set(trigger)=={'workflow_dispatch'}
+    assert set(trigger)=={'workflow_dispatch','push'}
     jobs=w['jobs'];monthly=[(k,v) for k,v in jobs.items() if k.startswith('month_')]
-    assert len(monthly)==24
-    assert monthly[0][1]['with']['month']=='2024-09'
+    assert len(monthly)==12
+    assert monthly[0][1]['with']['month']=='2025-09'
     assert monthly[-1][1]['with']['month']=='2026-08'
     for i,(key,job) in enumerate(monthly):
         if i:assert job['needs']==[monthly[i-1][0]]
@@ -106,4 +106,4 @@ def test_followup_is_manual_serial_24_months_and_no_nested_writer_lock():
     worker=yaml.safe_load((root/'.github/workflows/changwon-population-month-worker.yml').read_text())
     assert 'concurrency' not in worker
     assert worker['jobs']['month']['timeout-minutes']<360
-    assert 24*worker['jobs']['month']['timeout-minutes']>540
+    assert 12*worker['jobs']['month']['timeout-minutes']>540

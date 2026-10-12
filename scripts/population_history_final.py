@@ -17,6 +17,7 @@ from scripts.population_repair_core import ADAPTERS, validate_rows, validate_bun
 from scripts.probe_population_repair import OUT, ROOT, query, save
 from scripts.probe_configured_api import SPECS
 from scripts.collect.data_go_kr import DataGoKrClient
+from scripts.collect.redaction import redact
 from scripts.repair_population_latest import master_doc
 from backend.db import FirestoreStore, get_store, utcnow_iso
 from scripts.pipeline import month_end
@@ -95,6 +96,20 @@ def bundle_from(rows_by_source, master, rid):
         raise UnresolvedMonth('Required age response missing')
     if sum(age[k] for k in age_keys) != pop['population_total']:
         raise UnresolvedMonth('Age total disagrees with population')
+    # Metadata partitions are never accepted solely because their grand total fits.
+    # Check raw age rows internally and reconcile each sex with the independent API.
+    raw_age=rows_by_source['age_population']
+    if raw_age and all('maleNmprCnt' in r and 'femlNmprCnt' in r for r in raw_age):
+        sex_totals={'male':0,'feml':0}
+        for row in raw_age:
+            for sex in sex_totals:
+                raw_total=int(str(row[sex+'NmprCnt']).replace(',',''))
+                buckets=[int(str(row[f'{sex}{i}AgeNmprCnt']).replace(',','')) for i in range(0,101,10)]
+                if raw_total<0 or any(v<0 for v in buckets) or sum(buckets)!=raw_total:
+                    raise UnresolvedMonth('Original age row sex/bucket total mismatch')
+                sex_totals[sex]+=raw_total
+        if sex_totals['male']!=pop['population_male'] or sex_totals['feml']!=pop['population_female']:
+            raise UnresolvedMonth('Age sex totals disagree with independent population API')
     single = bundle['single_household']
     if single:
         validate_bundle(bundle)
@@ -157,6 +172,15 @@ def resolve_month(month, master, children, captures, totals, validation_policy='
             if children[rid]:
                 modes[rid] = {'modes': choice['modes'], 'source_rows': choice['source_rows'],
                               'population': choice['bundle']['population'], 'child_count': len(children[rid])}
+    source_warnings={}
+    for rid in master:
+        for source in SOURCES:
+            observed=[r for code in [rid]+children[rid] for r in captures[source,code]]
+            labels=sorted({str(r.get('ctpvNm')) for r in observed if r.get('ctpvNm')})
+            if any(label!='경상남도' for label in labels):
+                source_warnings[rid,source]={'kind':'source_province_label_mismatch',
+                    'observed_labels':labels,'region_link_basis':'verified_legal_code',
+                    'independent_population_and_age_totals_checked':True}
     single_unknown=[rid for rid, choice in selected.items() if not choice['bundle']['single_household']]
     if validation_policy == 'strict' and (unknown or single_unknown):
         raise UnresolvedMonth('Strict policy rejects successful empty regional/source responses')
@@ -172,7 +196,8 @@ def resolve_month(month, master, children, captures, totals, validation_policy='
                     'status': 'ok' if choice['source_rows'][s] else 'no_data',
                     'source_row_count': choice['source_rows'][s], 'collection_method': VERSION,
                     'data_confidence': 'unknown', 'is_provisional': False,
-                    'aggregation_modes': choice['modes']} for s in SOURCES}}
+                    'aggregation_modes': choice['modes'],'validation_policy_version':'3.7.4',
+                    'metadata_warning':source_warnings.get((rid,s))} for s in SOURCES}}
         else:
             patches[rid] = {'metrics': {k: None for k in population_keys()}, 'sources': {
                 s: {'source_as_of': month_end(month), 'fetched_at': utcnow_iso(), 'status': 'no_data',
@@ -186,6 +211,7 @@ def resolve_month(month, master, children, captures, totals, validation_policy='
         {'code': c, 'reason': 'Successful empty original API responses; null retained'} for c in unknown] + [
         {'code':c,'source':'single_household','reason':'Successful empty response; one-person counts remain null'} for c in single_unknown]})
     return {'month': month, 'patches': patches, 'reconciliation': check, 'parent_modes': modes,
+            'source_metadata_warnings':[{'region_id':rid,'source':source,**warning} for (rid,source),warning in source_warnings.items()],
             'method_version': VERSION, 'prepared_at': utcnow_iso()}
 
 
@@ -210,15 +236,30 @@ def prefetch_window(months, codes, workers=6):
             for month in months:
                 path=OUT/f'{s}_{code}_{month}.json'
                 if not path.exists(): valid=False; break
+                cached={}
                 try:
                     cached=json.loads(path.read_text())
                     if (cached.get('audit_version') != VERSION or cached.get('month') != month
                             or cached.get('requested_code') != code or not cached.get('successful_request')):
                         valid=False; break
                     validate_rows(cached['rows'], code, month)
-                except (ValueError, KeyError, TypeError):
+                except (ValueError, KeyError, TypeError) as exc:
+                    save(f'failed_cached_{s}_{code}_{month}.json',redact({'source':s,'code':code,'month':month,
+                        'exception_type':type(exc).__name__,'reason':str(exc),'original_response':cached,
+                        'successful_request':False}))
                     path.unlink(missing_ok=True); valid=False; break
             if not valid: tasks.append((s,code))
+    def preserve_failure(source,code,window,exc):
+        path=OUT/f'{source}_{code}_{window[-1]}.json'
+        evidence={}
+        if path.exists():
+            try:evidence=json.loads(path.read_text())
+            except (ValueError,OSError):pass
+        detail=redact({'source':source,'code':code,'months':window,
+            'exception_type':type(exc).__name__,'reason':str(exc),
+            'original_response':evidence,'successful_request':False})
+        save(f'failed_original_{source}_{code}_{window[-1]}.json',detail)
+        return {k:v for k,v in detail.items() if k not in ('original_response','successful_request')}
     def collect(task):
         s,code=task
         def capture(window, template=None):
@@ -238,9 +279,10 @@ def prefetch_window(months, codes, workers=6):
             capture(months)
             return []
         except Exception as exc:
+            failure=preserve_failure(s,code,months,exc)
             for m in months: (OUT/f'{s}_{code}_{m}.json').unlink(missing_ok=True)
             if len(months)==1:
-                return [{'source':s,'code':code,'months':months,'exception_type':type(exc).__name__}]
+                return [failure]
         failures=[]
         # A rejected/failed range is retried one month at a time without mutating
         # shared environment variables in worker threads.
@@ -249,8 +291,8 @@ def prefetch_window(months, codes, workers=6):
             template.update(srchFrYm=m.replace('-',''),srchToYm=m.replace('-',''))
             try: capture([m],template)
             except Exception as exc:
+                failures.append(preserve_failure(s,code,[m],exc))
                 (OUT/f'{s}_{code}_{m}.json').unlink(missing_ok=True)
-                failures.append({'source':s,'code':code,'months':[m],'exception_type':type(exc).__name__})
         return failures
     try:
         with ThreadPoolExecutor(max_workers=workers) as ex:

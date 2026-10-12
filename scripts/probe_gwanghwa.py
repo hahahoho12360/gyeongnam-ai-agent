@@ -18,7 +18,7 @@ for source in ADAPTERS:
         item={'rows':rows,'row_count':len(rows)}
         try:
             clean=validate_rows(rows,'4812912400','2025-09');item['validation']='passed'
-            bundle[source]=ADAPTERS[source](clean)
+            bundle[source]=ADAPTERS[source](clean,[{'id':'4812912400','bjd_code':'4812912400','name':'광화동'}],'48129').get('4812912400',{})
         except ValueError as exc:
             item.update(validation='failed',reason=str(exc))
         results[source]=item

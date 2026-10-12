@@ -5,6 +5,7 @@ import os
 import sys
 import threading
 import time
+from contextlib import nullcontext
 from pathlib import Path
 import requests
 ROOT=Path(__file__).resolve().parents[1]
@@ -21,20 +22,38 @@ SAMGYE='4812725028'
 class StopCollection(RuntimeError): pass
 
 class Budget:
-    def __init__(self, seconds=3600, threshold=6):
+    def __init__(self, seconds=3600, threshold=6, max_recoveries=0, cooldown_seconds=30):
         self.deadline=time.monotonic()+seconds
         self.threshold=threshold; self.failures=0; self.events=[]; self.count=0
-        self.lock=threading.Lock()
+        self.lock=threading.Lock();self.recovery_lock=threading.Lock();self.request_lock=threading.Lock()
+        self.max_recoveries=max_recoveries;self.recoveries=0
+        self.cooldown_seconds=cooldown_seconds;self.degraded=False;self.hard_failure=False
     def check(self):
         with self.lock:
-            if time.monotonic()+30>=self.deadline: raise StopCollection('deadline_reached')
-            if self.failures>=self.threshold: raise StopCollection('provider_circuit_open')
+            if time.monotonic()+90>=self.deadline: raise StopCollection('deadline_reached')
+            if self.hard_failure:raise StopCollection('provider_non_retryable_error')
+            needs_recovery=self.failures>=self.threshold
+        if not needs_recovery:return
+        with self.recovery_lock:
+            with self.lock:
+                if self.failures<self.threshold:return
+                if self.recoveries>=self.max_recoveries:raise StopCollection('provider_circuit_open')
+                if time.monotonic()+self.cooldown_seconds+90>=self.deadline:raise StopCollection('deadline_reached')
+                self.recoveries+=1;self.degraded=True
+                save('provider_recovery.json',{'recoveries':self.recoveries,'maximum_recoveries':self.max_recoveries,
+                    'cooldown_seconds':self.cooldown_seconds,'next_probe_workers':1,'status':'cooldown'})
+            print(f'Provider temporarily slow: bounded recovery {self.recoveries}/{self.max_recoveries}; single-worker trial after cooldown',flush=True)
+            time.sleep(self.cooldown_seconds)
+            with self.lock:self.failures=0
     def record(self,event,failed):
         with self.lock:
             self.failures=self.failures+1 if failed else 0
+            self.hard_failure=self.hard_failure or event.get('outcome') in {
+                'http_rate_limit','api_rate_limit','http_request_or_permission_error','api_result_error'}
             self.count+=1; self.events.append(event); self.events=self.events[-100:]
             save('request_progress.json',{'requests':self.count,'consecutive_failures':self.failures,
-                'seconds_remaining':round(self.deadline-time.monotonic()),'recent_requests':self.events})
+                'seconds_remaining':round(self.deadline-time.monotonic()),'recent_requests':self.events,
+                'recoveries':self.recoveries,'degraded_single_worker':self.degraded,'non_retryable_failure':self.hard_failure})
         print(json.dumps(event,ensure_ascii=False),flush=True)
 
 class BoundedClient(DataGoKrClient):
@@ -42,6 +61,10 @@ class BoundedClient(DataGoKrClient):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
     def get(self,url,params=None,**kwargs):
+        self.budget.check()
+        with self.budget.request_lock if self.budget.degraded else nullcontext():
+            return self._get_with_budget(url,params,**kwargs)
+    def _get_with_budget(self,url,params=None,**kwargs):
         p={'serviceKey':self.key,**(params or {})}
         p.setdefault('pageNo',1);p.setdefault('numOfRows',1000)
         for attempt in range(2):
@@ -84,6 +107,7 @@ class BoundedClient(DataGoKrClient):
 
 
 def configure():
+    if not os.getenv('DATA_GO_KR_SERVICE_KEY'):raise RuntimeError('Missing official API credential')
     for source,(ue,qe) in SPECS.items():
         if source not in core.SOURCES:continue
         if not os.getenv(ue):raise ValueError('Missing endpoint configuration')
@@ -133,7 +157,7 @@ def original_sources_verified(rows, master):
 
 
 def run(month,max_minutes=60,skip_probe=False):
-    configure();BoundedClient.budget=Budget(max_minutes*60)
+    configure();BoundedClient.budget=Budget(max_minutes*60,max_recoveries=2)
     status={'month':month,'status':'probing','applied_this_run':0,'updated_at':utcnow_iso()}
     save('one_month_status.json',status)
     try:
@@ -173,7 +197,8 @@ def run(month,max_minutes=60,skip_probe=False):
         return status
     except Exception as exc:
         status.update(status='paused' if isinstance(exc,StopCollection) else 'blocked',
-            reason=str(exc) if isinstance(exc,StopCollection) else type(exc).__name__,firestore_verified=False)
+            reason=str(exc) if isinstance(exc,StopCollection) else type(exc).__name__,
+            safe_detail=str(exc) if isinstance(exc,core.UnresolvedMonth) else None,firestore_verified=False)
         return status
     finally:
         status['updated_at']=utcnow_iso();save('one_month_status.json',status)

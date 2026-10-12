@@ -12,15 +12,23 @@ def validate_rows(rows, requested_code, month):
         code = str(row.get('stdgCd') or '').strip()
         period = re.sub(r'\D', '', str(row.get('statsYm') or ''))[:6]
         if code != requested_code or period != month.replace('-', ''):
-            raise ValueError('API returned an unexpected legal code or month')
+            raise ValueError(f'Region/month mismatch: expected {requested_code}/{month}, received {code}/{period}')
         if row.get('regSeCd') not in (None, '', '1', 1):
-            raise ValueError('Unexpected population registration category')
+            raise ValueError(f'Unexpected registration category: {row.get("regSeCd")}')
         # lv=7 rows may be split by administrative dong/tong/ban. Do not collapse those.
-        identity = tuple(str(row.get(k) or '') for k in ['statsYm','stdgCd','admmCd','tong','ban'])
+        identity = tuple(str(row.get(k) or '') for k in ['statsYm','stdgCd','admmCd','tong','ban',
+            'ctpvNm','sggNm','stdgNm','dongNm','liNm','regSeCd'])
         if identity in seen:
             if row != seen[identity]:
-                raise ValueError('Conflicting duplicate API identity')
+                raise ValueError('Conflicting duplicate API identity including source partition labels')
             continue
+        base_identity=identity[:5]
+        counts={k:str(v).replace(',','') for k,v in row.items() if k.endswith('Cnt')}
+        for other_identity,other in seen.items():
+            if other_identity[:5]==base_identity and other_identity!=identity:
+                other_counts={k:str(v).replace(',','') for k,v in other.items() if k.endswith('Cnt')}
+                if counts and counts==other_counts:
+                    raise ValueError('Ambiguous label-only duplicate with identical counts')
         seen[identity] = row
         result.append(row)
     return result

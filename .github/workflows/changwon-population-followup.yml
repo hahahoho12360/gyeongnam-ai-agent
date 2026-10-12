@@ -1,5 +1,8 @@
-name: Changwon population follow-up and ratios v3.7.3
+name: Changwon population follow-up and ratios v3.7.4
 on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/changwon-population-followup.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -7,91 +10,7 @@ concurrency:
   group: changwon-population-repair
   cancel-in-progress: false
 jobs:
-  month_2024_09:
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2024-09"
-    secrets: inherit
-  month_2024_10:
-    needs: [month_2024_09]
-    if: ${{ always() && needs.month_2024_09.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2024-10"
-    secrets: inherit
-  month_2024_11:
-    needs: [month_2024_10]
-    if: ${{ always() && needs.month_2024_10.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2024-11"
-    secrets: inherit
-  month_2024_12:
-    needs: [month_2024_11]
-    if: ${{ always() && needs.month_2024_11.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2024-12"
-    secrets: inherit
-  month_2025_01:
-    needs: [month_2024_12]
-    if: ${{ always() && needs.month_2024_12.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2025-01"
-    secrets: inherit
-  month_2025_02:
-    needs: [month_2025_01]
-    if: ${{ always() && needs.month_2025_01.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2025-02"
-    secrets: inherit
-  month_2025_03:
-    needs: [month_2025_02]
-    if: ${{ always() && needs.month_2025_02.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2025-03"
-    secrets: inherit
-  month_2025_04:
-    needs: [month_2025_03]
-    if: ${{ always() && needs.month_2025_03.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2025-04"
-    secrets: inherit
-  month_2025_05:
-    needs: [month_2025_04]
-    if: ${{ always() && needs.month_2025_04.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2025-05"
-    secrets: inherit
-  month_2025_06:
-    needs: [month_2025_05]
-    if: ${{ always() && needs.month_2025_05.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2025-06"
-    secrets: inherit
-  month_2025_07:
-    needs: [month_2025_06]
-    if: ${{ always() && needs.month_2025_06.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2025-07"
-    secrets: inherit
-  month_2025_08:
-    needs: [month_2025_07]
-    if: ${{ always() && needs.month_2025_07.outputs.continue_processing == 'true' }}
-    uses: ./.github/workflows/changwon-population-month-worker.yml
-    with:
-      month: "2025-08"
-    secrets: inherit
   month_2025_09:
-    needs: [month_2025_08]
-    if: ${{ always() && needs.month_2025_08.outputs.continue_processing == 'true' }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2025-09"
@@ -175,7 +94,7 @@ jobs:
     secrets: inherit
   final_population_recalculation:
     name: Verify all periods and population-only ratios
-    needs: [month_2024_09, month_2024_10, month_2024_11, month_2024_12, month_2025_01, month_2025_02, month_2025_03, month_2025_04, month_2025_05, month_2025_06, month_2025_07, month_2025_08, month_2025_09, month_2025_10, month_2025_11, month_2025_12, month_2026_01, month_2026_02, month_2026_03, month_2026_04, month_2026_05, month_2026_06, month_2026_07, month_2026_08]
+    needs: [month_2025_09, month_2025_10, month_2025_11, month_2025_12, month_2026_01, month_2026_02, month_2026_03, month_2026_04, month_2026_05, month_2026_06, month_2026_07, month_2026_08]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
