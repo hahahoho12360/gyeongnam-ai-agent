@@ -50,7 +50,7 @@ class BoundedClient(DataGoKrClient):
                 'endpoint':url.rsplit('/',1)[-1],'page':p['pageNo'],'attempt':attempt+1,
                 'http_status':None,'api_result_codes':[]}
             try:
-                r=requests.get(url,params=p,timeout=(5,20))
+                r=requests.get(url,params=p,timeout=(int(os.getenv("POPULATION_CONNECT_TIMEOUT","15")),int(os.getenv("POPULATION_READ_TIMEOUT","60"))))
                 event['http_status']=r.status_code
                 if r.status_code==429:raise RuntimeError('http_rate_limit')
                 if r.status_code>=500:raise RuntimeError('http_server_error')
