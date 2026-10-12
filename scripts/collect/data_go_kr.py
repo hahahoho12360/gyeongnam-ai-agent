@@ -74,11 +74,13 @@ class DataGoKrClient:
         last_exc: Exception | None = None
         response = None
         for attempt in range(self.max_retries + 1):
+            if callable(getattr(self,'before_request',None)): self.before_request()
             try:
                 response = requests.get(url, params=p, timeout=self.timeout)
                 if response.status_code in {429, 500, 502, 503, 504} and attempt < self.max_retries:
                     wait = self.retry_backoff_seconds * (2 ** attempt)
                     print(f'    data.go.kr 일시 오류 HTTP {response.status_code}; {wait:.1f}초 후 재시도 {attempt + 1}/{self.max_retries}')
+                    if callable(getattr(self,'before_request',None)): self.before_request()
                     time.sleep(wait)
                     continue
                 response.raise_for_status()
@@ -93,6 +95,7 @@ class DataGoKrClient:
                     raise
                 wait = self.retry_backoff_seconds * (2 ** attempt)
                 print(f'    data.go.kr 응답 지연/연결 오류; {wait:.1f}초 후 재시도 {attempt + 1}/{self.max_retries}')
+                if callable(getattr(self,'before_request',None)): self.before_request()
                 time.sleep(wait)
         if response is None:
             if last_exc:

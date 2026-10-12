@@ -18,6 +18,8 @@ from backend.indexes import compute_index_rows
 from scripts import pipeline as p
 from scripts.collect import adapters as a
 from scripts.collect.data_go_kr import DataGoKrClient
+from scripts.collect.redaction import redact
+import requests
 from scripts.bootstrap_regions import _is_gyeongnam_eup_myeon_dong
 from scripts.repair_population_latest import master_doc
 
@@ -37,7 +39,7 @@ CATALOG = [
  ('인구·세대','population','audit only'),
 ]
 
-VERSION = '3.9.1'
+VERSION = '3.9.2'
 
 class DiagnosticError(ValueError):
     def __init__(self, category, **details):
@@ -49,7 +51,63 @@ def diagnostic(exc):
     # Never include arbitrary exception strings, URLs, addresses or credentials.
     if isinstance(exc, DiagnosticError):
         return {'category': exc.category, **exc.details}
-    return {'category': 'API 또는 저장 처리 실패', 'error_type': type(exc).__name__}
+    category=('응답 시간 초과' if isinstance(exc,requests.exceptions.ReadTimeout) else
+        '연결 시간 초과' if isinstance(exc,requests.exceptions.ConnectTimeout) else
+        '일시 연결 장애' if isinstance(exc,requests.exceptions.ConnectionError) else
+        'HTTP 요청 실패' if isinstance(exc,requests.exceptions.HTTPError) else 'API 또는 저장 처리 실패')
+    return {'category':category,'error_type':type(exc).__name__}
+
+TRANSIENT={'응답 시간 초과','연결 시간 초과','일시 연결 장애','일시 서버 장애'}
+
+class CollectionBudget:
+    def __init__(self,deadline):self.deadline=deadline;self.failures=0
+    def check(self):
+        if time.monotonic()>self.deadline-120:raise DiagnosticError('작업 시간 예산 도달')
+        if self.failures>=3:raise DiagnosticError('반복 연결 실패로 보류')
+
+
+def collect_cached(source,month,group,regions,children,client,out):
+    gid=group[0]['id'][:5] if source in ('apt_sale','apt_rent','commerce') else group[0]['id']
+    path=out/f'capture_{source}_{month}_{gid}.json'
+    if path.exists():
+        try:
+            d=json.loads(path.read_text())
+            if (d.get('version')==VERSION and d.get('source')==source and d.get('month')==month
+                    and d.get('group')==gid and d.get('successful_query') is True):
+                targets={r['id'] for r in group}
+                if not set(d['patches']).issubset(targets) or not set(d['counts']).issubset(targets):raise ValueError()
+                for rid in targets:
+                    if bool(d['patches'].get(rid))!=bool(d['counts'].get(rid,0)):raise ValueError()
+                return d['patches'],Counter(d['counts'])
+        except (ValueError,KeyError,TypeError):
+            path.rename(path.with_name('invalid_'+path.name))
+    for attempt in range(2):
+        client.last_rows=[]
+        try:
+            patches,counts=collect(source,month,group,regions,children,client)
+            path.write_text(json.dumps(redact({'version':VERSION,'source':source,'month':month,'group':gid,
+                'successful_query':True,'patches':patches,'counts':dict(counts)}),ensure_ascii=False))
+            return patches,counts
+        except Exception as exc:
+            info=diagnostic(exc)
+            (out/f'failed_{source}_{month}_{gid}_{attempt}.json').write_text(json.dumps(redact({
+                'source':source,'month':month,'group':gid,'diagnostic':info,
+                'received_rows':getattr(client,'last_rows',[]),'successful_query':False}),ensure_ascii=False))
+            if attempt or info['category'] not in TRANSIENT:raise
+            if callable(getattr(client,'before_request',None)):client.before_request()
+            time.sleep(5)
+
+
+def verify_group(store,source,month,expected,out,gid):
+    records={r['region_id']:r for r in store.filter_eq('monthly_data','month',month)}
+    mismatches=[]
+    for rid,(patch,count) in expected.items():
+        row=records.get(rid,{})
+        if state(row,source)!=('stored' if count else 'no_data') or any(row.get('metrics',{}).get(k)!=v for k,v in patch.items()):
+            mismatches.append(rid)
+    (out/f'verified_{source}_{month}_{gid}.json').write_text(json.dumps({'checked_regions':len(expected),'mismatches':mismatches}))
+    if mismatches:raise DiagnosticError('저장 후 재조회 불일치',region_ids=mismatches)
+
 
 @lru_cache(maxsize=1)
 def official_inventory():
@@ -65,7 +123,13 @@ def safe_fields(row):
 
 class CheckedClient(DataGoKrClient):
     def get(self, *args, **kwargs):
-        payload = super().get(*args, **kwargs)
+        try:
+            payload = super().get(*args, **kwargs)
+        except requests.exceptions.HTTPError as exc:
+            status=getattr(exc.response,'status_code',None)
+            raise DiagnosticError('요청 제한' if status==429 else '일시 서버 장애' if status and status>=500 else '인증 또는 요청 오류',http_status=status) from None
+        error=self.error_message(payload)
+        if error and not self.is_no_data_error(error):raise DiagnosticError('API 결과 오류')
         error = self.error_message(payload)
         if error and self.is_no_data_error(error):
             return {'body': {'items': [], 'totalCount': 0}}
@@ -75,7 +139,7 @@ class CheckedClient(DataGoKrClient):
             raise DiagnosticError('응답 형식 오류')
         return payload
     def get_all(self, url, params=None, *, page_size=1000, max_pages=1000, json_hint=True):
-        out=[]; fingerprints=set(); expected=None
+        out=[]; self.last_rows=[]; fingerprints=set(); expected=None
         for page in range(1, max_pages+1):
             payload=self.get(url,{**(params or {}),'pageNo':page,'numOfRows':page_size},json_hint=json_hint)
             rows=self.items(payload); total=self.total_count(payload)
@@ -87,7 +151,7 @@ class CheckedClient(DataGoKrClient):
                 digest=hashlib.sha256(json.dumps(rows,sort_keys=True,ensure_ascii=False).encode()).hexdigest()
                 if digest in fingerprints: raise DiagnosticError('페이지 반복', page=page)
                 fingerprints.add(digest)
-            out.extend(rows)
+            out.extend(rows); self.last_rows=list(out)
             if expected is not None and len(out)>expected: raise DiagnosticError('페이지 건수 초과', page=page)
             if expected is not None and len(out)==expected: return out
             if not rows:
@@ -283,7 +347,7 @@ def reindex(store, regions, month):
     rows=[r for r in store.filter_eq('monthly_data','month',month) if r.get('region_id') in ids]
     marker=f'changwon_nonpopulation_index_{month}'
     checkpoint=store.get('rollout_reports',marker) or {}
-    if checkpoint.get('version')==VERSION and not any(r.get('indexes_need_recompute') for r in rows):
+    if checkpoint.get('version')==VERSION and checkpoint.get('verified') is True and not any(r.get('indexes_need_recompute') for r in rows):
         return False
     previous={r['region_id']:r for r in store.filter_eq('monthly_data','month',p.month_shift(month,-1))}
     yearly={r['region_id']:r for r in store.filter_eq('monthly_data','month',p.month_shift(month,-12))}
@@ -297,10 +361,15 @@ def reindex(store, regions, month):
         batch.update(store.client.collection('monthly_data').document(row['id']),changes)
         if latest.get(row['region_id'],{}).get('month')==month:
             batch.update(store.client.collection('region_latest').document(row['region_id']),changes)
-    batch.set(store.client.collection('rollout_reports').document(marker),{'version':VERSION,'month':month,'region_count':len(rows),'completed_at':utcnow_iso()})
+    batch.set(store.client.collection('rollout_reports').document(marker),{'version':VERSION,'month':month,'region_count':len(rows),'completed_at':utcnow_iso(),'verified':False})
     # At most 204 monthly + 204 latest + one checkpoint, below Firestore 500.
     from scripts.population_history_final import commit_batch
     commit_batch(batch)
+    actual={r['region_id']:r for r in store.filter_eq('monthly_data','month',month)}
+    mismatches=[r['region_id'] for r in rows if actual.get(r['region_id'],{}).get('derived')!=r['derived']
+        or actual.get(r['region_id'],{}).get('indexes')!=indexes.get(r['region_id'],{})]
+    if mismatches:raise DiagnosticError('지수 저장 후 재조회 불일치',month=month,region_ids=mismatches)
+    store.set('rollout_reports',marker,{'verified':True,'verified_regions':len(rows)},merge=True)
     return True
 
 def preflight(client, regions, children, month, out):
@@ -309,7 +378,7 @@ def preflight(client, regions, children, month, out):
         for gu in sorted({r['id'][:5] for r in regions}):
             try:
                 group=[r for r in regions if r['id'].startswith(gu)]
-                cached[(source,month,gu)]=collect(source,month,group,regions,children,client)
+                cached[(source,month,gu)]=collect_cached(source,month,group,regions,children,client,out)
                 checks.append({'source':source,'month':month,'group':gu,'status':'passed',
                                'mapped_rows':sum(cached[(source,month,gu)][1].values())})
             except Exception as exc:
@@ -340,7 +409,9 @@ def main():
     before=report('before'); errors=[]; changed=set(); applied=0
     started=time.monotonic(); deadline=started+args.max_minutes*60; timed_out=False; blocked=False
     if args.mode=='fill':
-        client=CheckedClient(timeout=45,max_retries=2)
+        budget=CollectionBudget(deadline-20*60)
+        client=CheckedClient(timeout=(15,60),max_retries=1)
+        client.before_request=budget.check
         pending_months=sorted({r['month'] for r in before['matrix'] if r['source'] in ('apt_sale','apt_rent') and r['status']=='unqueried'})
         cached,errors=preflight(client,regions,children,pending_months[0] if pending_months else args.end,out)
         blocked=bool(errors)
@@ -356,14 +427,21 @@ def main():
                     group=[r for r in regions if r['id'].startswith(group_id)]
                     try:
                         key=(source,month,group_id)
-                        patches,counts=cached.pop(key) if key in cached else collect(source,month,group,regions,children,client)
+                        patches,counts=cached.pop(key) if key in cached else collect_cached(source,month,group,regions,children,client,out)
                         staged={'source':source,'month':month,'group':group_id,'patches':{rid:patches.get(rid,{}) for rid in ids if rid.startswith(group_id)},'counts':dict(counts)}
                         # Aggregate-only artifact; API keys and raw responses are never persisted.
                         (out/f'stage_{source}_{month}_{group_id}.json').write_text(json.dumps(staged,ensure_ascii=False,indent=2))
+                        expected={}
                         for rid,patch in staged['patches'].items():
-                            if apply_patch(store,source,patch,month,rid,counts.get(rid,0)): applied+=1; changed.add(month)
+                            if apply_patch(store,source,patch,month,rid,counts.get(rid,0)):
+                                applied+=1; changed.add(month);expected[rid]=(patch,counts.get(rid,0))
+                        verify_group(store,source,month,expected,out,group_id)
+                        budget.failures=0
+                        (out/'progress.json').write_text(json.dumps({'source':source,'month':month,'group':group_id,'applied':applied,'updated_at':utcnow_iso()}))
                     except Exception as exc:
                         errors.append({'source':source,'month':month,'group':group_id,**diagnostic(exc)})
+                        if errors[-1]['category'] in TRANSIENT:budget.failures+=1
+                        if errors[-1]['category'] in {'작업 시간 예산 도달','반복 연결 실패로 보류','요청 제한','인증 또는 요청 오류','API 결과 오류'}:timed_out=True;break
                         print(json.dumps(errors[-1])) # Exceptions can contain serviceKey URLs; never print them.
         # Source edits affect following month and same month next year too.
         index_months=set(months+[args.snapshot])
@@ -373,13 +451,16 @@ def main():
         if not blocked:
             for month in sorted(index_months & invalidated):
                 store.set('rollout_reports',f'changwon_nonpopulation_index_{month}',{'version':'invalidated'},merge=True)
-        for month in sorted(index_months):
+        pending_after_fill=audit(store,regions,months,args.snapshot)['summary'].get('unqueried',0)
+        # Recalculate once after all sources complete, not after every six-month chunk.
+        for month in ([] if pending_after_fill or errors else sorted(index_months)):
             if time.monotonic()>deadline: timed_out=True; break
             if blocked: break
             reindex(store,regions,month)
     after=report('after')
-    status='blocked' if blocked else 'partial' if errors else 'needs_continue' if after['summary'].get('unqueried') or timed_out else 'complete'
-    final={'version':VERSION,'status':status,'elapsed_seconds':round(time.monotonic()-started),'mode':args.mode,'applied':applied,'errors':errors,'remaining':after['summary'],'needs_rerun':bool(after['summary'].get('unqueried')),'manual_review':bool(errors or after['summary'].get('conflict') or after['summary'].get('legacy_unverified'))}
+    status='blocked' if blocked else 'partial' if errors else 'needs_continue' if after['summary'].get('unqueried') or timed_out else 'needs_review' if after['summary'].get('conflict') or after['summary'].get('legacy_unverified') else 'complete'
+    retryable_errors=bool(errors) and all(e.get('category') in TRANSIENT | {'작업 시간 예산 도달','반복 연결 실패로 보류'} for e in errors)
+    final={'retryable_errors':retryable_errors,'version':VERSION,'status':status,'elapsed_seconds':round(time.monotonic()-started),'mode':args.mode,'applied':applied,'errors':errors,'remaining':after['summary'],'needs_rerun':bool(after['summary'].get('unqueried')),'manual_review':bool(errors or after['summary'].get('conflict') or after['summary'].get('legacy_unverified'))}
     (out/'result.json').write_text(json.dumps(final,ensure_ascii=False,indent=2)); print(json.dumps(final,ensure_ascii=False))
     if blocked: raise SystemExit(2)
 if __name__=='__main__': main()

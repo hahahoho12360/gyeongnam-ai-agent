@@ -1,8 +1,8 @@
-name: Changwon non-population audit and repair v3.9.1 final
+name: Changwon non-population audit and repair v3.9.2
 on:
   push:
     branches: [main]
-    paths: [docs/NONPOPULATION_V391_RUN.txt]
+    paths: [docs/NONPOPULATION_V392_RUN.txt]
   workflow_dispatch:
     inputs:
       mode:
@@ -51,18 +51,26 @@ jobs:
       - run: python -m pip install -r requirements.txt -r requirements-dev.txt
       - run: python -m pytest -q tests/test_nonpopulation_repair.py
       - name: Compare 11 approved APIs against actual Firebase records
-        run: python scripts/repair_nonpopulation.py --mode audit --start "$START_MONTH" --end "$END_MONTH" --snapshot "$SNAPSHOT_MONTH" --max-months "$MAX_MONTHS"
+        run: python scripts/repair_nonpopulation.py --mode audit --start "$START_MONTH" --end "$END_MONTH" --snapshot "$SNAPSHOT_MONTH" --max-months "$MAX_MONTHS" --max-minutes 120
       - uses: actions/upload-artifact@v4
+        id: audit_upload
+        continue-on-error: true
         if: always()
         with:
-          name: changwon-nonpopulation-audit-${{ github.run_id }}
+          name: changwon-nonpopulation-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/nonpopulation/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && steps.audit_upload.outcome == 'failure' }}
+        with:
+          name: changwon-nonpopulation-audit-${{ github.run_id }}-${{ github.run_attempt }}-retry
           path: artifacts/nonpopulation/
           retention-days: 30
   fill:
     if: github.event_name == 'push' || inputs.mode == 'fill'
     needs: audit
     runs-on: ubuntu-latest
-    timeout-minutes: 330
+    timeout-minutes: 150
     concurrency:
       group: changwon-population-repair
       cancel-in-progress: false
@@ -84,12 +92,30 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements.txt -r requirements-dev.txt
       - run: python -m pytest -q tests/test_nonpopulation_repair.py tests/test_nonpopulation_final.py
+      - uses: actions/cache/restore@v4
+        with:
+          path: artifacts/nonpopulation/capture_*.json
+          key: changwon-nonpop-v392-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: changwon-nonpop-v392-
       - name: Fill only unqueried non-population source-region-month combinations
-        run: python scripts/repair_nonpopulation.py --mode fill --start "$START_MONTH" --end "$END_MONTH" --snapshot "$SNAPSHOT_MONTH" --max-months "$MAX_MONTHS"
-      - uses: actions/upload-artifact@v4
+        run: python scripts/repair_nonpopulation.py --mode fill --start "$START_MONTH" --end "$END_MONTH" --snapshot "$SNAPSHOT_MONTH" --max-months "$MAX_MONTHS" --max-minutes 120
+      - uses: actions/cache/save@v4
         if: always()
         with:
-          name: changwon-nonpopulation-repair-${{ github.run_id }}
+          path: artifacts/nonpopulation/capture_*.json
+          key: changwon-nonpop-v392-${{ github.run_id }}-${{ github.run_attempt }}
+      - uses: actions/upload-artifact@v4
+        id: upload_primary
+        continue-on-error: true
+        if: always()
+        with:
+          name: changwon-nonpopulation-repair-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/nonpopulation/
+          retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && steps.upload_primary.outcome == 'failure' }}
+        with:
+          name: changwon-nonpopulation-repair-${{ github.run_id }}-${{ github.run_attempt }}-retry
           path: artifacts/nonpopulation/
           retention-days: 30
       - name: Explain actual result
@@ -101,19 +127,27 @@ jobs:
           path=Path('artifacts/nonpopulation/result.json')
           result=json.loads(path.read_text()) if path.exists() else {'status':'interrupted'}
           with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
-              f.write('## Changwon non-population v3.9.1\n')
+              f.write('## Changwon non-population v3.9.2\n')
               f.write('```json\n'+json.dumps(result,ensure_ascii=False,indent=2)+'\n```\n')
               f.write('complete만 전체 수집 완료입니다. needs_continue/partial은 남은 작업이 있습니다.\n')
           PYCODE
       - name: Automatically continue remaining items
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
           CONTINUATION_ATTEMPT: ${{ inputs.continuation_attempt || '0' }}
         run: |
           NEXT=$(python -c "import os; print(int(os.environ['CONTINUATION_ATTEMPT'])+1)")
-          CONTINUE=$(python -c "import json; r=json.load(open('artifacts/nonpopulation/result.json')); print('yes' if r['status']=='needs_continue' or (r['status']=='partial' and r['applied']>0) else 'no')")
-          if [ "$CONTINUE" = "yes" ] && [ "$NEXT" -le 12 ]; then
-            gh workflow run changwon-nonpopulation-repair.yml --ref "$GITHUB_SHA" -f mode=fill -f start="$START_MONTH" -f end="$END_MONTH" -f snapshot="$SNAPSHOT_MONTH" -f max_months="$MAX_MONTHS" -f continuation_attempt="$NEXT"
+          CONTINUE=$(python -c "import json; r=json.load(open('artifacts/nonpopulation/result.json')); print('yes' if r['status']=='needs_continue' or (r['status']=='partial' and r.get('retryable_errors')) or (r['status']=='blocked' and r.get('retryable_errors')) else 'no')")
+          if [ "$CONTINUE" = "yes" ] && [ "$NEXT" -le 16 ]; then
+            for RETRY in 1 2 3; do
+              if gh workflow run changwon-nonpopulation-repair.yml --ref "$GITHUB_REF_NAME" -f mode=fill -f start="$START_MONTH" -f end="$END_MONTH" -f snapshot="$SNAPSHOT_MONTH" -f max_months="$MAX_MONTHS" -f continuation_attempt="$NEXT"; then
+                exit 0
+              fi
+              sleep 5
+            done
+            echo "::error::자동 이어서 실행 요청 실패. Firebase 저장 결과는 result.json으로 확인하세요."
+            exit 1
           elif [ "$CONTINUE" = "yes" ]; then
             echo "::warning::자동 후속 실행 한도입니다. result.json에서 남은 항목을 확인하세요."
           fi

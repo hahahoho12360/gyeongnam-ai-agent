@@ -43,7 +43,8 @@ def test_preflight_checks_all_ten_groups_and_collects_errors(monkeypatch,regions
             raise n.DiagnosticError('지역 연결 실패',umdNm='가짜동')
         return {},{}
     monkeypatch.setattr(n,'collect',collect)
-    cache,errors=n.preflight(object(),regions,{},'2022-10',tmp_path)
+    from types import SimpleNamespace
+    cache,errors=n.preflight(SimpleNamespace(),regions,{},'2022-10',tmp_path)
     assert len(calls)==10 and len(cache)==9 and len(errors)==1
     assert len(json.loads((tmp_path/'preflight.json').read_text())['checks'])==10
 
@@ -62,13 +63,53 @@ def test_reindex_one_atomic_batch_and_checkpoint_skip(monkeypatch):
             batch=Batch(); self.batches.append(batch); return batch
         def collection(self,name): return Collection()
         def filter_eq(self,collection,field,month):
-            return [{'id':'4812110100_2022-10','region_id':'4812110100','month':month,'metrics':{'population_total':8}}] if month=='2022-10' else []
+            rows=[{'id':'4812110100_2022-10','region_id':'4812110100','month':month,'metrics':{'population_total':8}}] if month=='2022-10' else []
+            if rows and commits:
+                changes=commits[-1].writes[0][2]
+                rows[0].update(derived=changes['derived'],indexes=changes['indexes'])
+            return rows
+        def set(self,*args,**kwargs):pass
         def list(self,name): return [{'id':'4812110100','month':'2022-10'}]
         def get(self,*args): return self.checkpoint
     commits=[]; monkeypatch.setattr(pop,'commit_batch',lambda batch:commits.append(batch))
     store=Store()
     assert n.reindex(store,[{'id':'4812110100'}],'2022-10')
     assert len(commits)==1 and len(commits[0].writes)==3
-    store.checkpoint={'version':n.VERSION}
+    store.checkpoint={'version':n.VERSION,'verified':True}
     assert n.reindex(store,[{'id':'4812110100'}],'2022-10') is False
     assert len(commits)==1
+
+
+def test_capture_cache_avoids_duplicate_query_and_preserves_failed_rows(monkeypatch,tmp_path):
+    class Client:pass
+    c=Client();calls=[]
+    group=[{'id':'4812110100'}]
+    def collect(*args):calls.append(1);return {'4812110100':{'sale_count':1}},{'4812110100':1}
+    monkeypatch.setattr(n,'collect',collect)
+    assert n.collect_cached('apt_sale','2025-12',group,group,{},c,tmp_path)[1]['4812110100']==1
+    n.collect_cached('apt_sale','2025-12',group,group,{},c,tmp_path)
+    assert len(calls)==1
+    def bad(*args):
+        c.last_rows=[{'serviceKey':'secret','stdgCd':'invalid'}]
+        raise n.DiagnosticError('지역 연결 실패')
+    monkeypatch.setattr(n,'collect',bad)
+    with pytest.raises(n.DiagnosticError):n.collect_cached('apt_sale','2026-01',group,group,{},c,tmp_path)
+    evidence=json.loads((tmp_path/'failed_apt_sale_2026-01_48121_0.json').read_text())
+    assert evidence['received_rows'][0]['serviceKey']=='[REDACTED]'
+    assert not (tmp_path/'capture_apt_sale_2026-01_48121.json').exists()
+
+
+def test_request_budget_stops_before_provider_request():
+    budget=n.CollectionBudget(n.time.monotonic()+60)
+    with pytest.raises(n.DiagnosticError,match='시간 예산'):budget.check()
+    budget=n.CollectionBudget(n.time.monotonic()+1000);budget.failures=3
+    with pytest.raises(n.DiagnosticError,match='반복 연결'):budget.check()
+
+
+def test_workflow_uses_branch_not_commit_and_retries_artifact_upload():
+    from pathlib import Path
+    text=(Path(__file__).resolve().parents[1]/'.github/workflows/changwon-nonpopulation-repair.yml').read_text()
+    assert '--ref "$GITHUB_REF_NAME"' in text
+    assert '--ref "$GITHUB_SHA"' not in text
+    assert 'steps.upload_primary.outcome' in text
+    assert 'retryable_errors' in text
