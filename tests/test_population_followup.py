@@ -101,7 +101,7 @@ def test_followup_remaining_12_months_and_no_nested_writer_lock():
     assert monthly[0][1]['with']['month']=='2025-09'
     assert monthly[-1][1]['with']['month']=='2026-08'
     for i,(key,job) in enumerate(monthly):
-        if i:assert job['needs']==[monthly[i-1][0]]
+        if i:assert job['needs']==[monthly[i-1][0],'retry_'+monthly[i-1][0]]
     assert jobs['final_population_recalculation']['if']=='${{ always() }}'
     worker=yaml.safe_load((root/'.github/workflows/changwon-population-month-worker.yml').read_text())
     assert 'concurrency' not in worker

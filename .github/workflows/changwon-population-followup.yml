@@ -1,4 +1,4 @@
-name: Changwon population follow-up and ratios v3.7.4
+name: Changwon population follow-up and ratios v3.7.5
 on:
   push:
     branches: [main]
@@ -14,87 +14,195 @@ jobs:
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2025-09"
+      attempt: primary
+    secrets: inherit
+  retry_month_2025_09:
+    needs: [month_2025_09]
+    if: ${{ always() && needs.month_2025_09.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2025-09"
+      attempt: retry
     secrets: inherit
   month_2025_10:
-    needs: [month_2025_09]
-    if: ${{ always() && needs.month_2025_09.outputs.continue_processing == 'true' }}
+    needs: [month_2025_09, retry_month_2025_09]
+    if: ${{ always() && (needs.month_2025_09.outputs.continue_processing == 'true' || needs.retry_month_2025_09.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2025-10"
+      attempt: primary
+    secrets: inherit
+  retry_month_2025_10:
+    needs: [month_2025_10]
+    if: ${{ always() && needs.month_2025_10.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2025-10"
+      attempt: retry
     secrets: inherit
   month_2025_11:
-    needs: [month_2025_10]
-    if: ${{ always() && needs.month_2025_10.outputs.continue_processing == 'true' }}
+    needs: [month_2025_10, retry_month_2025_10]
+    if: ${{ always() && (needs.month_2025_10.outputs.continue_processing == 'true' || needs.retry_month_2025_10.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2025-11"
+      attempt: primary
+    secrets: inherit
+  retry_month_2025_11:
+    needs: [month_2025_11]
+    if: ${{ always() && needs.month_2025_11.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2025-11"
+      attempt: retry
     secrets: inherit
   month_2025_12:
-    needs: [month_2025_11]
-    if: ${{ always() && needs.month_2025_11.outputs.continue_processing == 'true' }}
+    needs: [month_2025_11, retry_month_2025_11]
+    if: ${{ always() && (needs.month_2025_11.outputs.continue_processing == 'true' || needs.retry_month_2025_11.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2025-12"
+      attempt: primary
+    secrets: inherit
+  retry_month_2025_12:
+    needs: [month_2025_12]
+    if: ${{ always() && needs.month_2025_12.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2025-12"
+      attempt: retry
     secrets: inherit
   month_2026_01:
-    needs: [month_2025_12]
-    if: ${{ always() && needs.month_2025_12.outputs.continue_processing == 'true' }}
+    needs: [month_2025_12, retry_month_2025_12]
+    if: ${{ always() && (needs.month_2025_12.outputs.continue_processing == 'true' || needs.retry_month_2025_12.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2026-01"
+      attempt: primary
+    secrets: inherit
+  retry_month_2026_01:
+    needs: [month_2026_01]
+    if: ${{ always() && needs.month_2026_01.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2026-01"
+      attempt: retry
     secrets: inherit
   month_2026_02:
-    needs: [month_2026_01]
-    if: ${{ always() && needs.month_2026_01.outputs.continue_processing == 'true' }}
+    needs: [month_2026_01, retry_month_2026_01]
+    if: ${{ always() && (needs.month_2026_01.outputs.continue_processing == 'true' || needs.retry_month_2026_01.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2026-02"
+      attempt: primary
+    secrets: inherit
+  retry_month_2026_02:
+    needs: [month_2026_02]
+    if: ${{ always() && needs.month_2026_02.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2026-02"
+      attempt: retry
     secrets: inherit
   month_2026_03:
-    needs: [month_2026_02]
-    if: ${{ always() && needs.month_2026_02.outputs.continue_processing == 'true' }}
+    needs: [month_2026_02, retry_month_2026_02]
+    if: ${{ always() && (needs.month_2026_02.outputs.continue_processing == 'true' || needs.retry_month_2026_02.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2026-03"
+      attempt: primary
+    secrets: inherit
+  retry_month_2026_03:
+    needs: [month_2026_03]
+    if: ${{ always() && needs.month_2026_03.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2026-03"
+      attempt: retry
     secrets: inherit
   month_2026_04:
-    needs: [month_2026_03]
-    if: ${{ always() && needs.month_2026_03.outputs.continue_processing == 'true' }}
+    needs: [month_2026_03, retry_month_2026_03]
+    if: ${{ always() && (needs.month_2026_03.outputs.continue_processing == 'true' || needs.retry_month_2026_03.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2026-04"
+      attempt: primary
+    secrets: inherit
+  retry_month_2026_04:
+    needs: [month_2026_04]
+    if: ${{ always() && needs.month_2026_04.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2026-04"
+      attempt: retry
     secrets: inherit
   month_2026_05:
-    needs: [month_2026_04]
-    if: ${{ always() && needs.month_2026_04.outputs.continue_processing == 'true' }}
+    needs: [month_2026_04, retry_month_2026_04]
+    if: ${{ always() && (needs.month_2026_04.outputs.continue_processing == 'true' || needs.retry_month_2026_04.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2026-05"
+      attempt: primary
+    secrets: inherit
+  retry_month_2026_05:
+    needs: [month_2026_05]
+    if: ${{ always() && needs.month_2026_05.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2026-05"
+      attempt: retry
     secrets: inherit
   month_2026_06:
-    needs: [month_2026_05]
-    if: ${{ always() && needs.month_2026_05.outputs.continue_processing == 'true' }}
+    needs: [month_2026_05, retry_month_2026_05]
+    if: ${{ always() && (needs.month_2026_05.outputs.continue_processing == 'true' || needs.retry_month_2026_05.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2026-06"
+      attempt: primary
+    secrets: inherit
+  retry_month_2026_06:
+    needs: [month_2026_06]
+    if: ${{ always() && needs.month_2026_06.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2026-06"
+      attempt: retry
     secrets: inherit
   month_2026_07:
-    needs: [month_2026_06]
-    if: ${{ always() && needs.month_2026_06.outputs.continue_processing == 'true' }}
+    needs: [month_2026_06, retry_month_2026_06]
+    if: ${{ always() && (needs.month_2026_06.outputs.continue_processing == 'true' || needs.retry_month_2026_06.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2026-07"
+      attempt: primary
+    secrets: inherit
+  retry_month_2026_07:
+    needs: [month_2026_07]
+    if: ${{ always() && needs.month_2026_07.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2026-07"
+      attempt: retry
     secrets: inherit
   month_2026_08:
-    needs: [month_2026_07]
-    if: ${{ always() && needs.month_2026_07.outputs.continue_processing == 'true' }}
+    needs: [month_2026_07, retry_month_2026_07]
+    if: ${{ always() && (needs.month_2026_07.outputs.continue_processing == 'true' || needs.retry_month_2026_07.outputs.continue_processing == 'true') }}
     uses: ./.github/workflows/changwon-population-month-worker.yml
     with:
       month: "2026-08"
+      attempt: primary
+    secrets: inherit
+  retry_month_2026_08:
+    needs: [month_2026_08]
+    if: ${{ always() && needs.month_2026_08.outputs.retryable_provider_failure == 'true' }}
+    uses: ./.github/workflows/changwon-population-month-worker.yml
+    with:
+      month: "2026-08"
+      attempt: retry
     secrets: inherit
   final_population_recalculation:
     name: Verify all periods and population-only ratios
-    needs: [month_2025_09, month_2025_10, month_2025_11, month_2025_12, month_2026_01, month_2026_02, month_2026_03, month_2026_04, month_2026_05, month_2026_06, month_2026_07, month_2026_08]
+    needs: [month_2025_09, retry_month_2025_09, month_2025_10, retry_month_2025_10, month_2025_11, retry_month_2025_11, month_2025_12, retry_month_2025_12, month_2026_01, retry_month_2026_01, month_2026_02, retry_month_2026_02, month_2026_03, retry_month_2026_03, month_2026_04, retry_month_2026_04, month_2026_05, retry_month_2026_05, month_2026_06, retry_month_2026_06, month_2026_07, retry_month_2026_07, month_2026_08, retry_month_2026_08]
     if: ${{ always() }}
     runs-on: ubuntu-latest
     timeout-minutes: 60

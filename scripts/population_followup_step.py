@@ -41,6 +41,9 @@ def main(month):
             'firestore_verified':False,'instruction':'Re-read Firestore before retry; writes may need verification.'})
     status=read('one_month_status.json');progress=read('request_progress.json')
     proceed=should_continue(status,progress,timed_out)
+    retryable=(not proceed and not timed_out and status.get('status')=='paused'
+        and not progress.get('non_retryable_failure',False)
+        and not any(r.get('outcome') in HALT_OUTCOMES for r in progress.get('recent_requests',[])))
     derived='not_attempted'
     if returncode==0 and status.get('status') in ('complete','already_verified'):
         try:
@@ -49,10 +52,10 @@ def main(month):
         except subprocess.TimeoutExpired:
             derived='paused';proceed=False
     report={'month':month,'repair':status,'derived_status':derived,
-        'continue_processing':proceed,'updated_at':utcnow_iso()}
+        'continue_processing':proceed,'retryable_provider_failure':retryable,'updated_at':utcnow_iso()}
     save('followup_month_step.json',report)
     if os.getenv('GITHUB_OUTPUT'):
-        with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('continue_processing='+str(proceed).lower()+'\n')
+        with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('continue_processing='+str(proceed).lower()+'\nretryable_provider_failure='+str(retryable).lower()+'\n')
     if os.getenv('GITHUB_STEP_SUMMARY'):
         with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
             f.write('### '+month+' repair and population-only recalculation\n```json\n'+json.dumps(report,ensure_ascii=False,indent=2)+'\n```\n')

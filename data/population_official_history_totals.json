@@ -1333,12 +1333,6 @@
       }
     },
     "2025-09": {
-      "48120": {
-        "population_total": 992802,
-        "households": 462129,
-        "population_male": 502344,
-        "population_female": 490458
-      },
       "48121": {
         "population_total": 208584,
         "households": 97977,
@@ -1364,10 +1358,16 @@
         "population_female": 89236
       },
       "48129": {
-        "population_total": 185761,
-        "households": 85569,
+        "population_total": 185762,
+        "households": 85570,
         "population_male": 95803,
-        "population_female": 89958
+        "population_female": 89959
+      },
+      "48120": {
+        "population_total": 992803,
+        "households": 462130,
+        "population_male": 502344,
+        "population_female": 490459
       }
     },
     "2025-10": {
@@ -1824,6 +1824,84 @@
         "households": 85556,
         "population_male": 94069,
         "population_female": 88305
+      }
+    }
+  },
+  "reference_overrides": {
+    "2025-09": {
+      "source": "https://jumin.mois.go.kr/ppltHshdStus.do",
+      "download_endpoint": "https://jumin.mois.go.kr/ppltHshdStusDown.do",
+      "unit": "legal_dong",
+      "registration": "all_registered_excluding_foreigners",
+      "retrieved_at": "2026-10-12",
+      "proof_files": [
+        {
+          "district": "48121",
+          "file": "data/population_legal_reference_202509/48121.csv",
+          "download_sha256": "1cc9a73a833a0fd4e16c1a08db9318e8278d09b71b5e1ed8b045049a0e8e0ab3",
+          "encoding_conversion": "cp949 to UTF-8; values unchanged"
+        },
+        {
+          "district": "48123",
+          "file": "data/population_legal_reference_202509/48123.csv",
+          "download_sha256": "015e552cdc3c1968f651481238c2f9f83f40aa4b5d967d4a09ca774fe61502f5",
+          "encoding_conversion": "cp949 to UTF-8; values unchanged"
+        },
+        {
+          "district": "48125",
+          "file": "data/population_legal_reference_202509/48125.csv",
+          "download_sha256": "2d085b657be9c454532a74dae349b09d6b2690ab8c76e66d225b771578ae0840",
+          "encoding_conversion": "cp949 to UTF-8; values unchanged"
+        },
+        {
+          "district": "48127",
+          "file": "data/population_legal_reference_202509/48127.csv",
+          "download_sha256": "ad238feda31fb36624ef43fa78ef6d63199b5bbb58ad968b9307465186778768",
+          "encoding_conversion": "cp949 to UTF-8; values unchanged"
+        },
+        {
+          "district": "48129",
+          "file": "data/population_legal_reference_202509/48129.csv",
+          "download_sha256": "7b218919c3dd6bf6e7264da7f503ef99e04cab7c2c0c68cdb73f9ce179c88c8c",
+          "encoding_conversion": "cp949 to UTF-8; values unchanged"
+        },
+        {
+          "district": "48120",
+          "file": "data/population_legal_reference_202509/city_48_months.csv",
+          "download_sha256": "80bf51fa9c508d199b0f933d114418fa7510c3707a56adfbafda695f5e7008aa",
+          "extraction": "Header and exact Changwon city row extracted from national 48-month legal CSV; no value changes"
+        }
+      ],
+      "scope": "City and all five districts; all official sex/household/population totals checked",
+      "changes": {
+        "48129": {
+          "before": {
+            "population_total": 185761,
+            "households": 85569,
+            "population_male": 95803,
+            "population_female": 89958
+          },
+          "after": {
+            "population_total": 185762,
+            "households": 85570,
+            "population_male": 95803,
+            "population_female": 89959
+          }
+        },
+        "48120": {
+          "before": {
+            "population_total": 992802,
+            "households": 462129,
+            "population_male": 502344,
+            "population_female": 490458
+          },
+          "after": {
+            "population_total": 992803,
+            "households": 462130,
+            "population_male": 502344,
+            "population_female": 490459
+          }
+        }
       }
     }
   }

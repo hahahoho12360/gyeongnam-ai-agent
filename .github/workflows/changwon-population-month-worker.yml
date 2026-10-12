@@ -1,10 +1,13 @@
-name: Changwon population monthly worker v3.7.4
+name: Changwon population monthly worker v3.7.5
 on:
   workflow_call:
     inputs:
       month:
         required: true
         type: string
+      attempt:
+        type: string
+        default: primary
     secrets:
       DATA_GO_KR_SERVICE_KEY:
         required: true
@@ -15,6 +18,8 @@ on:
     outputs:
       continue_processing:
         value: ${{ jobs.month.outputs.continue_processing }}
+      retryable_provider_failure:
+        value: ${{ jobs.month.outputs.retryable_provider_failure }}
 permissions:
   contents: read
 jobs:
@@ -24,6 +29,7 @@ jobs:
     timeout-minutes: 100
     outputs:
       continue_processing: ${{ steps.process.outputs.continue_processing }}
+      retryable_provider_failure: ${{ steps.process.outputs.retryable_provider_failure }}
     env:
       PYTHONUNBUFFERED: '1'
       DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
@@ -42,10 +48,15 @@ jobs:
           python-version: '3.11'
           cache: pip
       - run: python -m pip install -r requirements.txt
+      - name: Bounded pause before one fresh-runner recovery attempt
+        if: ${{ inputs.attempt == 'retry' }}
+        run: |
+          sleep 60
+          sleep 60
       - uses: actions/cache/restore@v4
         with:
           path: artifacts/population_repair/
-          key: changwon-month-v373-${{ inputs.month }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: changwon-month-v373-${{ inputs.month }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.attempt }}
           restore-keys: changwon-month-v373-${{ inputs.month }}-
       - name: Repair, verify and recalculate population-only fields
         id: process
@@ -56,10 +67,10 @@ jobs:
         if: always()
         with:
           path: artifacts/population_repair/
-          key: changwon-month-v373-${{ inputs.month }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: changwon-month-v373-${{ inputs.month }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.attempt }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: changwon-population-${{ inputs.month }}-${{ github.run_id }}
+          name: changwon-population-${{ inputs.month }}-${{ github.run_id }}-${{ inputs.attempt }}
           path: artifacts/population_repair/
           retention-days: 14

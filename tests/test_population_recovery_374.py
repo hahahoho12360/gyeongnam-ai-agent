@@ -70,3 +70,26 @@ def test_quota_or_permission_error_never_recovered_or_retried(monkeypatch):
     b.record({'outcome':'api_rate_limit'},True)
     with pytest.raises(runner.StopCollection,match='non_retryable'):b.check()
     assert b.recoveries==0
+
+
+def test_verified_legal_reference_override_is_not_an_api_value_adjustment():
+    root=Path(__file__).resolve().parents[1]
+    current=json.loads((root/'data/population_official_history_totals.json').read_text())
+    original=json.loads((root/'data/population_official_history_totals_admin_original.json').read_text())
+    assert current['months']['2025-09']['48129']['population_total']==185762
+    assert original['months']['2025-09']['48129']['population_total']==185761
+    for month in current['months']:
+        if month!='2025-09':assert current['months'][month]==original['months'][month]
+    totals=current['months']['2025-09']
+    for key in core.KEYS:assert sum(v[key] for k,v in totals.items() if k!='48120')==totals['48120'][key]
+    assert len(current['reference_overrides']['2025-09']['proof_files'])==6
+
+
+def test_only_transient_failure_has_one_fresh_runner_retry():
+    import yaml
+    root=Path(__file__).resolve().parents[1]
+    workflow=yaml.safe_load((root/'.github/workflows/changwon-population-followup.yml').read_text())
+    retries=[j for k,j in workflow['jobs'].items() if k.startswith('retry_month_')]
+    assert len(retries)==12
+    assert all('retryable_provider_failure' in j['if'] for j in retries)
+    assert all(j['with']['attempt']=='retry' for j in retries)
