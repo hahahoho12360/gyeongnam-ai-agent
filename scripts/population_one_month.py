@@ -174,6 +174,16 @@ def run(month,max_minutes=60,skip_probe=False):
         status['status']='collecting';save('one_month_status.json',status)
         core.DataGoKrClient=BoundedClient
         errors=core.prefetch_window([month],codes,workers=2)
+        # Retry only missing captures; validated cache files are never fetched again.
+        transient={'read_timeout','connect_timeout','connection_error','http_server_error'}
+        if errors and all(e.get('reason') in transient for e in errors):
+            save('isolated_capture_recovery.json',{'month':month,'initial_errors':errors,
+                'maximum_extra_passes':1,'status':'retry_missing_only'})
+            BoundedClient.budget.check()
+            time.sleep(5)
+            errors=core.prefetch_window([month],codes,workers=1)
+            save('isolated_capture_recovery.json',{'month':month,'remaining_errors':errors,
+                'maximum_extra_passes':1,'status':'recovered' if not errors else 'paused'})
         if errors:raise StopCollection('incomplete_original_api_capture')
         BoundedClient.budget.check()
         captures={(s,c):json.loads((OUT/f'{s}_{c}_{month}.json').read_text())['rows'] for s in core.SOURCES for c in codes}

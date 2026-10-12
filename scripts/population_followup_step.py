@@ -21,6 +21,15 @@ def should_continue(status,progress,timed_out=False):
     # and does not prevent a later, independent month from being attempted.
     return status.get('reason') in ('incomplete_original_api_capture','UnresolvedMonth','ValueError')
 
+TRANSIENT_OUTCOMES={'read_timeout','connect_timeout','connection_error','http_server_error'}
+
+def retryable_failure(status,progress,errors,timed_out=False):
+    if timed_out or status.get('status')!='paused' or progress.get('non_retryable_failure',False):return False
+    if any(r.get('outcome') in HALT_OUTCOMES for r in progress.get('recent_requests',[])):return False
+    if status.get('reason')=='incomplete_original_api_capture':
+        return bool(errors) and all(e.get('reason') in TRANSIENT_OUTCOMES for e in errors)
+    return status.get('reason')=='provider_circuit_open'
+
 def read(name):
     path=OUT/name
     try:return json.loads(path.read_text())
@@ -41,9 +50,7 @@ def main(month):
             'firestore_verified':False,'instruction':'Re-read Firestore before retry; writes may need verification.'})
     status=read('one_month_status.json');progress=read('request_progress.json')
     proceed=should_continue(status,progress,timed_out)
-    retryable=(not proceed and not timed_out and status.get('status')=='paused'
-        and not progress.get('non_retryable_failure',False)
-        and not any(r.get('outcome') in HALT_OUTCOMES for r in progress.get('recent_requests',[])))
+    retryable=retryable_failure(status,progress,read('request_errors_'+month+'.json'),timed_out)
     derived='not_attempted'
     if returncode==0 and status.get('status') in ('complete','already_verified'):
         try:

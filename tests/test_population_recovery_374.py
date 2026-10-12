@@ -93,3 +93,35 @@ def test_only_transient_failure_has_one_fresh_runner_retry():
     assert len(retries)==12
     assert all('retryable_provider_failure' in j['if'] for j in retries)
     assert all(j['with']['attempt']=='retry' for j in retries)
+
+
+def test_isolated_timeout_retry_uses_full_error_evidence_not_recent_tail():
+    from scripts.population_followup_step import retryable_failure
+    status={'status':'paused','reason':'incomplete_original_api_capture'}
+    progress={'consecutive_failures':0,'recent_requests':[{'outcome':'success'}]}
+    assert retryable_failure(status,progress,[{'reason':'read_timeout'}])
+    assert retryable_failure(status,progress,[{'reason':'connection_error'}])
+    assert not retryable_failure(status,progress,[{'reason':'Conflicting duplicate API identity'}])
+    assert not retryable_failure(status,progress,[])
+    assert not retryable_failure(status,progress,[{'reason':'read_timeout'}],True)
+    progress['non_retryable_failure']=True
+    assert not retryable_failure(status,progress,[{'reason':'read_timeout'}])
+
+
+def test_resumed_capture_requests_only_missing_source(monkeypatch,tmp_path):
+    calls=[]
+    monkeypatch.setattr(core,'OUT',tmp_path)
+    monkeypatch.setattr(core,'save',lambda n,d:(tmp_path/n).write_text(json.dumps(d)))
+    monkeypatch.setattr(core,'SOURCES',('population','age_population','single_household'))
+    for source in core.SOURCES:
+        monkeypatch.setenv(source.upper()+'_QUERY_JSON',json.dumps({'stdgCd':'{bjd_code}'}))
+        if source!='population':
+            (tmp_path/f'{source}_{RID}_2025-09.json').write_text(json.dumps({'source':source,
+                'requested_code':RID,'month':'2025-09','rows':original()[source],
+                'audit_version':core.VERSION,'successful_request':True}))
+    monkeypatch.setattr(core,'DataGoKrClient',lambda **kw:None)
+    def query(client,source,code,month,**kw):
+        calls.append(source);return original()[source]
+    monkeypatch.setattr(core,'query',query)
+    assert core.prefetch_window(['2025-09'],[RID],workers=1)==[]
+    assert calls==['population']
