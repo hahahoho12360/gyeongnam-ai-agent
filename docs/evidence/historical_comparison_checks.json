@@ -1,0 +1,26 @@
+[
+  {
+    "name": "창원시 진해구 속천동",
+    "month": "2025-09",
+    "api_population": 733,
+    "ai_population": 733,
+    "matches": true,
+    "difference": 6
+  },
+  {
+    "name": "창원시 진해구 근화동",
+    "month": "2025-09",
+    "api_population": 313,
+    "ai_population": 313,
+    "matches": true,
+    "difference": -414
+  },
+  {
+    "name": "창원시 마산합포구 중앙동1가",
+    "month": "2025-09",
+    "api_population": 532,
+    "ai_population": 532,
+    "matches": true,
+    "difference": -195
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "answer": "명서동은 창원시 의창구에 속한 법정동이에요. **2026년 9월 기준** 인구는 **18,425명**, 청년(20~39세) 비율은 **21.21%**, 1인 세대 비율은 **46.28%**예요.\n\n- 유사 지역 경상남도 창원시 마산회원구 회원동: 인구 18,108명 (2025-10 ~ 2026-09), 대상 지역 대비 -317명.\n- 유사 지역 경상남도 창원시 진해구 석동: 인구 18,247명 (2025-10 ~ 2026-09), 대상 지역 대비 -178명.\n- 무작위 비교 지역 경상남도 창원시 성산구 사파동: 인구 17,973명 (2025-10 ~ 2026-09), 대상 지역 대비 -452명.",
+  "tools_used": [
+    {
+      "name": "get_region_summary",
+      "arguments": {
+        "region": "경상남도 창원시 의창구 명서동",
+        "months": 1
+      },
+      "result_preview": "{'region': {'id': '4812112400', 'peer_group': 'urban', 'source': 'MOIS StanReginCd', 'bjd_code': '4812112400', 'is_demo': False, 'sido': '경상남도', 'valid_from': '20100701', 'full_name': '경상남도 창원시 의창구 명서동', 'name': '명서동', 'sigungu': '창원시 의창구', 'region_type': 'legal_dong', 'neighbors': []}, 'period': '2026-09 ~ 2026-09', 'count': 1, 'metrics': {'restaurant_count': 191, 'old_buildings_30y': 923, 'single_age_50_59': 980, 'monthly_rent_median': 2000000.0, 'age_50_59': 3568, 'jeonse_count': 2, 'sale_pri"
+    }
+  ],
+  "resolved_region": {
+    "id": "4812112400",
+    "peer_group": "urban",
+    "source": "MOIS StanReginCd",
+    "bjd_code": "4812112400",
+    "is_demo": false,
+    "sido": "경상남도",
+    "valid_from": "20100701",
+    "full_name": "경상남도 창원시 의창구 명서동",
+    "name": "명서동",
+    "sigungu": "창원시 의창구",
+    "region_type": "legal_dong",
+    "neighbors": []
+  },
+  "case": "명서동 2026-09"
+}
