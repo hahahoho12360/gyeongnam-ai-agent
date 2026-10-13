@@ -2,7 +2,7 @@ name: Changwon small population original API check
 on:
   push:
     branches: [main]
-    paths: [.github/workflows/changwon-small-population-check.yml]
+    paths: [.github/workflows/changwon-small-population-check.yml, scripts/verify_small_population.py]
   workflow_dispatch:
 permissions:
   contents: read

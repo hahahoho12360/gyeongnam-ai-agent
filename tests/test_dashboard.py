@@ -116,3 +116,17 @@ def test_comparison_uses_dashboard_end_month_even_when_snapshot_is_stale(monkeyp
     result=dashboard(rid,question='인구 비교')
     assert result['end_month']=='2026-08'
     assert calls==[(rid,'2026-08','인구 비교')]
+
+
+def test_small_population_basis_preserves_real_zero_and_missing():
+    from backend.dashboard import metric_basis
+    row={'metrics':{'population_total':12,'age_20_39':0,'households':10,'single_households':10}}
+    assert value(row,'young_population_share')==0
+    assert metric_basis(row,'young_population_share')['denominator']==12
+    assert metric_basis(row,'young_population_share')['numerator']==0
+    assert value(row,'single_household_share')==100
+    assert metric_basis(row,'single_household_share')['denominator']==10
+    assert metric_basis({'metrics':{'population_total':0}},'population_total')['count']==0
+    assert metric_basis({'metrics':{'population_total':0,'age_20_39':0}},'young_population_share') is None
+    row['freshness']={'sources':{'age_population':{'status':'no_data'}}}
+    assert metric_basis(row,'young_population_share') is None

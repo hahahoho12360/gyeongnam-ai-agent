@@ -7,7 +7,7 @@ from . import analysis
 from .db import get_store
 
 METRICS=[
- ('population_total','인구(명)','인구','명'),
+ ('population_total','주민등록 인구(명)','인구','명'),
  ('young_population_share','청년 비율(20~39세, %)','청년 비율','%'),
  ('single_household_share','1인세대 비율(%)','1인세대 비율','%'),
  ('sale_price_per_m2','아파트 매매 전용면적 ㎡당 중앙가격(원)','아파트 ㎡당 가격','원/㎡'),
@@ -48,6 +48,17 @@ def value(row,key,year_ago=None):
     if meta.get('comparison_scope') not in ('changwon', '4812') or meta.get('comparison_month')!=row.get('month'): return None
     v=row.get('indexes',{}).get(key)
     return v if numeric(v) else None
+
+def metric_basis(row,key):
+    """Explain a valid value without replacing true zero or excluding small areas."""
+    if value(row,key) is None: return None
+    m=(row or {}).get('metrics',{})
+    if key=='young_population_share':
+        return {'numerator':m['age_20_39'],'denominator':m['population_total'],'numerator_label':'20~39세','denominator_label':'주민등록 인구','unit':'명'}
+    if key=='single_household_share':
+        return {'numerator':m['single_households'],'denominator':m['households'],'numerator_label':'1인세대','denominator_label':'전체 세대','unit':'세대'}
+    if key=='population_total': return {'count':m['population_total'],'unit':'명'}
+    return None
 
 PERIOD_MIN='2022-10'
 
@@ -100,9 +111,9 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
             if v is not None: vals.append((rid,v))
         low=min((v for _,v in vals),default=None); high=max((v for _,v in vals),default=None)
         def extreme(v):
-            return {'value':v,'regions':[{'id':rid,'name':master[rid].get('full_name') or master[rid]['name']} for rid,x in vals if x==v]} if v is not None else {'value':None,'regions':[]}
+            return {'value':v,'regions':[{'id':rid,'name':master[rid].get('full_name') or master[rid]['name'],'basis':metric_basis(current[rid],key)} for rid,x in vals if x==v]} if v is not None else {'value':None,'regions':[]}
         benchmarks.append({'key':key,'label':label,'unit':unit,'selected':value(current.get(region['id']),key,previous.get(region['id'])),
-                           'minimum':extreme(low),'maximum':extreme(high),'mean':sum(v for _,v in vals)/len(vals) if vals else None,
+                           'selected_basis':metric_basis(current.get(region['id']),key),'minimum':extreme(low),'maximum':extreme(high),'mean':sum(v for _,v in vals)/len(vals) if vals else None,
                            'valid_count':len(vals),'region_count':len(master),'month':month,'mean_method':'unweighted_region_mean'})
         ids=list(dict.fromkeys([region['id']]+[r['id'] for group in ('peers','seeded_random') for r in comparisons.get(group,[]) if r['id'] in master]))
     histories={rid:target if rid==region['id'] else analysis.series(rid,120) for rid in ids}

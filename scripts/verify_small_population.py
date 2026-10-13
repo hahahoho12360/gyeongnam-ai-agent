@@ -12,7 +12,7 @@ from backend.dashboard import value
 configure();BoundedClient.budget=Budget(900,threshold=6,max_recoveries=1)
 out=ROOT/'artifacts/small_population';out.mkdir(parents=True,exist_ok=True)
 store=get_store();month='2026-09';results=[]
-for rid in ['4812310700','4812311400','4812311700','4812912500','4812915300','4812110800','4812111400','4812312200']:
+for rid in ['4812310700','4812311400','4812311700','4812912500','4812915300','4812110800','4812111400','4812312200','4812310100','4812311200','4812311300','4812311500','4812314100']:
  region=store.get('regions',rid);stored=store.get('monthly_data',f'{rid}_{month}') or {};patches={};raw={};errors=[]
  for source in ['population','age_population']:
   try:
