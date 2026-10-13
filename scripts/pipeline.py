@@ -486,7 +486,7 @@ def collect_configured_per_region(
     except json.JSONDecodeError as e:
         raise RuntimeError(f'{query_env}는 올바른 JSON이어야 합니다.') from e
     if not template:
-        raise RuntimeError(f'{query_env}가 비어 있습니다. docs/PUBLIC_DATA_SETUP.md 예시를 확인하세요.')
+        raise RuntimeError(f'{query_env}가 비어 있습니다. docs/OPERATIONS.md 예시를 확인하세요.')
 
     mode = (os.getenv(scope_env, 'region') if scope_env else 'region').strip().lower()
     if mode not in {'region', 'sigungu', 'global'}:

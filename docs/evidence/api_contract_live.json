@@ -1,0 +1,28 @@
+{
+  "all_required_endpoints": true,
+  "endpoints": {
+    "/api/data": [
+      "post",
+      "get"
+    ],
+    "/api/data/{doc_id}": [
+      "put",
+      "delete"
+    ],
+    "/api/data/summary": [
+      "get"
+    ],
+    "/api/conversations": [
+      "post",
+      "get"
+    ],
+    "/api/conversations/{doc_id}": [
+      "get",
+      "delete"
+    ],
+    "/api/chat": [
+      "post"
+    ]
+  },
+  "openapi_title": "경상남도 생활·주거·부동산·상권 변화 AI 비서"
+}

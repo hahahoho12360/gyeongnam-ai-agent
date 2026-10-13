@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-13T04:20:40.443315+00:00",
+  "http": 200,
+  "analysis_target": "personal",
+  "input_summary_count": 1,
+  "input_value": 21.21,
+  "answer": "- **자료 항목:** 청년 비율(20~39세)\n- **기록값:** 21.21%\n- **기록 개수:** 1건\n\n사용자님이 직접 입력한 관찰 기록이며, **공식 지역통계가 아닙니다.**",
+  "tools_used": [],
+  "conversation_saved_and_loaded": true,
+  "note": "Live deployed prompt after system-context update; temporary synthetic personal record, not official statistics. Tokens omitted."
+}

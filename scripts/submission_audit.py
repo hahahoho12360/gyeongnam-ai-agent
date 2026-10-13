@@ -5,7 +5,7 @@
 
 사용:
   python scripts/submission_audit.py
-  python scripts/submission_audit.py --write docs/SUBMISSION_AUDIT.md
+  python scripts/submission_audit.py --write artifacts/submission/code_audit.md
 """
 from __future__ import annotations
 
@@ -70,7 +70,7 @@ def render() -> str:
     rows=build_rows()
     lines=[
         '# 최종 제출 요구사항 자동 역점검', '',
-        '> 이 문서는 코드 존재 여부를 자동 점검한다. Firestore 실제 쓰기, OpenAI 실제 Tool Calling, Cursor MCP, Render/Vercel, GitHub Actions 등은 **사용자 계정에서 실제 실행·캡처**해야 최종 완료다.', '',
+        '> 이 문서는 코드 존재 여부를 자동 점검한다. Firestore 실제 쓰기, OpenAI 실제 Tool Calling, MCP, Render/Vercel, GitHub Actions 등은 **사용자 계정에서 실제 실행·캡처**해야 최종 완료다.', '',
         '|구분|요구사항|현재 상태|구현 위치|', '|---|---|---|---|',
     ]
     for row in rows:
@@ -78,12 +78,12 @@ def render() -> str:
     lines += ['', '## 실제 증빙이 완료되어야 최종 체크할 항목',
               '- Firestore 실제 컬렉션/실데이터 적재',
               '- OpenAI 실제 Function Calling (`tools_used` 포함)',
-              '- Cursor MCP Tool 실호출',
-              '- GitHub Actions daily/monthly 수동 실행 성공',
+              '- MCP Tool 실호출',
+              '- GitHub Actions 실제 수집·감사 완료 기록',
               '- Render `/docs` 실제 URL',
               '- Vercel 실제 서비스 URL 및 Render API 연결',
               '- CRUD/대화불러오기/그래프/다운로드/다크모드 실제 화면',
-              '', '상세 캡처 목록은 `EVIDENCE_CHECKLIST.md` 참고.']
+              '', '상세 캡처 목록은 `docs/EVIDENCE.md` 참고.']
     return '\n'.join(lines)+'\n'
 
 
@@ -104,3 +104,4 @@ def main() -> int:
 
 if __name__=='__main__':
     raise SystemExit(main())
+

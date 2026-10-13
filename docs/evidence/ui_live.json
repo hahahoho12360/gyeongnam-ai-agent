@@ -1,0 +1,39 @@
+{
+  "checked_date": "2026-10-13",
+  "frontend": "https://gyeongnam-ai-agent.vercel.app/",
+  "operations": {
+    "personal_create": "passed",
+    "personal_list": "passed",
+    "personal_update_memo": "passed",
+    "personal_reload_persistence": "passed",
+    "delete": "API actual verification, not browser screenshot",
+    "conversation_autosave": "passed",
+    "conversation_reload_list": "passed",
+    "conversation_load_messages": "passed",
+    "region_before_load": "경상남도 창원시 성산구 삼정자동",
+    "region_after_load": "경상남도 창원시 의창구 명서동",
+    "selection_origin": "불러온 대화"
+  },
+  "official_answer": {
+    "month": "2026-09",
+    "population": 18425,
+    "young_population": 3908,
+    "young_share_display": 21.21
+  },
+  "tools_used": [
+    {
+      "name": "get_region_month",
+      "arguments": {
+        "region": "경상남도 창원시 의창구 명서동",
+        "month": "2026-09"
+      }
+    }
+  ],
+  "personal_observation": {
+    "date": "2026-10-13",
+    "metric": "young_population_share",
+    "value": 21.21,
+    "is_official_data_write": false
+  },
+  "evidence": "actual observed browser actions and saved screenshots; no tokens or owner UIDs recorded"
+}

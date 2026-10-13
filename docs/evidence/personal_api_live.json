@@ -1,0 +1,98 @@
+{
+  "checked_at": "2026-10-13T03:00:07.773760+00:00",
+  "backend": "https://gyeongnam-ai-agent.onrender.com",
+  "checks": [
+    {
+      "operation": "unauthenticated /api/data",
+      "http": 401
+    },
+    {
+      "operation": "unauthenticated /api/data/summary",
+      "http": 401
+    },
+    {
+      "operation": "unauthenticated /api/conversations",
+      "http": 401
+    },
+    {
+      "operation": "create",
+      "http": 200,
+      "value": 10
+    },
+    {
+      "operation": "create",
+      "http": 200,
+      "value": 20
+    },
+    {
+      "operation": "update",
+      "http": 200,
+      "before": 20,
+      "after": 30
+    },
+    {
+      "operation": "cross_owner_data_PUT",
+      "http": 404
+    },
+    {
+      "operation": "cross_owner_data_DELETE",
+      "http": 404
+    },
+    {
+      "operation": "invalid_share",
+      "http": 422
+    },
+    {
+      "operation": "conversation_save_list_load",
+      "http": 200,
+      "messages": 2
+    },
+    {
+      "operation": "cross_owner_conversation_GET",
+      "http": 404
+    },
+    {
+      "operation": "cross_owner_conversation_DELETE",
+      "http": 404
+    },
+    {
+      "operation": "delete_and_list_recheck",
+      "http": 200,
+      "remaining_test_records": 0
+    },
+    {
+      "operation": "delete_conversation",
+      "http": 200
+    }
+  ],
+  "summary": {
+    "period": "2026-10-12 ~ 2026-10-13",
+    "count": 2,
+    "groups": [
+      {
+        "region_id": "4812112400",
+        "region_name": "경상남도 창원시 의창구 명서동",
+        "metric_type": "young_population_share",
+        "label": "청년 비율(20~39세)",
+        "unit": "%",
+        "period": "2026-10-12 ~ 2026-10-13",
+        "count": 2,
+        "metrics": {
+          "average": 20.0,
+          "max": 30.0,
+          "min": 10.0
+        },
+        "trend": "상승",
+        "latest_memo": "제출 기능 실증 수정 - 공식 통계 아님"
+      }
+    ],
+    "metrics": {
+      "average": 20.0,
+      "max": 30.0,
+      "min": 10.0
+    },
+    "trend": "상승",
+    "source": "사용자가 직접 입력한 기록; 공식 통계가 아닙니다. 기록 조건이 다르면 비교에 주의하세요."
+  },
+  "status": "passed"
+}

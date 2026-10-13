@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "transport": "stdio",
+  "backend": "https://gyeongnam-ai-agent.onrender.com",
+  "tools": [
+    "get_region_summary",
+    "get_population_trend",
+    "get_region_indexes"
+  ],
+  "region_id": "4812510100",
+  "month": "2026-09",
+  "population_total": 5307,
+  "checked_at": "2026-10-13T04:17:47.767231+00:00",
+  "calls": [
+    {
+      "name": "get_population_trend",
+      "arguments": {
+        "region": "4812510100",
+        "months": 1
+      }
+    },
+    {
+      "name": "get_region_summary",
+      "arguments": {
+        "region": "4812510100",
+        "months": 1
+      }
+    }
+  ],
+  "direct_api_matches": true,
+  "note": "Actual initialize/list_tools/call_tool session; two deployed tools verified. Desktop Codex evidence supplied separately; this is not an HTTPS /mcp endpoint."
+}
