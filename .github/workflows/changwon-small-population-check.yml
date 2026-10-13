@@ -1,0 +1,35 @@
+name: Changwon small population original API check
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/changwon-small-population-check.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      USE_MEMORY_DB: 'false'
+      DEMO_SEED_ON_START: 'false'
+      DATA_GO_KR_SERVICE_KEY: ${{ secrets.DATA_GO_KR_SERVICE_KEY }}
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      POPULATION_API_URL: https://apis.data.go.kr/1741000/stdgPpltnHhStus/selectStdgPpltnHhStus
+      AGE_POPULATION_API_URL: https://apis.data.go.kr/1741000/stdgSexdAgePpltn/selectStdgSexdAgePpltn
+      SINGLE_HOUSEHOLD_API_URL: https://apis.data.go.kr/1741000/stdgSexdAgeOneHh/selectStdgSexdAgeOneHh
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python scripts/verify_small_population.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: changwon-small-population-${{ github.run_id }}
+          path: artifacts/small_population/
+          retention-days: 30
