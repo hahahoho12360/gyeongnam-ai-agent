@@ -80,7 +80,8 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
     minimum,maximum=period_bounds()
     bundle.update(period_min=minimum,period_max=maximum)
     target=[r for r in analysis.series(region['id'],120) if minimum<=r['month']<=maximum]
-    month=end_month or (target[-1]['month'] if target else None)
+    from .period_selection import requested_month
+    month=end_month or requested_month(question) or (target[-1]['month'] if target else None)
     if month:
         start_month=start_month or max(minimum,shift(month,-11))
         validate_period(start_month,month)

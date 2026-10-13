@@ -1,6 +1,6 @@
 from __future__ import annotations
 from . import analysis
-import re
+from .period_selection import requested_month
 
 TOOLS=[
  {"type":"function","name":"get_region_month","description":"지정한 기준월의 법정읍면동 원본 집계·비율·지수를 조회합니다. 과거 월 질문은 최신월 요약 대신 이 도구를 사용하세요.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"month":{"type":"string","description":"YYYY-MM 기준월"}},"required":["region","month"],"additionalProperties":False}},
@@ -36,9 +36,9 @@ def dispatch(name: str, args: dict, question: str=''):
     if error:
         return error
     rid=reg['id']
-    explicit_months=set(f'{int(y):04d}-{int(m):02d}' for y,m in re.findall(r'(20[0-9]{2})\s*(?:년\s*|-)\s*(0?[1-9]|1[0-2])(?:월|\b)',question))
-    if name=='get_region_month' or (name=='get_region_summary' and len(explicit_months)==1):
-        month=args.get('month') if name=='get_region_month' else next(iter(explicit_months))
+    explicit_month=requested_month(question)
+    if name=='get_region_month' or (name=='get_region_summary' and explicit_month is not None):
+        month=args.get('month') if name=='get_region_month' else explicit_month
         from .dashboard import validate_period
         try:validate_period(month,month)
         except ValueError:return {'error':'invalid_month','requested_month':month}

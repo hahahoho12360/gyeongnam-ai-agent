@@ -101,13 +101,15 @@ def comparison_regions(region_id: str, seed_month: str | None=None, question: st
         rows={r.get('region_id') or r['id']:r for r in get_store().list('region_latest') if r.get('month')==month}
     return select_comparisons(region_id,regions,rows,month,question)
 
-def chart_metric(region_ids: list[str], metric_key: str, months: int=36, title: str | None=None) -> dict:
-    all_months=sorted({x['month'] for rid in region_ids for x in series(rid,months)})
+def chart_metric(region_ids: list[str], metric_key: str, months: int=36, title: str | None=None, end_month: str | None=None) -> dict:
+    def selected(rid):
+        return [r for r in series(rid,120) if r['month']<=end_month][-months:] if end_month else series(rid,months)
+    all_months=sorted({x['month'] for rid in region_ids for x in selected(rid)})
     datasets=[]
     for rid in region_ids:
         reg=get_store().get('regions',rid) or {'name':rid}
         mapping={}
-        for x in series(rid,months):
+        for x in selected(rid):
             value=x.get('metrics',{}).get(metric_key)
             if value is None: value=x.get('derived',{}).get(metric_key)
             mapping[x['month']]=value
@@ -121,16 +123,24 @@ def proactive_bundle(region_id: str, answer_mode='basic', question='') -> dict:
     reg=resolve_region(region_id)
     if not reg: return region_resolution_error(region_id)
     months=12 if answer_mode=='simple' else 36
-    comps=comparison_regions(reg['id'],None,question) if question else comparison_regions(reg['id'])
+    from .period_selection import requested_month
+    reference=requested_month(question)
+    comps=comparison_regions(reg['id'],reference,question) if question else comparison_regions(reg['id'])
     comps={key:value for key,value in comps.items() if key!='neighbors'}
     raw_ids=[reg['id']]+[r['id'] for group in ('peers','seeded_random') for r in comps[group]]
     compare_ids=list(dict.fromkeys(raw_ids))
-    comp_summaries={rid:summary(rid,12) for rid in compare_ids}
+    def context_summary(rid):
+        if not reference:return summary(rid,12)
+        row=get_store().get('monthly_data',f'{rid}_{reference}')
+        region=get_store().get('regions',rid)
+        return {'region':region,'period':reference+' ~ '+reference,'count':1 if row else 0,
+            **{k:(row or {}).get(k,{}) for k in ('metrics','derived','indexes','index_meta','freshness')}}
+    comp_summaries={rid:context_summary(rid) for rid in compare_ids}
     charts=[]
-    charts.append(chart_population(compare_ids,months))
+    charts.append(chart_metric(compare_ids,'population_total',months,f'최근 {months}개월 인구 추세',end_month=reference))
     if answer_mode=='detail':
-        charts.append(chart_metric(compare_ids,'sale_price_per_m2',months,f'최근 {months}개월 ㎡당 매매가격 추세'))
-    return {'summary':summary(reg['id'],12),'comparison':comps,'comparison_summaries':comp_summaries,'charts':charts,'answer_mode':answer_mode}
+        charts.append(chart_metric(compare_ids,'sale_price_per_m2',months,f'최근 {months}개월 ㎡당 매매가격 추세',end_month=reference))
+    return {'summary':context_summary(reg['id']),'comparison':comps,'comparison_summaries':comp_summaries,'charts':charts,'answer_mode':answer_mode}
 
 def statistics(region_id: str, months: int=36) -> dict:
     rows=series(region_id,months)
