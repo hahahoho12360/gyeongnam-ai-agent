@@ -1,7 +1,9 @@
 from __future__ import annotations
 from . import analysis
+import re
 
 TOOLS=[
+ {"type":"function","name":"get_region_month","description":"지정한 기준월의 법정읍면동 원본 집계·비율·지수를 조회합니다. 과거 월 질문은 최신월 요약 대신 이 도구를 사용하세요.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"month":{"type":"string","description":"YYYY-MM 기준월"}},"required":["region","month"],"additionalProperties":False}},
  {"type":"function","name":"get_region_summary","description":"특정 경남 법정읍면동의 최근 인구·주거·부동산·상권 요약을 조회합니다. 동명이 중복되면 시군구를 포함한 전체명을 사용하세요.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"months":{"type":"integer","minimum":1,"maximum":120}},"required":["region","months"],"additionalProperties":False}},
  {"type":"function","name":"get_population_trend","description":"특정 지역의 월별 인구 추세와 차트 데이터를 조회합니다.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"months":{"type":"integer","minimum":3,"maximum":120}},"required":["region","months"],"additionalProperties":False}},
  {"type":"function","name":"get_housing_market","description":"특정 지역의 아파트 매매가격·거래량·거래회전율과 추세를 조회합니다.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"months":{"type":"integer","minimum":3,"maximum":120}},"required":["region","months"],"additionalProperties":False}},
@@ -34,6 +36,16 @@ def dispatch(name: str, args: dict, question: str=''):
     if error:
         return error
     rid=reg['id']
+    explicit_months=set(f'{int(y):04d}-{int(m):02d}' for y,m in re.findall(r'(20[0-9]{2})\s*(?:년\s*|-)\s*(0?[1-9]|1[0-2])(?:월|\b)',question))
+    if name=='get_region_month' or (name=='get_region_summary' and len(explicit_months)==1):
+        month=args.get('month') if name=='get_region_month' else next(iter(explicit_months))
+        from .dashboard import validate_period
+        try:validate_period(month,month)
+        except ValueError:return {'error':'invalid_month','requested_month':month}
+        row=next((r for r in analysis.series(rid,120) if r['month']==month),None)
+        if not row:return {'error':'month_not_available','requested_month':month,'region':reg}
+        return {'region':reg,'period':month+' ~ '+month,'requested_month':month,'count':1,
+            **{k:row.get(k,{}) for k in ('metrics','derived','indexes','index_meta','freshness')}}
     if name=='get_region_summary':
         return analysis.summary(rid,months)
     if name=='get_population_trend':
