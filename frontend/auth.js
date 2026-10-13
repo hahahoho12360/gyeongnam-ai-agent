@@ -34,7 +34,7 @@ async function startPersonalAuth(){
 }
 window.personalAuth=startPersonalAuth();
 window.personalAuth.catch(()=>{});
-window.personalAuthHeaders=async()=>{const auth=await window.personalAuth;return {Authorization:'Bearer '+await auth.currentUser.getIdToken()}};
+window.personalAuthHeaders=async(forceRefresh=false)=>{const auth=await window.personalAuth;return {Authorization:'Bearer '+await auth.currentUser.getIdToken(forceRefresh)}};
 document.querySelector('#authRetry').onclick=()=>{
   window.personalAuth=startPersonalAuth();window.personalAuth.catch(()=>{});
   window.personalAuth.then(()=>window.reloadPrivateRecords?.()).catch(()=>{});

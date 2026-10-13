@@ -1,4 +1,5 @@
 from __future__ import annotations
+import threading
 import json, os, threading, uuid
 from datetime import datetime, timezone
 from typing import Any
@@ -92,10 +93,15 @@ class FirestoreStore(Store):
 
 _store: Store | None = None
 
+_store_lock=threading.RLock()
+
 def get_store() -> Store:
     global _store
     if _store is None:
-        _store = MemoryStore() if settings.use_memory_db else FirestoreStore()
+        with _store_lock:
+            if _store is None:
+                _store = MemoryStore() if settings.use_memory_db else FirestoreStore()
     return _store
 
 def utcnow_iso(): return datetime.now(timezone.utc).isoformat()
+

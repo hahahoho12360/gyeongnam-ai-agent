@@ -6,10 +6,30 @@ from copy import deepcopy
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from backend.db import get_store,FirestoreStore,utcnow_iso
 from backend.metrics import compute_derived
-from backend.indexes import compute_index_rows
+from backend.indexes import compute_index_rows,methodology_payload
 from scripts import repair_nonpopulation as nonpop
 from scripts.population_history_final import check_totals
 from scripts.population_one_month import original_sources_verified
+
+def repair_metadata(store,regions,rows):
+ from scripts.population_history_final import commit_batch
+ from collections import defaultdict
+ groups=defaultdict(list)
+ for row in rows:groups[row['month']].append(row)
+ newest=max(groups);now=utcnow_iso();updated=0
+ for month,items in sorted(groups.items()):
+  checkpoint=store.get('rollout_reports','changwon_nonpopulation_index_'+month) or {}
+  batch=store.client.batch()
+  for row in items:
+   meta={**row.get('index_meta',{}),**methodology_payload(comparison_scope='changwon',month=month,region_count=len(items)),
+       'computed_at':checkpoint.get('completed_at') or row.get('index_meta',{}).get('computed_at'),'metadata_verified_at':now,'nonpopulation_version':'3.9.2','requires_recompute':False}
+   batch.update(store.client.collection('monthly_data').document(row['id']),{'index_meta':meta})
+   if month==newest:
+    public={k:v for k,v in row.items() if k!='id'};public['index_meta']=meta
+    batch.set(store.client.collection('region_latest').document(row['region_id']),public)
+   updated+=1
+  commit_batch(batch)
+ print(json.dumps({'metadata_updated':updated,'latest_synced':len(groups[newest]),'collection_requests':0}),flush=True)
 
 def main():
  store=get_store()
@@ -18,6 +38,10 @@ def main():
  totals=json.loads((ROOT/'data/population_official_history_totals.json').read_text())['months']
  latest={r['id']:r for r in store.list('region_latest') if r['id'] in ids}
  rows=[r for r in store.list('monthly_data') if r.get('region_id') in ids and r.get('month') in totals]
+ if '--repair-metadata' in sys.argv:
+  repair_metadata(store,regions,rows)
+  rows=[r for r in store.list('monthly_data') if r.get('region_id') in ids and r.get('month') in totals]
+  latest={r['id']:r for r in store.list('region_latest') if r['id'] in ids}
  groups={m:[] for m in totals}
  for row in rows:groups[row['month']].append(row)
  lookup={(r['region_id'],r['month']):r for r in rows};issues=[];coverage=[];warnings=[]
@@ -25,7 +49,7 @@ def main():
   checks=check_totals(items,totals[m]);counts=Counter(r['region_id'] for r in items)
   if len(counts)!=204 or any(v!=1 for v in counts.values()):issues.append({'month':m,'kind':'region_inventory'})
   if checks['status']!='passed':issues.append({'month':m,'kind':'population_totals','problems':checks['problems']})
-  if not original_sources_verified(items,ids):warnings.append({'month':m,'kind':'original_population_sources'})
+  if not original_sources_verified(items,ids):warnings.append({'month':m,'kind':'legacy_population_method_metadata'})
   expected=[]
   for row in items:
    rid=row['region_id'];prior=lookup.get((rid,nonpop.p.month_shift(m,-1)),{});year=lookup.get((rid,nonpop.p.month_shift(m,-12)),{})

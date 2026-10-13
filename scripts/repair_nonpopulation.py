@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from backend.db import get_store, FirestoreStore, utcnow_iso
 from backend.metrics import compute_derived
-from backend.indexes import compute_index_rows
+from backend.indexes import compute_index_rows,methodology_payload
 from scripts import pipeline as p
 from scripts.collect import adapters as a
 from scripts.collect.data_go_kr import DataGoKrClient
@@ -357,7 +357,8 @@ def reindex(store, regions, month):
     batch=store.client.batch()
     for row in rows:
         changes={'derived':row['derived'],'indexes':indexes.get(row['region_id'],{}),'indexes_need_recompute':False,
-                 'index_meta.nonpopulation_version':VERSION, 'index_meta.requires_recompute':False}
+                 'index_meta':{**row.get('index_meta',{}),**methodology_payload(comparison_scope='changwon',month=month,region_count=len(rows)),
+                    'computed_at':utcnow_iso(),'nonpopulation_version':VERSION,'requires_recompute':False}}
         batch.update(store.client.collection('monthly_data').document(row['id']),changes)
         if latest.get(row['region_id'],{}).get('month')==month:
             batch.update(store.client.collection('region_latest').document(row['region_id']),changes)
