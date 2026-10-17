@@ -1,5 +1,7 @@
 # 제출 증빙 안내
 
+문서 갱신: **2026-10-17**. 아래 이미지는 **기존 기능 실증 당시의 실제 실행 화면**이다. 최신 화면과 디자인이 다를 수 있으며, 10월 17일 기능의 새 캡처로 간주하지 않는다.
+
 모든 이미지는 실제 실행 화면이다. 목업·오류 화면·중간 실패 Actions는 최종 성공 증빙에서 제외했다. 사용자 제공 shot.zip의 Codex MCP 화면과 Firestore 화면, 새로 생성한 기능 실증 화면을 선별했다.
 
 ## 필수 화면
@@ -35,4 +37,18 @@
 - [최종 감사 38327373901](https://github.com/hahahoho12360/gyeongnam-ai-agent/actions/runs/38327373901)
 - [소규모 인구 원본 대조 38337713559](https://github.com/hahahoho12360/gyeongnam-ai-agent/actions/runs/38337713559)
 
-Actions artifact에는 보관기한이 있으므로 핵심 감사·대조 JSON은 저장소에 함께 보존한다. 개인기록 숫자10·20·30은 CRUD 실증용 가상값이며 공식 통계 증빙으로 쓰지 않는다. 생성/수정 UI 캡처와 삭제 API 검증은 서로 구분한다. 현재 소스 테스트 결과178개 통과이며 최종 커밋 CI 상태도 확인한다.
+Actions artifact에는 보관기한이 있으므로 핵심 감사·대조 JSON은 저장소에 함께 보존한다. 개인기록 숫자10·20·30은 CRUD 실증용 가상값이며 공식 통계 증빙으로 쓰지 않는다. 생성/수정 UI 캡처와 삭제 API 검증은 서로 구분한다. 과거 화면·데이터 실증과 최신 코드 자동 검증은 아래처럼 구분한다.
+
+## 2026-10-17 최종 구현 검증
+
+| 구분 | 근거 | 입증 범위 |
+|---|---|---|
+| 구현 기준 | 커밋 `74b92d02f2a460b5bf39f287a39b7cf0d3d02fb9` | 문서 개정 직전 서비스 코드 |
+| 자동 검증 | [CI 실행 39009687179](https://github.com/hahahoho12360/gyeongnam-ai-agent/actions/runs/39009687179) | Python 211개 + 하위 테스트 2개 통과, 실행 결과 success |
+| 지수 설명·복구 | `tests/test_index_evidence.py`, `tests/test_index_recovery.py` | 구성자료와 재계산, 결측·메타데이터 처리 |
+| 그래프·기간 비교 | `tests/test_dashboard.py`, `tests/frontend/trends.test.cjs` | 8종 항목, 시작·종료값, 결측 처리 |
+| 채팅·질문 예시 | `tests/test_chat_resilience.py`, `tests/test_comparison_evidence.py`, `tests/test_question_catalog.py` | 한국어 처리, 질문 주제별 비교, 데이터 기반 후보 |
+| 지도 | `tests/frontend/region-map.test.cjs` | 204지역 경계, 선택·투영·표시 타일 계산 |
+| 실제 화면 확인 | 10월 17일 배포 홈페이지에서 도로·건물 및 지형·등고선 전환 확인 | 해당 시점의 배경 표시 확인. 상시 가용성 시험은 아님 |
+
+**제출 자료 해석:** 10월 13일 DB 감사 수치를 10월 17일 전체 DB 재감사 결과로 표기하지 않는다. 자동 테스트 통과는 실서비스의 모든 외부 API·네트워크 상태를 보장하지 않는다. 최종 UI를 별도 촬영할 경우 질문·기준월·배경 선택을 함께 보이게 하고 촬영일을 기록한다.
