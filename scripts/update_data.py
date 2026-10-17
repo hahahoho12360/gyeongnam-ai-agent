@@ -12,7 +12,6 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +24,40 @@ from scripts.pipeline import current_month, month_shift, run_source
 DAILY = ['apt_sale', 'apt_rent', 'other_real_estate', 'onbid']
 MONTHLY = ['population', 'age_population', 'single_household', 'household_birth_death', 'apartment_basic', 'building_register', 'commerce', 'onbid']
 PLANNED = ['kosis']
+
+
+def _missing_config(source: str) -> list[str]:
+    """Return missing variable names; leave invalid values to run_source's error log."""
+    missing = []
+    if not os.getenv('DATA_GO_KR_SERVICE_KEY', '').strip():
+        missing.append('DATA_GO_KR_SERVICE_KEY')
+    if source in ('population', 'age_population', 'single_household'):
+        prefixes = [source.upper()]
+    elif source == 'onbid':
+        prefixes = ['ONBID_PROPERTY', 'ONBID_RESULT']
+    elif source == 'household_birth_death':
+        prefixes = ['HOUSEHOLD_SIZE', 'BIRTH_DEATH', 'BIRTH', 'DEATH']
+    else:
+        # These collectors have official default endpoints in pipeline.py.
+        return missing
+    enabled = [p for p in prefixes if os.getenv(f'{p}_API_URL', '').strip()]
+    if not enabled:
+        missing.append(' or '.join(f'{p}_API_URL' for p in prefixes))
+    for prefix in enabled:
+        if not os.getenv(f'{prefix}_QUERY_JSON', '').strip():
+            missing.append(f'{prefix}_QUERY_JSON')
+    return missing
+
+
+def _skip_row(source: str, month: str) -> dict:
+    # Only record configuration names, never keys, URLs or query values.
+    row = {
+        'source': source, 'month': month, 'status': 'skipped',
+        'reason': 'missing_config', 'missing_config': _missing_config(source),
+        'regions_updated': 0, 'finished_at': utcnow_iso(),
+    }
+    get_store().set('source_status', f'{source}_{month}', row, merge=False)
+    return row
 
 
 def _monthly_target() -> str:
