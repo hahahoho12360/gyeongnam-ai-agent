@@ -44,3 +44,14 @@ async function run(){
   console.log('204 legal boundaries, holes, comparison identity, stale response and missing geometry checks passed');
 }
 run().catch(e=>{console.error(e);process.exitCode=1;});
+
+// XYZ and polygon coordinates share the same Web Mercator world extent.
+const {project,visibleTiles}=require('../../frontend/region-map.js');
+assert(Math.abs(project([0,0])[1])<1e-10);
+assert(Math.abs(project([0,85.05112878])[1]+180)<1e-7);
+const center=project([128.6,35.2]);
+const tiles=visibleTiles([center[0]-.3,center[1]-.2,.6,.4],900);
+assert(tiles.length>0 && tiles.length<60);
+assert(tiles.some(t=>center[0]>=t.left&&center[0]<=t.left+t.span&&center[1]>=t.top&&center[1]<=t.top+t.span));
+assert(tiles.every(t=>t.z<=19&&t.x>=0&&t.y>=0&&t.x<2**t.z&&t.y<2**t.z));
+console.log('Web Mercator alignment and viewport-only tile budget passed');
