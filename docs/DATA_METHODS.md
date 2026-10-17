@@ -28,6 +28,7 @@
 | monthly_data | `<지역코드>_<YYYY-MM>` 월별 metrics/derived/indexes/freshness/index_meta |
 | region_latest | 최신 조회용 문서. monthly_data의 최신월과 대조 |
 | data | 개인 날짜·지역·항목·값·메모·owner_uid |
+| ai_daily_usage | 한국 시간 날짜별 서비스 전체 실제 AI 호출 시도 수. Firestore 트랜잭션으로 예약 |
 | conversations | 개인 messages·분석지역·도구기록·owner_uid |
 | source_status / rollout·repair 작업 컬렉션 | 수집·완료·재개 기록. 개인 자료와 구분 |
 

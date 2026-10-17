@@ -98,7 +98,7 @@ async function send(message,retry=false){
   const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent='같은 질문 다시 시도';
   button.onclick=()=>{if(pendingChat!==request)return;send(request.message,true)};
   $('#messages').lastElementChild.appendChild(button);
- }finally{$('#loading').hidden=true;$('#sendBtn').disabled=false;}
+ }finally{$('#loading').hidden=true;$('#sendBtn').disabled=false;refreshAIUsage();}
 }
 $('#chatForm').onsubmit=e=>{e.preventDefault();const t=$('#chatInput').value.trim();if(t)send(t)};$('#chatInput').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();$('#chatForm').requestSubmit()}};
 let questionPool=[],questionHistory=[];
@@ -164,4 +164,16 @@ window.reloadPrivateRecords=async()=>{await Promise.all([loadData(),loadConversa
 window.personalAuth.then(()=>window.reloadPrivateRecords()).catch(e=>{$('#dataStatus').textContent=e.message;$('#conversationList').textContent='인증 연결 후 본인의 대화 목록을 볼 수 있어요.'});
 cancelEdit();
 
-
+// Aggregate server quota; this UI never grants or resets a reservation.
+async function refreshAIUsage(){
+ const el=$('#aiUsage');if(!el)return;
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);
+ try{
+  const response=await fetch(API+'/api/chat/usage',{cache:'no-store',signal:controller.signal});
+  if(!response.ok)throw new Error('usage unavailable');
+  const q=await response.json();
+  el.textContent=`오늘 AI 호출 ${q.used} / ${q.limit}회 · 전체 이용자 합산 · 한국 시간 자정 초기화. 질문 한 번에 여러 회가 사용될 수 있어요.${q.exhausted?' 오늘 한도를 모두 사용했어요. 통계·그래프·지도는 계속 조회할 수 있어요.':''}`;
+ }catch{el.textContent='AI 일일 사용량을 확인하지 못했어요. 전체 이용자 합산 한도는 서버에서 적용되며, 확인 실패 시 AI 호출을 중단합니다.';}
+ finally{clearTimeout(timer);}
+}
+refreshAIUsage();

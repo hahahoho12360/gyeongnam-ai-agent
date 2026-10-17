@@ -16,6 +16,7 @@ class Settings:
     analysis_scope_prefix: str = os.getenv('ANALYSIS_SCOPE_PREFIX','').strip()
     openai_api_key: str = os.getenv('OPENAI_API_KEY','')
     openai_model: str = os.getenv('OPENAI_MODEL','gpt-6-luna')
+    ai_daily_call_limit: int = int(os.getenv('AI_DAILY_CALL_LIMIT', '200'))
     openai_max_output_tokens: int = int(os.getenv('OPENAI_MAX_OUTPUT_TOKENS','3000'))
     firebase_service_account_json: str = os.getenv('FIREBASE_SERVICE_ACCOUNT_JSON','')
     google_application_credentials: str = os.getenv('GOOGLE_APPLICATION_CREDENTIALS','')
@@ -30,7 +31,8 @@ class Settings:
     live_onbid_ttl_hours: int = int(os.getenv('LIVE_ONBID_TTL_HOURS','6'))
 
     def __post_init__(self):
+        if not 0 <= self.ai_daily_call_limit <= 200:
+            raise ValueError('AI_DAILY_CALL_LIMIT must be between 0 and 200')
         object.__setattr__(self, 'allowed_origins', _csv('ALLOWED_ORIGINS','http://127.0.0.1:5500,http://localhost:5500'))
 
 settings = Settings()
-

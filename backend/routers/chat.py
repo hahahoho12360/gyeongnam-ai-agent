@@ -4,7 +4,7 @@ import logging
 import threading
 import time
 import uuid
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from ..models import ChatRequest, ChatResponse
 from ..db import get_store
 from ..auth import required_user, owned
@@ -125,3 +125,11 @@ def process_chat(req,uid,request):
         cid=req.conversation_id or ''
         answer+='\n\n답변은 생성됐지만 대화 저장에 실패했어요. 필요한 내용을 복사해 두세요.'
     return ChatResponse(resolved_region=analysis.resolve_region(selected) if selected else None,region_candidates=candidates,analysis_target=req.analysis_target,answer=answer,conversation_id=cid,tools_used=tools,charts=charts,freshness=context.get('summary',{}).get('freshness',{}))
+
+
+@router.get('/usage')
+def daily_ai_usage(response: Response):
+    """Aggregate counter only; no account identifiers or credentials."""
+    from ..daily_usage import usage_status
+    response.headers['Cache-Control'] = 'no-store'
+    return usage_status()
