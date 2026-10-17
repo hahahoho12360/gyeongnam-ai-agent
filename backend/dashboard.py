@@ -5,6 +5,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from . import analysis
 from .db import get_store
+from .index_evidence import evidence, period_change
 
 METRICS=[
  ('population_total','주민등록 인구(명)','인구','명'),
@@ -101,6 +102,10 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
     bundle['comparison']=comparisons
     current={r['region_id']:r for r in store.filter_eq('monthly_data','month',month) if r.get('region_id') in master}
     previous={r['region_id']:r for r in store.filter_eq('monthly_data','month',shift(month,-12)) if r.get('region_id') in master}
+    start_lookup={r['month']:r for r in target}
+    start_row=start_lookup.get(start_month)
+    start_prior=start_lookup.get(shift(start_month,-12))
+    start_peers=list(current.values()) if start_month==month else [r for r in store.filter_eq('monthly_data','month',start_month) if r.get('region_id') in master]
     benchmarks=[]
     selected_meta=current.get(region['id'],{}).get('index_meta',{})
     for key,label,tab,unit in METRICS:
@@ -111,8 +116,14 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
             if v is not None: vals.append((rid,v))
         low=min((v for _,v in vals),default=None); high=max((v for _,v in vals),default=None)
         def extreme(v):
-            return {'value':v,'regions':[{'id':rid,'name':master[rid].get('full_name') or master[rid]['name'],'basis':metric_basis(current[rid],key)} for rid,x in vals if x==v]} if v is not None else {'value':None,'regions':[]}
-        benchmarks.append({'key':key,'label':label,'unit':unit,'selected':value(current.get(region['id']),key,previous.get(region['id'])),
+            return {'value':v,'regions':[{'id':rid,'name':master[rid].get('full_name') or master[rid]['name'],'basis':metric_basis(current[rid],key),'index_evidence':evidence(current[rid],key,list(current.values()),previous.get(rid))} for rid,x in vals if x==v]} if v is not None else {'value':None,'regions':[]}
+        start_value=value(start_row,key,start_prior)
+        end_value=value(current.get(region['id']),key,previous.get(region['id']))
+        benchmarks.append({'start_value':start_value,'start_basis':metric_basis(start_row,key),
+                           'start_evidence':evidence(start_row,key,start_peers,start_prior),
+                           'end_evidence':evidence(current.get(region['id']),key,list(current.values()),previous.get(region['id'])),
+                           'change':period_change(key,start_value,end_value,start_row,current.get(region['id'])),
+                           'key':key,'label':label,'unit':unit,'selected':value(current.get(region['id']),key,previous.get(region['id'])),
                            'selected_basis':metric_basis(current.get(region['id']),key),'minimum':extreme(low),'maximum':extreme(high),'mean':sum(v for _,v in vals)/len(vals) if vals else None,
                            'valid_count':len(vals),'region_count':len(master),'month':month,'mean_method':'unweighted_region_mean'})
         ids=list(dict.fromkeys([region['id']]+[r['id'] for group in ('peers','seeded_random') for r in comparisons.get(group,[]) if r['id'] in master]))
@@ -135,3 +146,4 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
     bundle['charts']=[charts['population_total']]
     return {**bundle,'start_month':start_month,'end_month':month,'available_start':target[0]['month'] if target else None,'available_end':target[-1]['month'] if target else None,'benchmark_month':month,'benchmarks':benchmarks,'metric_charts':charts,
             'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in METRICS]}
+
