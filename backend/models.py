@@ -40,6 +40,7 @@ class Conversation(BaseModel):
     updated_at: datetime
 
 class ChatRequest(BaseModel):
+    request_id: str | None = Field(default=None,pattern=r'^[a-zA-Z0-9_-]{8,80}$')
     analysis_target: Literal['region','personal'] = 'region'
     message: str = Field(min_length=1, max_length=4000)
     conversation_id: str | None = None
@@ -64,4 +65,5 @@ class MonthlyRecord(BaseModel):
     derived: dict[str, Any] = Field(default_factory=dict)
     indexes: dict[str, Any] = Field(default_factory=dict)
     freshness: dict[str, Any] = Field(default_factory=dict)
+
 

@@ -26,3 +26,17 @@ def health(): return {'status':'ok'}
 def auth_config():
     from .auth import public_config
     return public_config()
+
+
+
+@app.exception_handler(Exception)
+async def safe_server_error(request,exc):
+    import logging,uuid
+    from fastapi.responses import JSONResponse
+    request_id=getattr(request.state,'request_id',None) or uuid.uuid4().hex
+    logging.getLogger(__name__).error('request_failed id=%s path=%s stage=%s error_type=%s status=%s',request_id,request.url.path,getattr(request.state,'stage','unknown'),type(exc).__name__,getattr(exc,'status_code',None))
+    headers={}
+    origin=request.headers.get('origin')
+    allowed=settings.allowed_origins or ['*']
+    if origin and (origin in allowed or '*' in allowed): headers={'Access-Control-Allow-Origin':origin,'Vary':'Origin'}
+    return JSONResponse(status_code=503,headers=headers,content={'detail':'서버에서 답변을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.','request_id':request_id,'retryable':True})
