@@ -44,17 +44,32 @@ function drawChart(spec,index){
  svg.nextElementSibling?.classList.contains('chart-starts')&&svg.nextElementSibling.remove();
  if(!spec?.labels?.length)return;
  const colors=['#008f9e','#4778ed','#ad72ce','#e59149'],sets=spec.datasets||[],valid=v=>typeof v==='number'&&Number.isFinite(v);
- const panel=document.createElement('div');panel.className='chart-endpoints';
- panel.innerHTML=`<div class="endpoint-head"><b>시작 ${esc(spec.labels[0])}</b><b>종료 ${esc(spec.labels.at(-1))}</b></div>`+sets.map((set,i)=>`<div class="endpoint-row" style="--series-color:${colors[i%4]}"><span><small>${esc(set.label)}</small><b>${esc(metricFormat(set.data?.[0],spec.metric))} ${esc(unitFor(spec))}</b></span><span><small>${esc(set.label)}</small><b>${esc(metricFormat(set.data?.[spec.labels.length-1],spec.metric))} ${esc(unitFor(spec))}</b></span></div>`).join('');svg.before(panel);
- const vals=sets.flatMap(s=>(s.data||[]).filter(valid));if(!vals.length)return;
- const W=700,H=320,L=82,R=30,T=45,B=75,min=Math.min(...vals),max=Math.max(...vals),range=max-min||1,ns='http://www.w3.org/2000/svg';
+ const vals=sets.flatMap(s=>(s.data||[]).filter(valid));
+ const W=700,H=320,L=90,R=90,T=65,B=75,min=vals.length?Math.min(...vals):0,max=vals.length?Math.max(...vals):1,range=max-min||1,ns='http://www.w3.org/2000/svg';
  const elem=(tag,attrs,text)=>{const el=document.createElementNS(ns,tag);for(const[k,v]of Object.entries(attrs))el.setAttribute(k,v);if(text!==undefined)el.textContent=text;svg.appendChild(el);return el};
  const x=i=>L+(W-L-R)*i/Math.max(1,spec.labels.length-1),y=v=>H-B-(H-T-B)*(v-min)/range;
  elem('text',{x:L,y:23,fill:'currentColor','font-size':16,'font-weight':700},spec.title||'비교 추세');elem('text',{x:8,y:40,fill:'currentColor','font-size':12},unitFor(spec));
- for(let j=0;j<4;j++){const v=min+range*j/3;elem('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:'#b6cad0','stroke-opacity':.35});elem('text',{x:L-8,y:y(v)+4,'text-anchor':'end',fill:'currentColor','font-size':11},metricFormat(v,spec.metric));}
+ for(let j=0;j<4;j++){const v=min+range*j/3;elem('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:'#b6cad0','stroke-opacity':.35});}
+ // Endpoint labels are actual observations, not y-axis tick values.
+ const labelSide=(last)=>{
+  const endpoint=last?spec.labels.length-1:0,px=x(endpoint),tx=last?W-R+24:L-24;
+  const entries=sets.map((set,i)=>({set,i,v:set.data?.[endpoint]})).map(e=>({...e,actual:valid(e.v),wanted:valid(e.v)?y(e.v):T+20+e.i*20})).sort((a,b)=>a.wanted-b.wanted);
+  const gap=18,top=T-8,bottom=H-B+8;
+  entries.forEach((e,i)=>{e.pos=Math.max(e.wanted,i?entries[i-1].pos+gap:top)});
+  if(entries.length&&entries.at(-1).pos>bottom){entries.at(-1).pos=bottom;for(let i=entries.length-2;i>=0;i--)entries[i].pos=Math.min(entries[i].pos,entries[i+1].pos-gap)}
+  for(const e of entries){
+   const color=colors[e.i%4];
+   if(e.actual)elem('polyline',{points:`${px},${y(e.v)} ${last?px+10:px-10},${e.pos} ${last?tx-4:tx+4},${e.pos}`,fill:'none',stroke:color,'stroke-width':1,'stroke-opacity':.8});
+   const label=elem('text',{x:tx,y:e.pos+4,'text-anchor':last?'start':'end',fill:color,'font-size':12,'font-weight':700,'class':'chart-endpoint-label','data-side':last?'end':'start','aria-label':`${e.set.label} ${spec.labels[endpoint]} ${e.actual?metricFormat(e.v,spec.metric):'자료 없음'} ${unitFor(spec)}`},e.actual?metricFormat(e.v,spec.metric):'—');
+   const tip=document.createElementNS(ns,'title');tip.textContent=label.getAttribute('aria-label');label.appendChild(tip);
+  }
+ };
+ elem('text',{x:12,y:23,fill:'currentColor','font-size':11},'시작값');elem('text',{x:W-12,y:23,'text-anchor':'end',fill:'currentColor','font-size':11},'종료값');
  [...new Set([0,Math.floor((spec.labels.length-1)/2),spec.labels.length-1])].forEach(i=>elem('text',{x:x(i),y:H-B+25,'text-anchor':'middle',fill:'currentColor','font-size':12},spec.labels[i]));
  sets.forEach((set,si)=>{let segment=[];const flush=()=>{if(segment.length)elem('polyline',{points:segment.join(' '),fill:'none',stroke:colors[si%4],'stroke-width':si?2:3});segment=[]};
  (set.data||[]).forEach((v,i)=>{if(!valid(v)){flush();return}segment.push(`${x(i)},${y(v)}`);const dot=elem('circle',{cx:x(i),cy:y(v),r:3,fill:colors[si%4],tabindex:0});const tip=document.createElementNS(ns,'title');tip.textContent=`${set.label} · 저장 월 ${spec.labels[i]} · ${metricFormat(v,spec.metric)} ${unitFor(spec)}${set.source_dates?.[i]?' · 실제 자료 기준 '+set.source_dates[i]:''}`;dot.setAttribute('aria-label',tip.textContent);dot.appendChild(tip)});flush();elem('text',{x:L+(si%2)*290,y:H-20-Math.floor(si/2)*18,fill:colors[si%4],'font-size':11},set.label||`비교 ${si+1}`)});
+ labelSide(false);labelSide(true);
+ if(!vals.length)elem('text',{x:W/2,y:150,'text-anchor':'middle',fill:'currentColor','font-size':14},'선택 기간의 자료가 없습니다.');
 }
 function drawCharts(charts=[]){drawChart(charts[0],0);drawChart(charts[1],1)}
 async function fetchSummary(keepPeriod=false){const id=activeRegionId;if(!id)return;const version=selectionVersion;const query=new URLSearchParams({answer_mode:$('#answerMode').value});if(comparisonQuestion)query.set('question',comparisonQuestion);if(keepPeriod){if($('#startMonth').value)query.set('start_month',$('#startMonth').value);if($('#endMonth').value)query.set('end_month',$('#endMonth').value)}const x=await api(`/api/analytics/regions/${id}/dashboard?${query}`);if(version!==selectionVersion)return;for(const id of ['startMonth','endMonth','periodApply','periodReset','csvBtn','jsonBtn'])$('#'+id).disabled=false;appliedStart=x.start_month||'';appliedEnd=x.end_month||'';$('#startMonth').value=appliedStart;$('#endMonth').value=appliedEnd;setPeriodBounds(x.period_min||PERIOD_MIN,x.period_max||lastClosedMonth());$('#periodNote').textContent=`시작월 ${x.start_month||'—'} · 종료월 ${x.end_month||'자료 없음'} 기준 · 기본 최근 12개월 · 저장 기간 ${x.available_start||'—'} ~ ${x.available_end||'—'} · 선택 가능 ${x.period_min||PERIOD_MIN} ~ ${x.period_max||lastClosedMonth()} · 빈 달은 0이 아닙니다.`;const s=x.summary||{},m=s.metrics||{},d=s.derived||{},idx=s.indexes||{},r=s.region||{};$('#activeRegion').textContent=r.full_name||r.name||id;$('#chatRegion').textContent=r.full_name||r.name||id;const charts=x.charts||[],labels=charts[0]?.labels||[];const trend=charts[0]?.datasets?.[0]?.data||[],numeric=trend.filter(v=>typeof v==='number');const tr=numeric.length<2?'자료 부족':numeric.at(-1)>numeric[0]?'증가':numeric.at(-1)<numeric[0]?'감소':'유지';$('#periodInfo').innerHTML=[['분석 기간',s.period|| (labels.length?labels[0]+' ~ '+labels.at(-1):'—')],['월별 자료 개수',s.count??labels.length],['관측 인구 추세',tr]].map(([k,v])=>`<div>${esc(k)}<b>${esc(v)}</b></div>`).join('');renderBenchmarks(x.benchmarks||[],x.start_month,x.end_month);$('#benchmarkNote').textContent=`비교월 ${x.benchmark_month||'—'} · 창원 평균은 유효 법정읍·면·동 값의 산술평균입니다. 창원시 전체 비율·총계와 다릅니다. 결측값은 제외합니다. 0은 실제 집계값이고 —는 자료 없음입니다. 법정동은 행정동·생활권과 범위가 다를 수 있어요. 작은 인구에서 나온 0%·100%를 지역 전체의 특성으로 단정하지 마세요. 100명·세대 미만 안내는 화면 해석을 돕는 기준이며 통계 제외 기준이 아닙니다.`;dashboardCharts=x.metric_charts||{};questionPool=x.question_candidates||[];questionHistory=[];showQuestions();renderMetricTabs(x.metric_definitions||[]);const im=s.index_meta||{};$('#indexMethodology').textContent=`창원시 내 상대평가 · 비교월 ${im.comparison_month||'—'} · 모집단 ${im.comparison_region_count??'—'}곳 · 프로젝트 정의 지수(공식 통계 아님)`;const f=s.freshness||{};$('#freshness').textContent=`기준 ${f.source_as_of||'—'} · 수집 ${f.fetched_at||'—'} · 메타데이터 분류 ${f.data_confidence||'—'}`;const c=x.comparison||{},tags=[];[['유사 지역',c.peers],['무작위 비교 지역',c.seeded_random]].forEach(([label,rows])=>(rows||[]).forEach(r=>tags.push(`<span><b>${esc(label)}</b> ${esc(r.full_name||r.name)}</span>`)));$('#comparisonInfo').innerHTML='<b>자동 비교군'+(c.topic_label?' · '+esc(c.topic_label):'')+'</b><div class="comparison-tags">'+tags.join('')+'</div><small>유사 지역은 질문 주제에 맞춰 선택해요. 같은 지역·월·질문은 같은 비교군을 보여줘요.'+(c.topic_data_unavailable?' 해당 주제 자료가 부족해 종합 지표로 비교했어요.':'')+'</small>';showMetric();}
@@ -62,13 +77,18 @@ async function send(message){if($('#sendBtn').disabled)return;const target=$('#a
 $('#chatForm').onsubmit=e=>{e.preventDefault();const t=$('#chatInput').value.trim();if(t)send(t)};$('#chatInput').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();$('#chatForm').requestSubmit()}};
 let questionPool=[],questionHistory=[];
 function shuffled(list){const out=[...list];for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]]}return out;}
+function friendlyQuestion(q){
+ const topic=q.label.replace(/ (현황|비교|해석|추세|증감)$/,'');
+ const intent=q.label.split(' ').at(-1),focus=({현황:'요즘 어떤 모습인지',비교:'다른 지역과 비교하면 어떤 특징이 있는지',해석:'우리 생활과 어떤 관련이 있는지',추세:'그동안 어떻게 달라졌는지',증감:'변화가 눈에 띄는지'})[intent]||'어떤 특징이 있는지';
+ return `${topic}에 대해 궁금해요. 어떤 동네인지 먼저 소개하고, ${focus} 관련 자료를 함께 살펴보며 알기 쉽게 알려줘. 생활에 도움이 되는 특징과 최근 지역 소식도 함께 소개해줘.`;
+}
 function showQuestions(){
  const groups=[['주민등록 인구','주민등록 세대 수','세대당 인구','남성 인구','여성 인구'],['청년 인구(20~39세)','20세 미만 인구','60세 이상 인구','0~9세 인구','10~19세 인구'],['1인세대 수','청년 1인세대','60세 이상 1인세대','남성 1인세대','여성 1인세대'],['매매 거래량','아파트 ㎡당 가격','전세 거래량','월세 거래량','월세 중앙값'],['업소 수','카페·커피 업소 수','음식점 업소 수','편의점 업소 수','의료·건강 관련 업소 수','교육 관련 업소 수','공동주택 단지 수','건축물 수','30년 이상 건축물 수']];const fallback=groups.flatMap((g,i)=>g.flatMap(label=>['현황','비교','해석'].map(intent=>({id:label+intent,domain:String(i),label:label+' '+intent,prompt:label+'의 저장자료 유무와 실제 기준일을 먼저 확인하고 '+intent+'해줘. 자료가 없으면 추정하지 말고 알려줘. 현황 자료로 과거 추세를 추정하지 마.'}))));
  const pool=questionPool.length?questionPool:fallback;let available=shuffled(pool.filter(q=>!questionHistory.includes(q.id)));if(available.length<Math.min(5,pool.length)){questionHistory=questionHistory.slice(-5);available=shuffled(pool.filter(q=>!questionHistory.includes(q.id)));if(available.length<5)available=shuffled(pool)}
  const picks=[],domains=new Set();for(const q of available){if(!domains.has(q.domain)){picks.push(q);domains.add(q.domain)}if(picks.length===5)break}for(const q of available){if(picks.length===5)break;if(!picks.includes(q))picks.push(q)}
  questionHistory=[...questionHistory,...picks.map(q=>q.id)].slice(-25);
- $('#questionChips').innerHTML=picks.map((q,i)=>`<button type="button" data-question="${i}" title="${esc(q.domain+' · '+q.prompt)}">${esc(q.label)}</button>`).join('');
- $('#questionChips').querySelectorAll('button').forEach(b=>b.onclick=()=>{const q=picks[Number(b.dataset.question)],region=regions.find(r=>r.id===activeRegionId);$('#analysisTarget').value='region';$('#chatInput').value=`${region?.full_name||region?.name||'[궁금한 법정읍·면·동 이름]'}의 ${q.prompt}`;$('#chatInput').focus()});
+ $('#questionChips').innerHTML=picks.map((q,i)=>`<button type="button" data-question="${i}" title="${esc(q.domain+' · '+friendlyQuestion(q))}">${esc(q.label)}</button>`).join('');
+ $('#questionChips').querySelectorAll('button').forEach(b=>b.onclick=()=>{const q=picks[Number(b.dataset.question)],region=regions.find(r=>r.id===activeRegionId);$('#analysisTarget').value='region';$('#chatInput').value=`${region?.full_name||region?.name||'[궁금한 법정읍·면·동 이름]'}의 ${friendlyQuestion(q)}`;$('#chatInput').focus()});
  $('#shuffleQuestions').title=questionPool.length?`선택 지역·기간에 유효한 질문 ${questionPool.length}개 중 분야를 나누어 표시합니다.`:'지역을 조회하면 저장자료에 맞는 질문을 제안합니다.';
 }
 $('#shuffleQuestions').onclick=showQuestions;showQuestions();

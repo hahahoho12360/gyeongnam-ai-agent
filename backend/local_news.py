@@ -42,7 +42,12 @@ def recent_news(region):
     return result
 
 def append_news(answer,news):
-    if not news.get('items') or '[응답 미완료]' in answer: return answer
+    if '[응답 미완료]' in answer: return answer
+    if not news.get('items'):
+        note='지금은 뉴스 연결이 지연되어 최신 소식을 확인하지 못했어요.' if news.get('status')=='unavailable' else '최근 30일 기사 중 이 지역과 직접 연결되는 소식을 확인하지 못했어요.'
+        return answer+'\n\n**최근 지역 소식**\n'+note
+
     item=news['items'][0]
     title=item['title'].replace('[','').replace(']','').replace('\n',' ')
     return answer+f"\n\n**최근 지역 소식**\n{item['source']}에서 ‘{title}’라는 소식을 전했어요 ({item['published_at'][:10]}). [기사 확인]({item['url']})\n기사 제목 기준으로 찾은 소식이며, 통계 변화의 원인으로 단정하지 않아요."
+

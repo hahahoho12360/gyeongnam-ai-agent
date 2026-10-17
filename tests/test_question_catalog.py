@@ -17,7 +17,7 @@ def test_candidates_use_available_fields_and_actual_categories():
     assert 'population_total:증감' in ids and 'business_count:현황' in ids
     assert 'business_count:추세' not in ids and 'business_count:증감' not in ids
     assert 'category:교육:현황' in ids and not any('sale_count' in i for i in ids)
-    assert any('병원 수로 단정하지 마' in q['prompt'] for q in qs)
+    assert all('어떤 동네인지' in q['prompt'] and '최근 지역 소식' in q['prompt'] for q in qs)
     assert len(ids)==len(qs)
 
 def test_missing_source_is_not_zero():

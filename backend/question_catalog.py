@@ -53,10 +53,9 @@ def candidates(rows,start,end):
             if len(valid)>=2: intents += [('추세','월별 관측값의 추세를 분석하고 빈 달은 추정하지 마.')]
             if start!=end and end_value is not None and read(lookup.get(start),key) is not None: intents += [('증감','정확한 시작월과 종료월 값, 증감 수와 증감률을 비교해줘. 시작값이 0이면 증감률은 계산하지 마.')]
         for intent,request in intents:
-            period=f'{end} 저장 구간의 현황' if d['snapshot'] or intent in ('현황','비교','해석') else f'{start}부터 {end}까지'
-            note=' 현황 자료의 실제 source_as_of를 표시하고 저장 구간을 실제 관측일로 해석하지 마. 과거 추세나 개업·폐업 수를 추정하지 마.' if d['snapshot'] else ''
-            if key=='health_business_count': note+=' 병원·의원·약국·건강 관련 업소를 포괄할 수 있으므로 병원 수로 단정하지 마.'
-            out.append({'id':key+':'+intent,'domain':d['domain'],'label':d['label']+' '+intent,'prompt':f'{period} {d["label"]}에 대해 {request}'+note,'metric':key})
+            focus={'현황':'요즘 어떤 모습인지','비교':'다른 지역과 비교하면 어떤 특징이 있는지','해석':'우리 생활과 어떤 관련이 있는지','추세':'그동안 어떻게 달라졌는지','증감':'변화가 눈에 띄는지'}[intent]
+            prompt=f'{d["label"]}에 대해 궁금해요. 어떤 동네인지 먼저 소개하고, {focus} 관련 자료를 함께 살펴보며 알기 쉽게 알려줘. 생활에 도움이 되는 특징과 최근 지역 소식도 함께 소개해줘.'
+            out.append({'id':key+':'+intent,'domain':d['domain'],'label':d['label']+' '+intent,'prompt':prompt,'metric':key})
     return out
 
 def metric_analysis(rid,key,start,end):
