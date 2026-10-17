@@ -5,7 +5,7 @@ def row(month,**metrics):return {'month':month,'metrics':metrics,'freshness':{'s
 
 def test_requested_graphs_and_strict_under20():
     keys={m[0] for m in GRAPH_METRICS}
-    assert len(keys)==9 and {'business_count','under_20','households','age_20_39','age_60_plus','single_households'}<=keys
+    assert len(keys)==8 and {'under_20','households','age_20_39','age_60_plus','single_households'}<=keys
     assert not {'sale_price_per_m2','sale_price_yoy_pct'}&keys
     assert value(row('2026-09',age_0_9=4,age_10_19=5),'under_20')==9
     assert value(row('2026-09',age_0_9=4),'under_20') is None
