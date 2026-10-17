@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from typing import Any
-from .metrics import percentile_score, weighted_index
+import math
+from datetime import datetime, timezone
+from .metrics import percentile_score, weighted_index, compute_derived
 
 # Checkpoint 3.2 — 창원 1차 MVP용 Composite Index.
 # 공식 통계가 아닌 프로젝트 정의 지수이며, 같은 월/같은 비교범위 내 percentile(0~100)을 조합한다.
@@ -69,6 +71,43 @@ def _value(row: dict[str, Any], key: str):
     return row.get('metrics', {}).get(key)
 
 
+def rebuild_index_rows(rows, *, month, year_ago=None, previous=None, scope='changwon'):
+    """Rebuild a complete same-month cohort without mutating stored input rows."""
+    year_ago=year_ago or {}; previous=previous or {}
+    source_fields={
+        'population': ['population_total','households'],
+        'age_population': ['age_20_39'],
+        'apt_sale': ['sale_count','sale_price_per_m2'],
+        'apt_rent': ['rent_count','monthly_rent_count'],
+        'building_register': ['old_buildings_30y','building_count'],
+        'apartment_basic': ['apartment_units'],
+        'commerce': ['business_count','business_category_counts','health_business_count','education_business_count','restaurant_count','cafe_count','convenience_store_count'],
+    }
+    def usable(row):
+        if not row or row.get('freshness',{}).get('is_demo'): return {}
+        m=dict(row.get('metrics',{}))
+        for source,fields in source_fields.items():
+            if row.get('freshness',{}).get('sources',{}).get(source,{}).get('status')=='no_data':
+                for key in fields:m.pop(key,None)
+        return m
+    prepared=[]
+    for row in rows:
+        if row.get('month')!=month or row.get('freshness',{}).get('is_demo'): continue
+        rid=row['region_id']; m=usable(row)
+        d=compute_derived(m,usable(previous.get(rid)),usable(year_ago.get(rid)))
+        # Legacy compute_derived fills absent age counts with zero. A missing
+        # numerator is not evidence of a zero youth share.
+        young=m.get('age_20_39'); pop=m.get('population_total')
+        if young is None or pop is None or pop<=0 or not 0<=young<=pop:d['young_population_share']=None
+        d={k:(None if isinstance(v,float) and not math.isfinite(v) else v) for k,v in d.items()}
+        prepared.append({**row,'derived':d})
+    computed=compute_index_rows(prepared)
+    meta=methodology_payload(comparison_scope=scope,month=month,region_count=len(prepared))
+    meta['computed_at']=datetime.now(timezone.utc).isoformat()
+    return [{**r,'indexes':computed[r['region_id']],'indexes_need_recompute':False,
+             'index_meta':{**r.get('index_meta',{}),**meta,'requires_recompute':False,'calculation_basis':'current_same_month_inputs'}} for r in prepared]
+
+
 def component_population_counts(rows: list[dict[str, Any]]) -> dict[str, int]:
     keys={k for d in INDEX_DEFINITIONS.values() for k in d}
     return {key: sum(1 for row in rows if isinstance(_value(row,key),(int,float))) for key in sorted(keys)}
@@ -119,3 +158,4 @@ def methodology_payload(*, comparison_scope: str, month: str, region_count: int)
             for name,weights in INDEX_DEFINITIONS.items()
         },
     }
+

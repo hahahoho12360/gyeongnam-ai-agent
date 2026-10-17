@@ -78,7 +78,21 @@ def evidence(row, key, month_rows, year_ago=None):
 def period_change(key, start, end, start_row=None, end_row=None):
     unit='점' if key in INDEX_DEFINITIONS else '%p' if key.endswith(('_share','_pct')) else '명' if key=='population_total' else '원/㎡'
     result={'delta':None,'percent':None,'unit':unit,'status':'missing','note':'시작월 또는 종료월 자료 없음'}
-    if start is None or end is None: return result
+    if start is None or end is None:
+        if key in INDEX_DEFINITIONS:
+            reasons=[]
+            for label,score,row in [('시작월',start,start_row),('종료월',end,end_row)]:
+                if score is not None:continue
+                if not row:reason='월별 자료 없음'
+                elif row.get('indexes_need_recompute'):reason='지수 재계산 대기'
+                elif not row.get('index_meta'):reason='지수 계산정보 누락'
+                else:
+                    count=sum(component_value(row,k) is not None for k in INDEX_DEFINITIONS[key])
+                    minimum=INDEX_METHODS[key]['minimum_components']
+                    reason=f'지수 구성자료 부족({count}개 / 최소 {minimum}개 필요)'
+                reasons.append(label+' '+reason)
+            result['note']=' · '.join(reasons)
+        return result
     if key in INDEX_DEFINITIONS:
         a=(start_row or {}).get('index_meta',{}); b=(end_row or {}).get('index_meta',{})
         if not a.get('method_version') or a.get('method_version')!=b.get('method_version') or a.get('comparison_scope')!=b.get('comparison_scope'):
@@ -93,3 +107,4 @@ def period_change(key, start, end, start_row=None, end_row=None):
         result['percent']=(end/start-1)*100 if start>0 else None
         if start==0: result['note']='시작값이 0이므로 증감률 미산출'
     return result
+

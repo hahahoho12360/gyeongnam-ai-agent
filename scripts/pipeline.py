@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from backend.db import get_store, utcnow_iso
-from backend.indexes import compute_index_rows
+from backend.indexes import compute_index_rows, rebuild_index_rows
 from backend.metrics import compute_derived, data_confidence
 from scripts.collect.adapters import (
     aggregate_age_rows,
@@ -195,6 +195,8 @@ def upsert_metric_patch(
         'is_demo': False,
     })
     row = {
+        **existing,
+        'indexes_need_recompute': True,
         'region_id': region_id,
         'month': month,
         'metrics': metrics,
@@ -245,6 +247,8 @@ def mark_source_no_data(
         'is_demo': False,
     })
     row = {
+        **existing,
+        'indexes_need_recompute': True,
         'region_id': region_id,
         'month': month,
         'metrics': metrics,
@@ -296,14 +300,20 @@ def recompute_indexes(month: str) -> int:
     rows = [r for r in rows if not r.get('freshness', {}).get('is_demo')]
     if not rows:
         return 0
-    computed = compute_index_rows(rows)
+    yearly={r['region_id']:r for r in store.filter_eq('monthly_data','month',month_shift(month,-12))}
+    prior={r['region_id']:r for r in store.filter_eq('monthly_data','month',month_shift(month,-1))}
+    groups=defaultdict(list)
     for row in rows:
-        rid = row['region_id']
-        indexes = computed.get(rid, {})
-        store.update('monthly_data', row['id'], {'indexes': indexes})
-        latest = store.get('region_latest', rid)
-        if latest and latest.get('month') == month:
-            store.update('region_latest', rid, {'indexes': indexes})
+        groups['changwon' if str(row['region_id']).startswith('4812') else 'outside_changwon'].append(row)
+    for scope,cohort in groups.items():
+        for row in rebuild_index_rows(cohort,month=month,year_ago=yearly,previous=prior,scope=scope):
+            rid=row['region_id']
+            changes={key:row[key] for key in ('derived','indexes','index_meta','indexes_need_recompute')}
+            changes['index_meta']['computed_at']=utcnow_iso()
+            store.update('monthly_data', row['id'], changes)
+            latest = store.get('region_latest', rid)
+            if latest and latest.get('month') == month:
+                store.update('region_latest', rid, changes)
     return len(rows)
 
 
@@ -658,4 +668,5 @@ def run_source(source: str, month: str) -> dict[str, Any]:
     result=redact(result)
     get_store().set('source_status', f'{source}_{month}', result, merge=False)
     return result
+
 

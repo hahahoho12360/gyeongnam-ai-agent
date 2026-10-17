@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 from . import analysis
 from .db import get_store
 from .index_evidence import evidence, period_change
+from .indexes import rebuild_index_rows
 
 METRICS=[
  ('population_total','주민등록 인구(명)','인구','명'),
@@ -116,16 +117,19 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
     bundle['comparison']=comparisons
     current={r['region_id']:r for r in store.filter_eq('monthly_data','month',month) if r.get('region_id') in master}
     previous={r['region_id']:r for r in store.filter_eq('monthly_data','month',shift(month,-12)) if r.get('region_id') in master}
+    current={r['region_id']:r for r in rebuild_index_rows(list(current.values()),month=month,year_ago=previous)}
     start_lookup={r['month']:r for r in target}
     start_row=start_lookup.get(start_month)
     start_prior=start_lookup.get(shift(start_month,-12))
     start_peers=list(current.values()) if start_month==month else [r for r in store.filter_eq('monthly_data','month',start_month) if r.get('region_id') in master]
+    if start_month!=month:
+        start_yearly={r['region_id']:r for r in store.filter_eq('monthly_data','month',shift(start_month,-12)) if r.get('region_id') in master}
+        start_peers=rebuild_index_rows(start_peers,month=start_month,year_ago=start_yearly)
+    start_row=next((r for r in start_peers if r['region_id']==region['id']),None)
     benchmarks=[]
-    selected_meta=current.get(region['id'],{}).get('index_meta',{})
     for key,label,tab,unit in METRICS:
         vals=[]
         for rid,row in current.items():
-            if key.endswith('_index') and row.get('index_meta',{}).get('method_version')!=selected_meta.get('method_version'): continue
             v=value(row,key,previous.get(rid))
             if v is not None: vals.append((rid,v))
         low=min((v for _,v in vals),default=None); high=max((v for _,v in vals),default=None)
