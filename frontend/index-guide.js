@@ -21,7 +21,6 @@ function showSection(){
  window.closeIndexDetail?.();
 }
 window.addEventListener('hashchange',showSection);
-renderGuide();showSection();
 let evidenceItems=[],detailAnchor=null,pinned=false,closeTimer;
 function evidenceButton(v,key,detail,label){
  if(v==null||!detail)return `<b>${esc(metricFormat(v,key))}</b>`;
@@ -51,3 +50,5 @@ $('#indexDetail').onfocusout=()=>setTimeout(()=>{if(!$('#indexDetail').contains(
  window.addEventListener('resize',closeIndexDetail);
 
 document.addEventListener('focusin',e=>{if(detailAnchor&&!e.target.closest('#indexDetail,[data-evidence]'))closeIndexDetail()});
+
+renderGuide();showSection();
