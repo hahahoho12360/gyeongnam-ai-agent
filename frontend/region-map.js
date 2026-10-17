@@ -13,7 +13,7 @@
   // Web Mercator (degree-scaled): identical projection to XYZ background tiles.
   const project = ([lon, lat]) => [lon, -Math.log(Math.tan(Math.PI / 4 + Math.max(-85.05112878, Math.min(85.05112878, lat)) * Math.PI / 360)) * 180 / Math.PI];
   function visibleTiles(b, pixels, maxZoom = 19) {
-    const z = Math.max(0, Math.min(maxZoom, Math.floor(Math.log2(360 * Math.max(256, pixels) / (256 * b[2])))));
+    const z = Math.max(0, Math.min(maxZoom, Math.ceil(Math.log2(360 * Math.max(256, pixels) / (256 * b[2])))));
     const n = 2 ** z, span = 360 / n, tiles = [];
     const left = Math.max(0, Math.floor((b[0] + 180) / span));
     const right = Math.min(n - 1, Math.floor((b[0] + b[2] + 180) / span));
