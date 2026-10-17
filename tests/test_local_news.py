@@ -16,4 +16,5 @@ def test_news_rejects_stale_unrelated_future_and_unsafe_links():
     assert len(rows)==1 and rows[0]['source']=='지역신문'
     answer=append_news('통계 분석',{'items':rows})
     assert '2026-10-10' in answer and '기사 확인' in answer
-    assert append_news('분석',{'items':[]})=='분석'
+    assert '최근 지역 소식' in append_news('분석',{'items':[]})
+    assert '확인하지 못했어요' in append_news('분석',{'items':[]})
