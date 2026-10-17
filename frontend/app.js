@@ -63,7 +63,7 @@ $('#chatForm').onsubmit=e=>{e.preventDefault();const t=$('#chatInput').value.tri
 let questionPool=[],questionHistory=[];
 function shuffled(list){const out=[...list];for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]]}return out;}
 function showQuestions(){
- const fallback=['주민등록 인구','청년 인구(20~39세)','1인세대 수','업소 수','주거 현황'].map((label,i)=>({id:'fallback'+i,domain:String(i),label,prompt:label+'의 저장자료 유무와 기준일을 확인하고 분석해줘.'}));
+ const groups=[['주민등록 인구','주민등록 세대 수','세대당 인구','남성 인구','여성 인구'],['청년 인구(20~39세)','20세 미만 인구','60세 이상 인구','0~9세 인구','10~19세 인구'],['1인세대 수','청년 1인세대','60세 이상 1인세대','남성 1인세대','여성 1인세대'],['매매 거래량','아파트 ㎡당 가격','전세 거래량','월세 거래량','월세 중앙값'],['업소 수','카페·커피 업소 수','음식점 업소 수','편의점 업소 수','의료·건강 관련 업소 수','교육 관련 업소 수','공동주택 단지 수','건축물 수','30년 이상 건축물 수']];const fallback=groups.flatMap((g,i)=>g.flatMap(label=>['현황','비교','해석'].map(intent=>({id:label+intent,domain:String(i),label:label+' '+intent,prompt:label+'의 저장자료 유무와 실제 기준일을 먼저 확인하고 '+intent+'해줘. 자료가 없으면 추정하지 말고 알려줘. 현황 자료로 과거 추세를 추정하지 마.'}))));
  const pool=questionPool.length?questionPool:fallback;let available=shuffled(pool.filter(q=>!questionHistory.includes(q.id)));if(available.length<Math.min(5,pool.length)){questionHistory=questionHistory.slice(-5);available=shuffled(pool.filter(q=>!questionHistory.includes(q.id)));if(available.length<5)available=shuffled(pool)}
  const picks=[],domains=new Set();for(const q of available){if(!domains.has(q.domain)){picks.push(q);domains.add(q.domain)}if(picks.length===5)break}for(const q of available){if(picks.length===5)break;if(!picks.includes(q))picks.push(q)}
  questionHistory=[...questionHistory,...picks.map(q=>q.id)].slice(-25);
