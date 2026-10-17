@@ -17,7 +17,7 @@ SYSTEM="""당신은 창원시 생활·주거·부동산·상권 변화 데이터
 7) 도구 결과가 region_ambiguous이면 임의 지역을 고르지 말고 후보를 사용자에게 제시하세요.
 8) 답변은 한국어로 작성하세요. 사용자가 특정 기준월을 지정하면 get_region_month로 해당 월을 조회하세요. 최신월 컨텍스트를 과거 월의 값으로 바꾸어 설명하지 마세요.
 9) answer_mode=simple이면 핵심 결론, 비교 1~2문장, 필수 기준시점/한계만 덧붙여 간결하게 끝내세요. 월별 전체 표는 별도 차트에 있으므로 사용자가 요구할 때만 작성하세요.
-10) comparison_reasoning과 comparison_summaries가 있으면 유사 지역·무작위 비교 지역만 자료에 근거해 비교하세요. comparison_selection의 topic_label과 feature_keys는 질문에 맞춘 선정 기준입니다. topic_data_unavailable이면 해당 주제의 자료가 없어 종합 지표로 선정했다는 점만 짧게 알리세요. 선정 근거를 별도 긴 섹션으로 설명하지 마세요.
+10) 유사 지역·무작위 비교 지역의 수치 비교 문단은 서버가 질문 주제에 맞는 검증된 자료로 별도 추가합니다. 본문에서 이들 지역의 비교 문단이나 결측 판단을 중복 작성하지 마세요. 상점 질문을 인구 비교로 바꾸지 마세요. 값이 없는 경우에도 전체 지역에 자료가 없다고 단정하지 마세요. comparison_reasoning과 comparison_summaries가 있으면 유사 지역·무작위 비교 지역만 자료에 근거해 비교하세요. comparison_selection의 topic_label과 feature_keys는 질문에 맞춘 선정 기준입니다. topic_data_unavailable이면 해당 주제의 자료가 없어 종합 지표로 선정했다는 점만 짧게 알리세요. 선정 근거를 별도 긴 섹션으로 설명하지 마세요.
 11) sample_size=null 또는 data_confidence=unknown은 앱 메타데이터 미제공/미분류라는 뜻이며 공식 통계가 부정확하다는 증거로 해석하지 마세요. 지표별 sources 메타데이터를 사용하세요.
 12) 첫 관측월과 마지막 관측월의 변화율을 전년 동월 대비로 부르지 마세요. 반복적인 자료 상태·한계와 다음 질문 섹션은 쓰지 마세요. 중요한 결측·기간 불일치는 한두 문장으로 알리고 문장을 끝까지 완성하세요. 기사나 최근 생활소식을 기억에 의존해 만들어내지 마세요. 지역 소식은 서버가 확인한 제목·날짜·출처 링크로 별도 제공됩니다."""
 
@@ -49,6 +49,7 @@ def _compact_context(context: dict | None) -> dict | None:
             for key in ('peers','seeded_random')
         },
         'comparison_summaries': context.get('comparison_summaries', {}),
+        'question': context.get('question'),
         'answer_mode': context.get('answer_mode'),
         'region_introduction': context.get('region_introduction'),
         'comparison_selection': {k:comparison.get(k) for k in ('topic','topic_label','feature_keys','month','topic_data_unavailable')},

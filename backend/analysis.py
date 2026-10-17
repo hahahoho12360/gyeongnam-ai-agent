@@ -125,26 +125,32 @@ def proactive_bundle(region_id: str, answer_mode='basic', question='') -> dict:
     months=12 if answer_mode=='simple' else 36
     from .period_selection import requested_month
     reference=requested_month(question)
-    comps=comparison_regions(reg['id'],reference,question) if question else comparison_regions(reg['id'])
+    if not reference:
+        from .dashboard import period_bounds
+        minimum, maximum=period_bounds()
+        eligible=[row['month'] for row in series(reg['id'],120) if minimum<=row['month']<=maximum]
+        reference=max(eligible) if eligible else None
+    comps=comparison_regions(reg['id'],reference,question)
     comps={key:value for key,value in comps.items() if key!='neighbors'}
     raw_ids=[reg['id']]+[r['id'] for group in ('peers','seeded_random') for r in comps[group]]
     compare_ids=list(dict.fromkeys(raw_ids))
     def context_summary(rid):
-        if not reference:return summary(rid,12)
+        if not reference:return {'region':get_store().get('regions',rid),'count':0}
         row=get_store().get('monthly_data',f'{rid}_{reference}')
         region=get_store().get('regions',rid)
-        return {'region':region,'period':reference+' ~ '+reference,'count':1 if row else 0,
+        return {'region':region,'month':reference,'period':reference+' ~ '+reference,'count':1 if row else 0,
             **{k:(row or {}).get(k,{}) for k in ('metrics','derived','indexes','index_meta','freshness')}}
     comp_summaries={rid:context_summary(rid) for rid in compare_ids}
     charts=[]
     charts.append(chart_metric(compare_ids,'population_total',months,f'최근 {months}개월 인구 추세',end_month=reference))
     if answer_mode=='detail':
         charts.append(chart_metric(compare_ids,'sale_price_per_m2',months,f'최근 {months}개월 ㎡당 매매가격 추세',end_month=reference))
-    return {'summary':context_summary(reg['id']),'comparison':comps,'comparison_summaries':comp_summaries,'charts':charts,'answer_mode':answer_mode}
+    return {'summary':context_summary(reg['id']),'comparison':comps,'comparison_summaries':comp_summaries,'question':question,'charts':charts,'answer_mode':answer_mode}
 
 def statistics(region_id: str, months: int=36) -> dict:
     rows=series(region_id,months)
     vals=[r.get('metrics',{}).get('population_total') for r in rows]
     vals=[v for v in vals if isinstance(v,(int,float))]
     return {'region_id':region_id,'months':months,'count':len(rows),'population_avg':round(sum(vals)/len(vals),2) if vals else None,'population_min':min(vals) if vals else None,'population_max':max(vals) if vals else None}
+
 

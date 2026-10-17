@@ -10,7 +10,7 @@ TOPICS = {
     'single': ('1인|일인|혼자|독거|세대|가구', '가구 구성', {'single_household_share': 5, 'young_population_share': 1, 'population_total': 1}),
     'rental': ('전세|월세|임대|보증금', '임대 주거', {'jeonse_price': 4, 'monthly_rent_share': 3, 'rent_count': 1}),
     'housing': ('매매|집값|실거래|아파트|주택|부동산|주거', '주택 매매', {'sale_price_per_m2': 5, 'apartment_supply_proxy': 2, 'housing_turnover_pct': 1}),
-    'commerce': ('상권|상가|가게|카페|식당|음식|생활편의|편의|창업|점포|사업', '상권·생활편의', {'businesses_per_1000_people': 4, 'business_diversity_index': 2, 'business_count': 1}),
+    'commerce': ('상권|상가|상점|업소|매장|소매|병원|의료|학원|가게|카페|식당|음식|생활편의|편의|창업|점포|사업', '상권·생활편의', {'businesses_per_1000_people': 4, 'business_diversity_index': 2, 'business_count': 1}),
     'building': ('건축|건물|단지|노후건축', '건축·주택 공급', {'old_building_share': 4, 'apartment_supply_proxy': 3, 'building_count': 1}),
     'population': ('인구|주민|사람|전입|전출', '인구', {'population_total': 4, 'population_yoy_pct': 3, 'young_population_share': 1}),
 }
@@ -92,3 +92,4 @@ def select_comparisons(region_id, regions, rows, month, question='', k=2):
     return {'neighbors': [], 'peers': peers, 'seeded_random': random_pick, 'seed': seed,
             'topic': topic, 'topic_label': label, 'month': month, 'feature_keys': list(usable),
             'topic_data_unavailable': fallback, 'method': 'question_weighted_same_month_v1'}
+
