@@ -13,7 +13,7 @@ async def lifespan(app: FastAPI):
     yield
 
 app=FastAPI(title='경상남도 생활·주거·부동산·상권 변화 AI 비서',version='3.8.1',description='AI Agent 과제용 FastAPI 백엔드',lifespan=lifespan)
-app.add_middleware(CORSMiddleware,allow_origins=settings.allowed_origins or ['*'],allow_credentials=False,allow_methods=['*'],allow_headers=['*'])
+app.add_middleware(CORSMiddleware,allow_origins=settings.allowed_origins or [],allow_credentials=False,allow_methods=['*'],allow_headers=['*'])
 app.include_router(data.router); app.include_router(conversations.router); app.include_router(analytics.router); app.include_router(chat.router); app.include_router(admin.router); app.include_router(meta.router)
 @app.get('/')
 def root(): return {'service':'gyeongnam-ai-agent','status':'ok','docs':'/docs','db_mode':'memory' if settings.use_memory_db else 'firestore'}
@@ -37,6 +37,6 @@ async def safe_server_error(request,exc):
     logging.getLogger(__name__).error('request_failed id=%s path=%s stage=%s error_type=%s status=%s',request_id,request.url.path,getattr(request.state,'stage','unknown'),type(exc).__name__,getattr(exc,'status_code',None))
     headers={}
     origin=request.headers.get('origin')
-    allowed=settings.allowed_origins or ['*']
+    allowed=settings.allowed_origins or []
     if origin and (origin in allowed or '*' in allowed): headers={'Access-Control-Allow-Origin':origin,'Vary':'Origin'}
     return JSONResponse(status_code=503,headers=headers,content={'detail':'서버에서 답변을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.','request_id':request_id,'retryable':True})
