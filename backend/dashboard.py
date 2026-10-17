@@ -25,7 +25,6 @@ GRAPH_METRICS=METRICS[:3]+[
  ('single_households','1인세대 수','1인세대 수','세대'),
  ('age_60_plus','60세 이상 인구 수','60세 이상 인구 수','명'),
  ('under_20','20세 미만 인구 수','20세 미만 인구 수','명'),
- ('business_count','업소 수','업소 수','개'),
 ]
 
 def numeric(v):
@@ -163,4 +162,5 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
     bundle['charts']=[charts['population_total']]
     return {**bundle,'start_month':start_month,'end_month':month,'available_start':target[0]['month'] if target else None,'available_end':target[-1]['month'] if target else None,'benchmark_month':month,'benchmarks':benchmarks,'metric_charts':charts,
             'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in GRAPH_METRICS]}
+
 

@@ -36,7 +36,9 @@ def test_same_month_extremes_ties_scope_and_trend_gaps(monkeypatch):
     chart=result['metric_charts']['population_total']
     assert chart['labels'][-1]=='2026-09' and len(chart['labels'])==12
     assert chart['datasets'][0]['data'][-2] is None
-    assert len(result['metric_charts'])==len(METRICS)==9
+    assert len(result['metric_charts'])==8
+    assert 'business_count' not in result['metric_charts']
+    assert len(METRICS)==9
 
 def test_selected_period_uses_end_month_without_silent_fallback(monkeypatch):
     store=db.MemoryStore();monkeypatch.setattr(db,'_store',store)
@@ -130,3 +132,4 @@ def test_small_population_basis_preserves_real_zero_and_missing():
     assert metric_basis({'metrics':{'population_total':0,'age_20_39':0}},'young_population_share') is None
     row['freshness']={'sources':{'age_population':{'status':'no_data'}}}
     assert metric_basis(row,'young_population_share') is None
+
