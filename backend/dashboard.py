@@ -19,6 +19,15 @@ METRICS=[
  ('commerce_change_index','상권활력 대리지수','상권활력','점'),
 ]
 
+GRAPH_METRICS=METRICS[:3]+[
+ ('households','주민등록 세대 수','주민등록 세대 수','세대'),
+ ('age_20_39','청년 인구 수(20~39세)','청년 인구 수(20~39세)','명'),
+ ('single_households','1인세대 수','1인세대 수','세대'),
+ ('age_60_plus','60세 이상 인구 수','60세 이상 인구 수','명'),
+ ('under_20','20세 미만 인구 수','20세 미만 인구 수','명'),
+ ('business_count','업소 수','업소 수','개'),
+]
+
 def numeric(v):
     return isinstance(v,(int,float)) and not isinstance(v,bool) and math.isfinite(v)
 
@@ -41,7 +50,13 @@ def value(row,key,year_ago=None):
     if key=='sale_price_yoy_pct':
         current=raw('sale_price_per_m2','apt_sale'); previous=value(year_ago,'sale_price_per_m2')
         return (current/previous-1)*100 if current is not None and previous is not None and previous>0 else None
+    if key=='under_20':
+        a=raw('age_0_9','age_population'); b=raw('age_10_19','age_population')
+        return a+b if a is not None and b is not None else None
+    sources_by_key={'households':'population','age_20_39':'age_population','age_60_plus':'age_population','single_households':'single_household','business_count':'commerce'}
+    if key in sources_by_key: return raw(key,sources_by_key[key])
     if key in ('population_total','sale_price_per_m2'):
+
         return raw(key,'population' if key=='population_total' else 'apt_sale')
     # In-progress repairs must not expose a stale index as a comparable score.
     if row.get('indexes_need_recompute'): return None
@@ -97,7 +112,7 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
     if month:
         start_month=start_month or max(minimum,shift(month,-11))
         validate_period(start_month,month)
-    if not month: return {**bundle,'benchmarks':[],'metric_charts':{},'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in METRICS]}
+    if not month: return {**bundle,'benchmarks':[],'metric_charts':{},'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in GRAPH_METRICS]}
     comparisons=analysis.comparison_regions(region['id'],month,question)
     bundle['comparison']=comparisons
     current={r['region_id']:r for r in store.filter_eq('monthly_data','month',month) if r.get('region_id') in master}
@@ -133,17 +148,19 @@ def dashboard(region_id,answer_mode='basic',start_month=None,end_month=None,ques
     while cursor<=month:
         labels.append(cursor); cursor=shift(cursor,1)
     charts={}
-    for key,label,tab,unit in METRICS:
+    for key,label,tab,unit in GRAPH_METRICS:
         datasets=[]
         for rid,rows in histories.items():
             lookup={r['month']:r for r in rows}
-            datasets.append({'label':master[rid]['name'],'data':[value(lookup.get(m),key,lookup.get(shift(m,-12))) for m in labels]})
+            datasets.append({'label':master[rid].get('full_name',master[rid]['name']).replace('경상남도 ','').replace('창원시 ',''),'source_dates':[lookup.get(m,{}).get('freshness',{}).get('sources',{}).get('commerce',{}).get('source_as_of') for m in labels] if key=='business_count' else [],'data':[value(lookup.get(m),key,lookup.get(shift(m,-12))) for m in labels]})
         charts[key]={'title':tab+' 비교 추세','unit':unit,'metric':key,'labels':labels,'datasets':datasets}
     last=current.get(region['id'],{}); recent=[r for r in target if start_month<=r['month']<=month]
     bundle['summary']={'region':region,'count':len(recent),'period':f"{start_month} ~ {month}",
                        'metrics':last.get('metrics',{}),'derived':last.get('derived',{}),'indexes':last.get('indexes',{}),
                        'freshness':last.get('freshness',{}),'index_meta':last.get('index_meta',{})}
+    from .question_catalog import candidates
+    bundle['question_candidates']=candidates(target,start_month,month)
     bundle['charts']=[charts['population_total']]
     return {**bundle,'start_month':start_month,'end_month':month,'available_start':target[0]['month'] if target else None,'available_end':target[-1]['month'] if target else None,'benchmark_month':month,'benchmarks':benchmarks,'metric_charts':charts,
-            'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in METRICS]}
+            'metric_definitions':[{'key':k,'label':l,'tab':t,'unit':u} for k,l,t,u in GRAPH_METRICS]}
 

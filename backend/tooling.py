@@ -2,7 +2,9 @@ from __future__ import annotations
 from . import analysis
 from .period_selection import requested_month
 
+from .question_catalog import CATALOG, metric_analysis
 TOOLS=[
+ {"type":"function","name":"get_metric_analysis","description":"세부 지표의 정확한 월별 값·시작종료 증감 조회. metric 키: "+', '.join(k+'='+v['label'] for k,v in CATALOG.items())+". 업종은 category:실제업종명. 현황 지표는 기준일 확인, 추세 추정 금지.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"metric":{"type":"string"},"start_month":{"type":"string","description":"YYYY-MM 또는 기본기간이면 빈 문자열"},"end_month":{"type":"string","description":"YYYY-MM 또는 최신이면 빈 문자열"}},"required":["region","metric","start_month","end_month"],"additionalProperties":False}},
  {"type":"function","name":"get_region_month","description":"지정한 기준월의 법정읍면동 원본 집계·비율·지수를 조회합니다. 과거 월 질문은 최신월 요약 대신 이 도구를 사용하세요.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"month":{"type":"string","description":"YYYY-MM 기준월"}},"required":["region","month"],"additionalProperties":False}},
  {"type":"function","name":"get_region_summary","description":"특정 경남 법정읍면동의 최근 인구·주거·부동산·상권 요약을 조회합니다. 동명이 중복되면 시군구를 포함한 전체명을 사용하세요.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"months":{"type":"integer","minimum":1,"maximum":120}},"required":["region","months"],"additionalProperties":False}},
  {"type":"function","name":"get_population_trend","description":"특정 지역의 월별 인구 추세와 차트 데이터를 조회합니다.","strict":True,"parameters":{"type":"object","properties":{"region":{"type":"string"},"months":{"type":"integer","minimum":3,"maximum":120}},"required":["region","months"],"additionalProperties":False}},
@@ -36,6 +38,9 @@ def dispatch(name: str, args: dict, question: str=''):
     if error:
         return error
     rid=reg['id']
+    if name=='get_metric_analysis':
+        try:return metric_analysis(rid,str(args.get('metric','')),args.get('start_month'),args.get('end_month'))
+        except ValueError as exc:return {'error':'invalid_period','message':str(exc)}
     explicit_month=requested_month(question)
     if name=='get_region_month' or (name=='get_region_summary' and explicit_month is not None):
         month=args.get('month') if name=='get_region_month' else explicit_month
@@ -73,4 +78,5 @@ def dispatch(name: str, args: dict, question: str=''):
         from .live import live_snapshot
         return live_snapshot(rid)
     return {'error':'unknown_tool','name':name}
+
 

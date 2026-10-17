@@ -1,0 +1,11 @@
+const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
+const code=fs.readFileSync('frontend/app.js','utf8');
+let panel;
+const svg={innerHTML:'',toggleAttribute(){},appendChild(){},before(p){panel=p}};
+const document={createElement:()=>({}),createElementNS:()=>({setAttribute(){},appendChild(){}})};
+const box={document,$:()=>svg,esc:String,metricFormat:v=>v==null?'—':String(v),unitFor:()=> '명'};vm.createContext(box);
+vm.runInContext(code.slice(code.indexOf('function drawChart('),code.indexOf('function drawCharts')),box);
+box.drawChart({labels:['2026-07','2026-08','2026-09'],datasets:[{label:'현동',data:[null,5,0]},{label:'비교동',data:[4,6,null]}]},0);
+assert.match(panel.innerHTML,/시작 2026-07/);assert.match(panel.innerHTML,/종료 2026-09/);
+assert.match(panel.innerHTML,/— 명/);assert.match(panel.innerHTML,/0 명/);assert.doesNotMatch(panel.innerHTML,/>5 명/);
+console.log('Exact selected endpoints, zero and missing-value rendering passed');
