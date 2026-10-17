@@ -125,6 +125,7 @@ def proactive_bundle(region_id: str, answer_mode='basic', question='') -> dict:
     months=12 if answer_mode=='simple' else 36
     from .period_selection import requested_month
     reference=requested_month(question)
+    explicit_reference=bool(reference)
     if not reference:
         from .dashboard import period_bounds
         minimum, maximum=period_bounds()
@@ -138,7 +139,9 @@ def proactive_bundle(region_id: str, answer_mode='basic', question='') -> dict:
         if not reference:return {'region':get_store().get('regions',rid),'count':0}
         row=get_store().get('monthly_data',f'{rid}_{reference}')
         region=get_store().get('regions',rid)
-        return {'region':region,'month':reference,'period':reference+' ~ '+reference,'count':1 if row else 0,
+        history=[row] if explicit_reference and row else ([] if explicit_reference else [item for item in series(rid,120) if item['month']<=reference][-12:])
+        period=(history[0].get('month',reference) if history else reference)+' ~ '+reference
+        return {'region':region,'month':reference,'period':period,'count':len(history),
             **{k:(row or {}).get(k,{}) for k in ('metrics','derived','indexes','index_meta','freshness')}}
     comp_summaries={rid:context_summary(rid) for rid in compare_ids}
     charts=[]

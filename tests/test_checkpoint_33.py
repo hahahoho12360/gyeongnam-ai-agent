@@ -52,7 +52,7 @@ def test_comparison_summaries_include_seeded_random(monkeypatch):
     regs=[{'id':str(i),'name':str(i)} for i in range(7)]
     for r in regs:
         store.set('regions',r['id'],r)
-    monkeypatch.setattr(analysis,'comparison_regions',lambda rid: {
+    monkeypatch.setattr(analysis,'comparison_regions',lambda rid, month=None, question='': {
         'neighbors':regs[1:3], 'peers':regs[3:5], 'seeded_random':regs[5:6], 'seed':'fixed'})
     bundle=analysis.proactive_bundle('0')
     assert '5' in bundle['comparison_summaries']

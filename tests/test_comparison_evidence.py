@@ -37,3 +37,23 @@ def test_snapshot_dates_must_match_for_delta():
 def test_no_data_status_overrides_stale_value():
     c=context();c['comparison_summaries']['b']['freshness']['sources']['commerce']['status']='no_data'
     assert '업소 수 20개' not in append_comparison('소개',c)
+
+
+def test_partial_current_month_does_not_hide_previous_month(monkeypatch):
+    from backend import analysis, dashboard
+    region={'id':'a','name':'대상동'}
+    september={'month':'2026-09','metrics':{'population_total':5307,'business_count':100}}
+    october={'month':'2026-10','metrics':{'sale_count':3}}
+    class Store:
+        def get(self,collection,key):
+            return region if collection=='regions' else september if key=='a_2026-09' else october
+    monkeypatch.setattr(analysis,'get_store',lambda:Store())
+    monkeypatch.setattr(analysis,'resolve_region',lambda _:region)
+    monkeypatch.setattr(analysis,'series',lambda *args:[september,october])
+    monkeypatch.setattr(dashboard,'period_bounds',lambda:('2022-10','2026-09'))
+    monkeypatch.setattr(analysis,'comparison_regions',lambda rid,month,question:{'month':month,'peers':[],'seeded_random':[]})
+    monkeypatch.setattr(analysis,'chart_metric',lambda *args,**kwargs:{})
+    result=analysis.proactive_bundle('a',question='상점은?')
+    assert result['comparison']['month']=='2026-09'
+    assert result['summary']['metrics']['population_total']==5307
+    assert result['summary']['metrics']['business_count']==100

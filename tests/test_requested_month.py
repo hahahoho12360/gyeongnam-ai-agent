@@ -38,5 +38,5 @@ def test_automatic_comparison_uses_same_requested_month(monkeypatch):
  assert bundle['summary']['metrics']['population_total']==727
  assert bundle['charts'][0]['end_month']=='2025-09'
  answer=append_comparison('인구 727명',bundle)
- assert '2025-09 ~ 2025-09' in answer
+ assert '저장 월 2025-09' in answer
  assert '-373명' in answer
